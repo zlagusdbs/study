@@ -32,6 +32,7 @@
   - JobLauncher
 
 ## Spring Meta Table
+  - ![Spring Meta Table](https://github.com/zlagusdbs/study/blob/master/resource/Prog%2C%20Spring%20Batch%2C%20Spring%20Meta%20Table.png)
   - BATCH_JOB_INSTANCE
     - JobInstance에 대한 모든 정보를 포함
   - BATCH_JOB_EXECUTION_PARAMS
