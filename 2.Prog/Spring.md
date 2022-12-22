@@ -1880,6 +1880,18 @@
 ---
 	
 # Spring Cloud
-# Resilience4j
-  - 참고싸이트: [https://resilience4j.readme.io/docs/getting-started](https://resilience4j.readme.io/docs/getting-started)
-  - 참고싸이트: [https://godekdls.github.io/Resilience4j/contents/](https://godekdls.github.io/Resilience4j/contents/)
+## Resilience4j
+### Refference Document
+#### Documentation
+[https://spring.io/projects/spring-cloud-circuitbreaker#learn](https://spring.io/projects/spring-cloud-circuitbreaker#learn)
+
+#### Supported Implementations
+[https://docs.spring.io/spring-cloud-commons/docs/current/reference/html/#introduction](https://docs.spring.io/spring-cloud-commons/docs/current/reference/html/#introduction)
+
+### Documentation
+[https://resilience4j.readme.io/docs/circuitbreaker](https://resilience4j.readme.io/docs/circuitbreaker)
+
+### Properties Documentation
+[https://resilience4j.readme.io/docs/circuitbreaker#create-and-configure-a-circuitbreaker](https://resilience4j.readme.io/docs/circuitbreaker#create-and-configure-a-circuitbreaker)
+[https://resilience4j.readme.io/docs/getting-started](https://resilience4j.readme.io/docs/getting-started)
+[https://godekdls.github.io/Resilience4j/contents/](https://godekdls.github.io/Resilience4j/contents/)
