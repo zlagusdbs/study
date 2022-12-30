@@ -354,6 +354,9 @@ render() {
 #### 3.3.4.2 함수형 컴포넌트에서 useState
 - Hooks를 공부하면 더 자세하게 공부할 수 있다
 
+# 16 리덕스 라이브러리 이해하기
+- ![Redux](../resource/Prog%2C%20FrontEnd%2C%20React%2C%20Redux.png)
+
 ## 16.1 개념 미리 정리하기
 - Action
 - 객체의 형태로, type 필드를 반드시 가지고 있어야 합니다.
