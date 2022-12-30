@@ -354,6 +354,95 @@ render() {
 #### 3.3.4.2 함수형 컴포넌트에서 useState
 - Hooks를 공부하면 더 자세하게 공부할 수 있다
 
+## 16.1 개념 미리 정리하기
+- Action
+- 객체의 형태로, type 필드를 반드시 가지고 있어야 합니다.
+```
+# example
+{
+    type: 'TOGGLE_VALUE'
+}
+```
+
+- Action 생성함수
+```
+# example
+function addTodo(date){
+    return {
+        type: 'ADD_TODO',
+        date
+    };
+}
+
+# example(화살표함수)
+const addTodo => data => ({
+    type: 'ADD_TODO',
+    data
+});
+```
+
+- Reducer
+- 실제로 변화를 일으키는 함수.
+- action을 만들고 발생시키면 reducer가 현재 상태와 전달받은 action객체를 파라미터로 받아옵니다.
+- 그리고 두 값을 참고하여 새로운 상태를 만들어 반환해 줍니다.
+```
+const initialState = {
+    counter: 1
+};
+
+function reducer(state = initialState, action) {
+    switch(action.type){
+        case INCREMENT:
+            return {
+                counter: state.counter + 1
+            };
+        default:
+            return state;
+    }
+}
+```
+
+- Store
+```
+import {createStore} from 'redux';
+
+...
+
+const store = createStore(reducer);
+```
+
+- dispatch
+- Store에서 Reducer함수를 실행시켜서 새로운 상태를 만들어 줍니다.
+
+- subscribe
+- action이 dispatch되어 상태가 업데이트 될 때마다 특정 함수를 호출시키는 용도.(=callback)
+
+- render함수 만들기
+```
+...
+
+const store = createStore(reducer);
+
+const render = () => {
+    const state = store.getState();
+    
+    if(state.toggle) {
+    } else {
+    }
+    
+    counter.innerText = state.counter;
+};
+
+render();
+```
+
+- action 발생시키기
+```
+요소.onClick = () => {
+    store.dispatch( /* action 생성함수 호출*/ );
+}
+```
+
 
 ---
 
