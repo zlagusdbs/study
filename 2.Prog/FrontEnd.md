@@ -213,6 +213,150 @@
 
 
 # React
+# 리액트를 다루는 기술
+  - 김민준, 『리액트를 다루는 기술』, (주)도서출판 길벗(2020. 02. 10)
+# 문법
+- 화살표 함수
+```
+// 화살표 함수
+const sum = (a, b) => { return a+b }
+
+// 화살표 함수에서 값을 바로 반환
+const sum = (a, b) => a+b
+```
+
+# 3.
+## 3.3 props
+### 3.3.1 JSX 내부에서 props 렌더링
+- props는 properties를 줄인 표현으로 컴포넌트 속성을 설정할 때 사용하는 요소입니다.
+- props값은 해당 컴포넌트를 불러와 사용하는 부모 컴포넌트(현 상황에서는 App 컴포넌트가 부모 컴포넌트입니다)에서 설정할 수 있습니다.
+- 단, props는 컴포넌트가 사용되는 과정에서 부모 컴포넌트가 설정하는 값이며, 컴포넌트 자신은 해당 props를 읽기 전용으로만 사용할 수 있습니다.
+```
+# App.js
+import React from 'react';
+import MyComponent from './MyComponent';
+
+const App = () => {
+    return <MyComponent name="React">칠드런테스트</MyComponent>;
+};
+
+export default App;
+
+# MyComponent.js
+import React from 'react';
+
+const MyComponent = props => {
+    return <div>안녕하세요, 제 이름은 {props.name}입니다.</div>;
+};
+
+MyComponent.defaultProps = {
+    name: '기본이름'
+};
+
+export default MyComponent;
+```
+
+- props.child: 컴포넌트 태그 사이의 내용을 보여주는 props(output> 칠드런테스트)
+- PropTypes: 컴포넌트의 필수 props를 지정하거나 props의 타입을 지정할 때 사용
+
+### 3.3.4
+- 컴포넌트 내부에서 바뀔 수 있는 값을 의미합니다.
+#### 3.3.4.1 클래스형 컴포넌트의 state
+- state declare
+```
+# Counter.js
+import React, {Component} from 'react';
+
+Class Counter extends Component {
+    // (방법1) 생성자 내에서 state를 정의
+    constructor(props) {
+        super(props);
+        this.state = {                             // state의 초기값 설정하기(반드시, 객체형태일 것)
+            number: 0,
+            fixedNumber: 0
+        };
+    }
+    
+    // (방법2) 생성자 없이 state를 정의
+    state = {
+        number: 0,
+        fixedNumber: 0
+    };
+    
+    render() {
+        const {number, fixedNumber} = this.state;  // state를 조회할 때는 this.state로 조회합니다.
+        return (
+            <div>
+                ...
+                <button
+                    onClick={ () => {this.setState({number: number+1})} }    // this.setState를 사용하여 state에 새로운 값을 넣을 수 있습니다.
+                >
+                    +1
+                </button>
+            </div>
+        )
+    }
+}
+
+export default Counter;
+```
+
+- state setter
+```
+render() {
+    const {number} = this.state;
+    return (
+        <div>
+            <button
+                onClick={
+                    () => {                                      // 객체로 변경
+                        this.setState({number: number+1});
+                    }
+                    
+                    () => {
+                        this.setState((prevState, props)=>{      // 함수로 변경
+                            return {
+                                // 업데이트하고 싶은 내용
+                            }
+                        });
+                    }
+                    
+                    () => {
+                        this.setState(prevState => {            // 함수로 변경(props생략)
+                            return {
+                                // 업데이트하고 싶은 내용
+                            }
+                        });
+                        
+                        // 화살표 함수에서 바로 객체를 반환하도록 했기 때문에 prevState => ({}) 형태를 띄움 (kim: 이부분 이해 안가네..)
+                        this.setState( prevState => ({          // 함수로 변경(props생략)
+                            number: preState.number + 1
+                        }) );
+                    }
+                    
+                    () => {
+                        this.setState(                          // 함수로 변경(두번째 인자가 함수일 경우, callback 함수로 등록된다.)
+                            {number: number+1},
+                            () => {
+                                console.log("callback");
+                            }
+                        );
+                    }
+                }
+            >
+            </button>
+        </div>
+    );
+}
+
+```
+
+#### 3.3.4.2 함수형 컴포넌트에서 useState
+- Hooks를 공부하면 더 자세하게 공부할 수 있다
+
+
+---
+
 ## React interlocking in Spring Boot
   - React 앱을 생성
      ~~~
