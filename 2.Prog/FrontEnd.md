@@ -225,7 +225,7 @@ const sum = (a, b) => { return a+b }
 const sum = (a, b) => a+b
 ```
 
-# 3.
+# 3 컴포넌트
 ## 3.3 props
 ### 3.3.1 JSX 내부에서 props 렌더링
 - props는 properties를 줄인 표현으로 컴포넌트 속성을 설정할 때 사용하는 요소입니다.
