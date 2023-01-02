@@ -31,6 +31,35 @@
   cf> [https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config](https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config)
 
 
+## Git Tag
+- 조회
+  ```
+  // 조회
+  # git tag
+  
+  // 상세조회
+  # git show TAG_NAME
+  ```
+  
+- 삭제
+  ```
+  // Local
+  # git tag -d TAG_NAME
+  
+  // Origin
+  # git push --delete origin TAG_NAME
+  ```
+  
+- 생성
+  ```
+  // Local
+  # git tag TAG_NAME
+  
+  // Origin
+  # git push origin TAG_NAME
+  ```
+
+
 ---
 
 # GitHub
