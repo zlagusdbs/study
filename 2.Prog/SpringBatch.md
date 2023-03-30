@@ -49,8 +49,19 @@
 - Step, Chunk의 반복을 RepeatOperation을 사용하여 처리(Default 구현체로 RepeatTemplate가 존재)
 ```
 
-Job -> Step -> RepeatTemplate -> Tasklet -> RepeatTemplate -> Chunk
-               반복                          반복
+Job -> Step -> RepeatTemplate -iterator()-> RepeatCallback -doInIteratorion()-> tasklet
+                    ↑                                                              ↓
+                    ⌙-------------------------------- ExceptionHandler <-Y---- exception ?
+                                                                                   ↓ N
+                                                                            CompletionPolicy
+                                                                                   ↓
+                    ⌙----------------------------------------------------Y---- Complete ?
+                                                                                   ↓ N
+                                                                             RepeatStatus
+                                                                                   ↓ N
+                    ⌙----------------------------------------------------Y----  FINISHED ?  ----↑(tasklet으로 이동: 반목문 유지)
+
+
                
             -> ChunkOrentedTasklet -> ChunkProvider -> ItemReader
                                       내부적으로 RepeatTemplate를 가지고 있으며, 이를 이용하여 반복적으로 ItemReader에서 데이터를 가져올 수 있도록 한다.
@@ -62,9 +73,22 @@ Job -> Step -> RepeatTemplate -> Tasklet -> RepeatTemplate -> Chunk
   - CONTINUABLE : repeat
   - FINISHED : exit
     
-- CompletionPolicy
+- CompletionPolicy<interaffce>
   - 정상 종료를 marking
   - RepeatTemplate의 iterate method안에서 판단
+  ```
+  RepeatTemplate repeatTemplate = new RepeatTemplate();
+  repeatTemplate.setCompletionPolicy(new XXXCompletionPolicy());
+  repeatTeamplte.iterator(new RepeatCallback(){
+    @Override
+    public RepeatStatus doInIteration(RepeatContext repeatContext){
+      System.out.println("hi !");
+      return RepeatStatus.CONTINUABLE;
+    }
+  })
+  ```
+  
+  - CompletionPolicy의 구현체
 
 - ExceptionHandler
   - 비정상 종료를 marking
