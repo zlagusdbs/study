@@ -52,6 +52,9 @@
 Job -> Step -> RepeatTemplate -> Tasklet -> RepeatTemplate -> Chunk
                반복                          반복
                
+            -> ChunkOrentedTasklet -> ChunkProvider -> ItemReader
+                                      내부적으로 RepeatTemplate를 가지고 있으며, 이를 이용하여 반복적으로 ItemReader에서 데이터를 가져올 수 있도록 한다.
+               
 ```
 
 ## Skip
@@ -71,11 +74,11 @@ public Step exampleStep(){
 }
 ```
 
-- at ItemReader : 예외가 발생한 Item은 Chunck에 담지 않는다.
-- at ItemProcessor : ItemProcessor에서 예외발생 시, ItemReader부터 모든Chunck(예외가 발생한 Item 포함)를 다시 받는다.
+- at ItemReader : 예외가 발생한 Item은 Chunk에 담지 않는다.
+- at ItemProcessor : ItemProcessor에서 예외발생 시, ItemReader부터 모든Chunk(예외가 발생한 Item 포함)를 다시 받는다.
                      단, Exception을 발생했던 Item에는 Exception이 marking되어있음으로 이때 skip이 이루어진다.
-- at ItemWriter : ItemWriter에서 예외발생 시, ItemReader부터 모든Chunck(예외가 발생한 Item 포함)를 다시 받는다.
-                  단, 더이상 ItemProcessor에서 Chunck단위로 받지 않고, 한 건씩 받아 처리하게 되어진다.
+- at ItemWriter : ItemWriter에서 예외발생 시, ItemReader부터 모든Chunk(예외가 발생한 Item 포함)를 다시 받는다.
+                  단, 더이상 ItemProcessor에서 Chunk단위로 받지 않고, 한 건씩 받아 처리하게 되어진다.
 
 ### SkipPolicy<interface>의 구현체
   - AlwaysSkipItemSkipPolicy : 항상 skip
