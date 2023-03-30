@@ -57,6 +57,19 @@ Job -> Step -> RepeatTemplate -> Tasklet -> RepeatTemplate -> Chunk
                
 ```
 
+### Repeat의 종료
+- RepeatStatus
+  - CONTINUABLE : repeat
+  - FINISHED : exit
+    
+- CompletionPolicy
+  - 정상 종료를 marking
+  - RepeatTemplate의 iterate method안에서 판단
+
+- ExceptionHandler
+  - 비정상 종료를 marking
+  - RepeatCallback안에서 예외발생 시, RepeatTemplate가 ExceptionHandler를 참조해서 예외를 다시 발생할지 결정(다시 예외발생 시, 반복종료)
+
 ## Skip
 - 데이터를 처리하는 동안 Exception이 발생하였을 경우, 해당 데이터를 처리하지 않고, 다음 데이터를 처리할 수 있게하는 기능
 ```
