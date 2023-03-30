@@ -49,17 +49,17 @@
 - Step, Chunk의 반복을 RepeatOperation을 사용하여 처리(Default 구현체로 RepeatTemplate가 존재)
 ```
 
-Job -> Step -> RepeatTemplate -iterator()-> RepeatCallback -doInIteratorion()-> tasklet
-                    ↑                                                              ↓
-                    ⌙-------------------------------- ExceptionHandler <-Y---- exception ?
-                                                                                   ↓ N
-                                                                            CompletionPolicy
-                                                                                   ↓
-                    ⌙----------------------------------------------------Y---- Complete ?
-                                                                                   ↓ N
-                                                                             RepeatStatus
-                                                                                   ↓ N
-                    ⌙----------------------------------------------------Y----  FINISHED ?  ----↑(tasklet으로 이동: 반목문 유지)
+Job -> Step -> RepeatTemplate -iterator()-> RepeatCallback -doInIteratorion()-> tasklet <───────┐
+                    ↑                                                              ↓            │
+                    └-------------------------------- ExceptionHandler <-Y---- exception ?      │
+                    │                                                              ↓ N          │
+                    │                                                       CompletionPolicy    │
+                    │                                                              ↓            │
+                    └----------------------------------------------------Y---- Complete ?       │
+                    │                                                              ↓ N          │
+                    │                                                        RepeatStatus       │
+                    │                                                              ↓ N          │
+                    └────────────────────────────────────────────────────Y─── FINISHED ? ───N───┘
 
 
                
