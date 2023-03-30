@@ -43,3 +43,33 @@
   - BATCH_JOB_EXECUTION_CONTEXT
   - BATCH_STEP_EXECUTION
   - BATCH_STEP_EXECUTION_CONTEXT
+
+## Skip
+- 데이터를 처리하는 동안 Exception이 발생하였을 경우, 해당 데이터를 처리하지 않고, 다음 데이터를 처리할 수 있게하는 기능
+```
+public Step exampleStep(){
+    return stepBuilderFactory.get("exampleStep")
+            .<I, O>chunk(숫자)
+            .reader(ItemReader)
+            .writer(ItemWriter)
+            .falutTolerant()
+            .skip(예외타입)
+            .skipLimit(숫자)
+            .skipPolicy(SkipPolicy skipPolicy)
+            .noSkip(예외타입)
+            .build();
+}
+```
+
+- at ItemReader : 예외가 발생한 Item은 Chunck에 담지 않는다.
+- at ItemProcessor : ItemProcessor에서 예외발생 시, ItemReader부터 모든Chunck(예외가 발생한 Item 포함)를 다시 받는다.
+                     단, Exception을 발생했던 Item에는 Exception이 marking되어있음으로 이때 skip이 이루어진다.
+- at ItemWriter : ItemWriter에서 예외발생 시, ItemReader부터 모든Chunck(예외가 발생한 Item 포함)를 다시 받는다.
+                  단, 더이상 ItemProcessor에서 Chunck단위로 받지 않고, 한 건씩 받아 처리하게 되어진다.
+
+### SkipPolicy<interface>의 구현체
+  - AlwaysSkipItemSkipPolicy : 항상 skip
+  - ExceptionClassifierSkipPolicy : 예외대상을 분류하여 skip
+  - CompositeSkipPolicy : 여러 SkipPolicy를 탐색하면서 skip
+  - LimitCheckingItemSkipPolicy : count 및 예외대상의 결과에 따라 skip(DEFAULT)
+  - NeverSkipItemSkipPolicy : None skip
