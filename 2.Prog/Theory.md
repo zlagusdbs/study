@@ -80,9 +80,9 @@
 				                  트랜잭션은 로그에 모든 것이 저장된 후에만 commit 상태로 간주될 수 있다.
 
 # Cache Design Pattern
-- Cache-Aside: Cache 분리
+- Cache-Aside: Cache를 분리. 읽기 요청이 많은 경우에 적합
 - Read-Through: Cache를 통해서 읽기
 - Write-Through: Cache를 통해서 쓰기
 - Write-Around: DB에만 쓰기
-- Write-Behind: Cache에 나중에서 쓰기
+- Write-Behind: Cache만 저장
 - Refresh Ahead: CAche를 미리 
