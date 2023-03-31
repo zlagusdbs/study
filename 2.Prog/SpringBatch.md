@@ -48,9 +48,31 @@
 ### 처리방식
   - tasklet
     - task 기반처리
+    ```
+    public Step exampleStep(){
+        return new stepBuilderFactory.get("exampleStep")
+            .<I, O>chunk(10)
+            .reader(itemReader())
+            .writer(itemWriter())
+            .falutTolerant()
+            .skip(Class<? extends Throwable> type)        // skip 할 예외타입 설정
+            .skipLimit(int skipLimit)                     // skip 제한횟수 설정
+            .skipPolicy(SkipPolicy skipPolicy)            // skip의 조건과 기준에 대한 정책을 설정
+            .noSkip(Class<? extends Throwable> type)      // exclusive skip 할 예외타입 설정
+            .retry(Class<? extends Throwable> type)       // retry 할 예외타입 설정
+            .retry(limit(int retryLimit)                  // retry 제한횟수 설정
+            .retryPolicy(RetryPolicy retryPolicy)         // retry의 조건과 기준에 대한 ㅓㅇ책을 설정
+            .backOffPolicy(BackOffPolicy backOffPolicy)   // retry 하기 까지의 지연시간(ms) 설정
+            .noRetry(Class<? extends Throwable> type)     // exclusive retry 할 예외타입 설정
+            .noRollback(Class<? extends Throwable> type)  // rollback 하지 않을 예외타입 설정
+            .build();
+    }
+    ```
   - chunk
     - chunk 기반처리
     - ItemReader, ItemProcessor, ItemWriter 를 이용하여 처리
+    ```
+    ```
 
 
 ## FaultTolerant
