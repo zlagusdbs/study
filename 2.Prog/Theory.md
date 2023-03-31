@@ -78,3 +78,11 @@
   - Durability(지속성)  : 성공적으로 수행된 트랜잭션은 영원히 반영되어야 함을 의미하며, 시스템 문제, DB 일관성 체크 등을 하더라도 유지되어야 함을 의미한다.
 				                  전형적으로 모든 트랜잭션은 로그로 남고 시스템 장애 발생 전 상태로 되돌릴 수 있다.
 				                  트랜잭션은 로그에 모든 것이 저장된 후에만 commit 상태로 간주될 수 있다.
+
+# Cache Design Pattern
+- Cache-Aside: Cache 분리
+- Read-Through: Cache를 통해서 읽기
+- Write-Through: Cache를 통해서 쓰기
+- Write-Around: DB에만 쓰기
+- Write-Behind: Cache에 나중에서 쓰기
+- Refresh Ahead: CAche를 미리 
