@@ -52,6 +52,14 @@
     - chunk 기반처리
     - ItemReader, ItemProcessor, ItemWriter 를 이용하여 처리
 
+
+## FaultTolerant
+  - Spring Batch의 반복 및 오류제어
+  - Skip
+    - ItemReader, ItemProcessor, ItemWriter에  
+  - Retry
+    - ItemProcessor, ItemWriter에 적용가능
+
 ## Repeat
 - Spring Batch의 반복을 제어하는 기능을 제공
 - Step, Chunk의 반복을 RepeatOperation을 사용하여 처리(Default 구현체로 RepeatTemplate가 존재)
@@ -131,3 +139,5 @@ public Step exampleStep(){
   - CompositeSkipPolicy : 여러 SkipPolicy를 탐색하면서 skip
   - LimitCheckingItemSkipPolicy : count 및 예외대상의 결과에 따라 skip(DEFAULT)
   - NeverSkipItemSkipPolicy : None skip
+
+  
