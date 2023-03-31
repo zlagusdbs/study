@@ -54,7 +54,7 @@
             .<I, O>chunk(10)
             .reader(itemReader())
             .writer(itemWriter())
-            .falutTolerant()
+            .falutTolerant()                              // 내결함성(skip, retry 등)
             .skip(Class<? extends Throwable> type)        // skip 할 예외타입 설정
             .skipLimit(int skipLimit)                     // skip 제한횟수 설정
             .skipPolicy(SkipPolicy skipPolicy)            // skip의 조건과 기준에 대한 정책을 설정
