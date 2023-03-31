@@ -2,6 +2,14 @@
 
 ---
 
+# Intelli-J
+## Shortcut
+```
+Ctrl + B or Ctrl + Click : 정의 된 곳으로 이동하기
+Ctrl + Alt + B : Go to implementation(s)
+Ctrl + Shift + I : Open quick definition lookup
+Ctrl + Shift + B : 타입의 정의로 이동, String 을 반환하는 메소드면 String Class로 이동하기
+```
 
 # ETC
 ## 1. VMWare
