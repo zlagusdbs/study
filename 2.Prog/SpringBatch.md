@@ -162,4 +162,18 @@ public Step exampleStep(){
   - LimitCheckingItemSkipPolicy : count 및 예외대상의 결과에 따라 skip(DEFAULT)
   - NeverSkipItemSkipPolicy : None skip
 
+## Listeners
+  - Listener는 Spring Batch 실행 중, 각 실행 단계에 발생하는 event를 받아 활용할 수 있도록 제공하는 interceptor기능의 class(뭐.. Interceptor 또는 AOP라 생각하면 된다)
   
+### Job
+  - JobExecutionListener: Job 실행 전후
+### Step
+  - StepExecutionListener: Step 실행 전후
+  - ChunkListener: Chunk(또는 Tasklet) 실행 전후, 오류시점
+  - ItemReadListener: ItemReader 실행 전후(단, item이 null일 경우 호출되지 않음)
+  - ItemProcessListener: ItemProcessListener 실행 전후(단, item이 null일 경우 호출되지 않음)
+  - ItemWriteListener: ItemWriteListener 실행 전후(단, item이 null일 경우 호출되지 않음)
+### SkipListener
+  - SkipListener: Item처리가 skip 될 경, skip된 Item을 추적
+### RetryListener
+  - RetryListener: Retry 실행 전후 & 에러시점
