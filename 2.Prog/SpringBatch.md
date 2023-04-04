@@ -32,7 +32,7 @@
   - JobLauncher
 
 ## Spring Meta Table
-  ![Spring Meta Table](https://github.com/zlagusdbs/study/blob/master/resource/Prog%2C%20Spring%20Batch%2C%20Spring%20Meta%20Table.PNG)
+  ![Spring Meta Table](https://github.com/zlagusdbs/study/blob/ac5949d9e566e97e94b6aafb703aba28348ed138/resource/Prog,%20Spring%20Batch,%20Spring%20Meta%20Table.png)
   
   - BATCH_JOB_INSTANCE
     - JobInstance에 대한 모든 정보를 포함
@@ -45,7 +45,7 @@
   - BATCH_STEP_EXECUTION_CONTEXT
 
 ## Step
-![Spring Batch, Step, Architecture](https://github.com/zlagusdbs/study/blob/master/resource/Prog%2CSpring%20Batch%2C%20architecture.PNG)
+![Spring Batch, Step, Architecture](https://github.com/zlagusdbs/study/blob/2bc44afebdd3cf36efdf7a1866f4713751bbaa3a/resource/Prog,%20Spring%20Batch,%20architecture.PNG)
 
 ### 처리방식
   - tasklet
