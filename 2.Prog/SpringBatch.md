@@ -45,7 +45,7 @@
   - BATCH_STEP_EXECUTION_CONTEXT
 
 ## Step
-![Spring Batch, Step, Architecture](../resource/Prog, Spring Batch, architecture.PNG)
+![Spring Batch, Step, Architecture](https://github.com/zlagusdbs/study/blob/master/resource/Prog%2CSpring%20Batch%2C%20architecture.PNG)
 
 ### 처리방식
   - tasklet
