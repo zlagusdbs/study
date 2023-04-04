@@ -45,6 +45,8 @@
   - BATCH_STEP_EXECUTION_CONTEXT
 
 ## Step
+![Spring Batch, Step, Architecture](../resource/Prog, Spring Batch, architecture.png)
+
 ### 처리방식
   - tasklet
     - task 기반처리
