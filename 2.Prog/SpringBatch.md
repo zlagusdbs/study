@@ -236,7 +236,7 @@ public Step exampleStep(){
       }
       ```
 ### Skip & Retry
-  - SkipListener: Item처리가 skip 될 경, skip된 Item을 추적(중요: Chunk단위가 끝난 후에 실행된다)
+  - SkipListener: Item처리가 skip 될 경, skip된 Item을 추적
     - Method
       - void onSkipRead(Throwable t)              // read 수행 중, skip이 발생할 경우 호출
       - void onSkipInProcess(I tem, Throwable t)  // process 수행 중, skip이 발생할 경우 호출
