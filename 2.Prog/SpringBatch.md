@@ -193,6 +193,7 @@ public Step exampleStep(){
       public Job job(){
           return jobBuilderFactory.get("job")
                    .chunk(chunkSize)
+                   .listener(ChunkListener)
                    .reader(ItemReader)  
                    .listener(ItemReadListener)
                    .build();
@@ -207,7 +208,9 @@ public Step exampleStep(){
       public Job job(){
           return jobBuilderFactory.get("job")
                    .chunk(chunkSize)
+                   .listener(ChunkListener)
                    .reader(ItemReader)
+                   .listener(ItemReadListener)
                    .processor(ItemProcessor)
                    .listener(ItemProcessListener)
                    .build();
@@ -222,7 +225,11 @@ public Step exampleStep(){
       public Job job(){
           return jobBuilderFactory.get("job")
                    .chunk(chunkSize)
+                   .listener(ChunkListener)
                    .reader(ItemReader)
+                   .listener(ItemReadListener)
+                   .processor(ItemProcessor)
+                   .listener(ItemProcessListener)
                    .writer(ItemWriter)
                    .listener(ItemWriteListener)
                    .build();
