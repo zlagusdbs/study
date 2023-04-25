@@ -171,10 +171,63 @@ public Step exampleStep(){
   - JobExecutionListener: Job 실행 전후
 ### Step
   - StepExecutionListener: Step 실행 전후
-  - ChunkListener: Chunk(또는 Tasklet) 실행 전후, 오류시점
+  - ChunkListener: transaction이 시작되기 전
+    - Method
+      - void beforeChunk(ChuckContext context)      // ItemReader의 read() Method를 호출하기 전
+      - void afterChunk(ChunkContext context)       // ItemWriter의 writer() 메소드를 호출한 후(롤백 시, 호출되지 않음)
+      - void afterChunkError(ChunkContext context)  // 오류 발생 및 롤백시
+      ```
+      public Job job(){
+          return jobBuilderFactory.get("job")
+                   .chunk(chunkSize)
+                   .listener(ChunkListener)
+                   .build();
+      }
+      ```
   - ItemReadListener: ItemReader 실행 전후(단, item이 null일 경우 호출되지 않음)
+    - Method
+      - void beforeRead()               // read() Method를 호출하기 전 매번 호출
+      - void afterRead(T item)          // read() Method의 호출을 성공할 때마다 매번 호출
+      - void onReadError(Exception ex)  // 읽는 도중 예외발생 시 호출
+      ```
+      public Job job(){
+          return jobBuilderFactory.get("job")
+                   .chunk(chunkSize)
+                   .reader(ItemReader)  
+                   .listener(ItemReadListener)
+                   .build();
+      }
+      ```
   - ItemProcessListener: ItemProcessListener 실행 전후(단, item이 null일 경우 호출되지 않음)
+    - Method
+      - void beforeProcess(T item)                     // process() Method를 호출하기 전 매번 호출
+      - void afterProcess(T item, @Nullable S result)  // process() Method의 호출을 성공할 때마다 매번 호출
+      - void onProcessError(T item, Exception ex)      // 처리 도중 예외발생 시 호출
+      ```
+      public Job job(){
+          return jobBuilderFactory.get("job")
+                   .chunk(chunkSize)
+                   .reader(ItemReader)
+                   .processor(ItemProcessor)
+                   .listener(ItemProcessListener)
+                   .build();
+      }
+      ```
   - ItemWriteListener: ItemWriteListener 실행 전후(단, item이 null일 경우 호출되지 않음)
+    - Method
+      - void beforeWrite(List<? extends S> items)                 // write() Method를 호출하기 전 매번 호출
+      - void afterWrite(List<? extends S> items)                  // write() Method의 호출을 성공할 때마다 매번 호출
+      - void onWriteError(Exception ex, List<? extends S> items)  // 쓰기 도중 예외발생 시 호출
+      ```
+      public Job job(){
+          return jobBuilderFactory.get("job")
+                   .chunk(chunkSize)
+                   .reader(ItemReader)
+                   .writer(ItemWriter)
+                   .listener(ItemWriteListener)
+                   .build();
+      }
+      ```
 ### SkipListener
   - SkipListener: Item처리가 skip 될 경, skip된 Item을 추적
 ### RetryListener
