@@ -288,7 +288,7 @@ public Step exampleStep(){
       ```
 ### Skip & Retry
   - SkipListener: Item처리가 skip 될 경, skip된 Item을 추적
-  - (중요!!!)Chunk(Read, Processor, Write) 한 싸이클이 돈 후에 Listener가 작동
+  - Chunk(Read, Processor, Write) 한 싸이클이 돈 후에 Listener가 작동한다고 하는데... 내가 테스트 할 때는 비동기로 도는것 처럼 테스트가 되었는데.. 이것은 core좀 따봐야겠다.
     - Method
       - void onSkipRead(Throwable t)              // read 수행 중, skip이 발생할 경우 호출
       - void onSkipInProcess(I tem, Throwable t)  // process 수행 중, skip이 발생할 경우 호출
