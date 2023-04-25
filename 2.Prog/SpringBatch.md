@@ -220,7 +220,7 @@ public Step exampleStep(){
     - Method
       - void beforeWrite(List<? extends S> items)                 // write() Method를 호출하기 전 매번 호출
       - void afterWrite(List<? extends S> items)                  // write() Method의 호출을 성공할 때마다 매번 호출
-      - void onWriteError(Exception ex, List<? extends S> items)  // 쓰기 도중 예외발생 시 호출
+      - void onWriteError(Exception ex, List<? extends S> items)  // 쓰기 도중 예외발생 시 호출(단, 성공과 실패한 chunk단위가 모두 들어온다.)
       ```
       public Job job(){
           return jobBuilderFactory.get("job")
@@ -234,6 +234,57 @@ public Step exampleStep(){
                    .listener(ItemWriteListener)
                    .build();
       }
+      ```
+      ```
+      # Job      
+      @Configuration
+      class Job {
+
+        ...
+      
+        @Bean
+        @JobScope
+        fun step() = stepBuilderFactory.get(STEP_NAME)
+          .chunk<Int, Int>(3)
+          .reader(reader())
+          .processor(processor())
+          .writer(writer())
+          .listener(CustomWriteListener())
+          .build()
+
+        @Bean
+        @StepScope
+        fun reader(): ListItemReader<Int> {
+          return ListItemReader(listOf(0,1,2,3,4,5,6,7,8,9,10))
+        }
+
+        ...
+
+        @Bean
+        @StepScope
+        fun writer(): ItemWriter<Int> {
+          return ItemWriter { targets ->
+            println("========== writer : $targets")
+            targets.forEach{ target ->
+              if(target%3==0)
+                throw UnableToProcessing("test")
+            }
+          }
+        }
+      }
+
+      # CustomWriteListener
+      class CustomWriteListener {
+        ...
+
+        override fun onWriteError(exception: Exception, items: MutableList<out S>){
+            println("========== onWriteError : $items")
+        }
+      }
+
+      # result
+      ========== writer : [0, 1, 2]
+      ========== onWriteError : [0, 1, 2]  // 이후 skip이 없음으로 Job은 종료된다.
       ```
 ### Skip & Retry
   - SkipListener: Item처리가 skip 될 경, skip된 Item을 추적
