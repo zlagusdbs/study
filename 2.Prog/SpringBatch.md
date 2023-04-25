@@ -235,7 +235,14 @@ public Step exampleStep(){
                    .build();
       }
       ```
-### SkipListener
+### Skip & Retry
   - SkipListener: Item처리가 skip 될 경, skip된 Item을 추적
-### RetryListener
+    - Method
+      - void onSkipRead(Throwable t)              // read 수행 중, skip이 발생할 경우 호출
+      - void onSkipInProcess(I tem, Throwable t)  // process 수행 중, skip이 발생할 경우 호출
+      - void onSkipInWrite(S item, Throwable t)   // write 수행 중, skip이 발생할 경우 호출
   - RetryListener: Retry 실행 전후 & 에러시점
+    - Method
+      - boolean open(RetryContext context, RetryCallback<T, E> callback)                       // 재시도 전 매번 호출, false를 반환할 경우 retry를 시도하지 않음
+      - void close(RetryContext context, RetryCallback<T, E> callback, Throwable throwable)    // 재시도 후 매번 호출
+      - void onError(RetryContext context, RetryCallback<T, E> callback, Throwable throwable)  // 재시도 실패 시, 매번 호출
