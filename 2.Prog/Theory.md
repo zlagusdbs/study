@@ -83,10 +83,12 @@
 # Blocking vs Non-Blocking / Sync vs Async
 ## Blocking vs Non-Blocking
   - 제어권의 유무가 관점포인트
+  - Blocking: 제어권을 되돌려받는데 막힌다.
+  - Non-Blocking: 제어권을 되돌려 받는데 자유롭다.
 ## Synchronous vs Asynchronnous
-  - 시작과 종료의 차이가 관점포인트
-  - Synchronous: 작업을 동시에 수행하거나, 동시에 끝나거나, 끝나는 동시에 시작함을 의미
-  - Asynchronous: 시작, 종료가 일치하지 않으며, 끝나는 동시에 시작을 하지 않음을 의미
+  - 결과값의 유무가 관점포인트
+  - Synchronous: 결과값에 의존한다.
+  - Asynchronous: 결과값에 의존하지 않는다.
 ## Ref
   - ![Blocking Non-Blocking / Synchronous Asynchronous](../resource/Prog, Theory, BlockingNon-Blocking SyncAsync.PNG)
 
