@@ -85,6 +85,7 @@
   - Synchronous, Asynchronnous: 결과값의 의존이 관점포인트
   
   ![blocking non-blocking / asynchronous asynchronous](../resource/Prog,%20Theory,%20blocking%20non-blocking,%20sync%20async%201.PNG)
+  
     - Blocking
       - 제어권을 되돌려받는데 막힌다.
     - Non-Blocking
