@@ -90,9 +90,9 @@
   - Synchronous: 결과값에 의존한다.
   - Asynchronous: 결과값에 의존하지 않는다.
 ## Ref
-![Blocking Non-Blocking / Synchronous Asynchronous 개념](../resource/Prog, Theory, blocking non-blocking, sync async 1.PNG)
+![blocking non-blocking / asynchronous asynchronous](../resource/Prog,%20Theory,%20blocking%20non-blocking,%20sync%20async%201.PNG)
 
-![Blocking Non-Blocking / Synchronous Asynchronous 통합](../resource/Prog, Theory, blocking non-blocking, sync async 2.PNG)
+![blocking non-blocking / asynchronous asynchronous](../resource/Prog,%20Theory,%20blocking%20non-blocking,%20sync%20async%202.PNG)
 
 
 # Cache Design Pattern
