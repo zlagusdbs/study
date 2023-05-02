@@ -79,6 +79,10 @@
 				                  전형적으로 모든 트랜잭션은 로그로 남고 시스템 장애 발생 전 상태로 되돌릴 수 있다.
 				                  트랜잭션은 로그에 모든 것이 저장된 후에만 commit 상태로 간주될 수 있다.
 
+
+# Blocking vs Non-Blocking / Sync vs Async
+
+
 # Cache Design Pattern
 - Cache-Aside: Cache를 분리. 읽기 요청이 많은 경우에 적합
 - Read-Through: Cache를 통해서 읽기
