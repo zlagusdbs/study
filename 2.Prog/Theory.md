@@ -81,16 +81,14 @@
 
 
 # Blocking vs Non-Blocking / Sync vs Async
-## Blocking vs Non-Blocking
-  - 제어권의 유무가 관점포인트
-  - Blocking: 제어권을 되돌려받는데 막힌다.
-  - Non-Blocking: 제어권을 되돌려 받는데 자유롭다.
-## Synchronous vs Asynchronnous
-  - 결과값의 유무가 관점포인트
-  - Synchronous: 결과값에 의존한다.
-  - Asynchronous: 결과값에 의존하지 않는다.
-## Ref
 ![blocking non-blocking / asynchronous asynchronous](../resource/Prog,%20Theory,%20blocking%20non-blocking,%20sync%20async%201.PNG)
+
+  - Blocking, Non-Blocking: 제어권의 유무가 관점포인트
+    - Blocking: 제어권을 되돌려받는데 막힌다.
+    - Non-Blocking: 제어권을 되돌려 받는데 자유롭다.
+  - Synchronous, Asynchronnous: 결과값의 유무가 관점포인트
+    - Synchronous: 결과값에 의존한다.
+    - Asynchronous: 결과값에 의존하지 않는다.
 
 ![blocking non-blocking / asynchronous asynchronous](../resource/Prog,%20Theory,%20blocking%20non-blocking,%20sync%20async%202.PNG)
 
