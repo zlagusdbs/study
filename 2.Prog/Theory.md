@@ -84,7 +84,7 @@
 ## Blocking vs Non-Blocking
   - 제어권의 유무가 관점포인트
 ## Synchronous vs Asynchronnous
-  - 반환값의 유무가 관전포인트
+  - 시작과 종료의 차이가 관점포인트
   - Synchronous: 작업을 동시에 수행하거나, 동시에 끝나거나, 끝나는 동시에 시작함을 의미
   - Asynchronous: 시작, 종료가 일치하지 않으며, 끝나는 동시에 시작을 하지 않음을 의미
 ## Ref
