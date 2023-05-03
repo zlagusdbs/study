@@ -13,13 +13,13 @@
 - FLow.Publisher<T>
   - void subscribe(Flow.Subscriber<? super T> subscriber)
 - Flow.Subscriber<T>
+  - void onSubscribe(Flow.Subscription subscription)
+  - void onNext(T item)
   - void onComplete()
   - void onError(Throwable throwable)
-  - void onNext(T item)
-  - void onSubscribe(Flow.Subscription subscription)
 - Flow.Subscription
-  - void cancel()
   - void request(long n)
+  - void cancel()
 
 ## Implements
 - Reactive Stream의 구현체로 RxJava, Reactor, WebFlux 등이 있다.
