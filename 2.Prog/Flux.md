@@ -34,4 +34,4 @@
 
 
 # WebFlux
-- Spring 진영에서 Web에서 사용하기 용이한 형태로 Reactive Stream을 구현한 구현체
+- Spring 진영에서 Web에서 사용하기 용이한 형태로, Reactive Streams를 구현한 구현체
