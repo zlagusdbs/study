@@ -12,7 +12,7 @@
 
 ## Interface
 - Flow.Processor<T, R>
-- FLow.Publisher<T>
+- Flow.Publisher<T>
   - void subscribe(Flow.Subscriber<? super T> subscriber)
 - Flow.Subscriber<T>
   - void onSubscribe(Flow.Subscription subscription)
