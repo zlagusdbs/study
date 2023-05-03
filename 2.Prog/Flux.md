@@ -33,7 +33,7 @@ import java.util.concurrent.Flow.*;
 
 public class PubSub {
     public static void main(String[] args){
-        // onSubscribe onNext* (onError | onComplete)
+        // onSubscribe onNext* (onError | onComplete)?
         Flow.Publisher p = new Flow.Publisher() {
             @Override
             public void subscribe(Flow.Subscriber subscriber){
