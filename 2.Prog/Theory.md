@@ -1,7 +1,16 @@
 # Theory
+- DDD(Domain Driven Design)
+- OOP
+  - SOLID
+- Transaction
+- Blocking vs Non-Blocking / Sync vs Async
+- Cache Design Pattern
 
 ---
+# DDD(Domain Driven Design)
 
+
+---
 
 # OOP
 ## SOLID 원칙
