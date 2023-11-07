@@ -283,6 +283,7 @@
       - Ctrl + D: Docker Container를 종료하고, quit
       - Ctrl + P, Q: Docker Container를 종료하지 않고, quit
 
+
   [root@container ~]# docker rm web-server
   --------------------------------------
   - Command
