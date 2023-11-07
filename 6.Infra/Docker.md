@@ -270,7 +270,15 @@
   - Command
     - docker attach CONTAINER
   - Description
-    - CONTAINER으로 진입
+    - CONTAINER를 실행 후 진입
+
+
+  [root@localhost ~]# docker exec web-server -it /bin/bash
+  --------------------------------------
+  - Command
+    - docker exec CONTAINER
+  - Description
+    - 실행중인 CONTAINER에 진입
 
 
   [root@container ~]# exit
