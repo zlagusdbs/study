@@ -98,21 +98,21 @@
   [root@localhost ~]# docker -v
   --------------------------------------
   - Command
-      - docker -v
+    - docker -v
   - Description
-      - Docker Engine의 버전을 확인
+    - Docker Engine의 버전을 확인
 
 
   [root@localhost ~]# docker inspect web-server
   --------------------------------------
   - Command
-      - docker inspect [CONTAINER, IMAGE ...]
+    - docker inspect [CONTAINER, IMAGE ...]
   - Option
-      --type: 조회 정보를 명시
-              ex> docker inspect --type image
-                  - Docker Image만 조회
+    --type: 조회 정보를 명시
   - Description
       - Docker가 관리하는 Container, Images, Volume 등 Docker의 모든 구성 단위를 조회
+  - Example
+    - # docker inspect --type image
   ```
 
 
@@ -121,35 +121,35 @@
   [root@localhost ~]# docker images
   --------------------------------------
   - Command
-      - docker images
+    - docker images
   - Description
-      - Local Docker Engine에 존재하는 Docker Images 조회
+    - Local Docker Engine에 존재하는 Docker Images 조회
 
 
   [root@localhost ~]# docker pull centos:7
   --------------------------------------
   - Command
-      - docker pull IMAGE
+    - docker pull IMAGE
   - Description
-      - Docker HUB에서 해당 Docker Image를 Download
+    - Docker HUB에서 해당 Docker Image를 Download
 
 
   [root@localhost ~]# docker rmi web-server
   --------------------------------------
   - Command
-      - docker rmi IMAGE
+    - docker rmi IMAGE
   -f : (Force) 강제삭제
-       Docker Container로 사용중인 Docker Image를 -f 옵션으로 삭제했다면, 이름만 none으로 변경된 것(이런 Docker Image를 Dangling Image라고 부름)이며 삭제되지는 않는다.
+    Docker Container로 사용중인 Docker Image를 -f 옵션으로 삭제했다면, 이름만 none으로 변경된 것(이런 Docker Image를 Dangling Image라고 부름)이며 삭제되지는 않는다.
   - Description
-      - Docker Image를 삭제하나, Container가 종료되고 나서 실행하여야 한다.
+    - Docker Image를 삭제하나, Container가 종료되고 나서 실행하여야 한다.
 
 
   [root@localhost ~]# docker image prune
   --------------------------------------
   - Command
-      - docker image prune
+    - docker image prune
   - Description
-      - dangling image들을 한번에 삭제한다.
+    - dangling image들을 한번에 삭제한다.
 
 
   [root@localhost ~]# docker commit \
@@ -159,32 +159,32 @@
                       web-server:first
   --------------------------------------
   - Command
-      - docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
+    - docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
   - Option
-      -a : (Author) 작성자를 나타내는 메타데이터를 이미지에 포함
-      -m : (Message) Commit Message를 뜻하며, 이미지에 포함될 부가설명이 된다
+    -a : (Author) 작성자를 나타내는 메타데이터를 이미지에 포함
+    -m : (Message) Commit Message를 뜻하며, 이미지에 포함될 부가설명이 된다
   - Description
-      - web-server라는 Docker Container를 web-server:first라는 이름의 이미지로 생성
+    - web-server라는 Docker Container를 web-server:first라는 이름의 이미지로 생성
 
 
   [root@localhost ~]# docker save -o centos.tar centos:7
   --------------------------------------
   - Command
-      - docker save [OPTION] FILE_NAME IMAGE
+    - docker save [OPTION] FILE_NAME IMAGE
   - Option
-      -o : (Output)extract 할 파일명을 입력
+    -o : (Output)extract 할 파일명을 입력
   - Description
-      - Docker Container의 커맨드, 이미지 이름, 태그 등 이미지의 모든 메타 데이터를 포함하여 하나의 파일로 추출
+    - Docker Container의 커맨드, 이미지 이름, 태그 등 이미지의 모든 메타 데이터를 포함하여 하나의 파일로 추출
 
 
   [root@localhost ~]# docker load -i centos.tar
   --------------------------------------
   - Command
-      - docker load [OPTION] FILE_NAME
+    - docker load [OPTION] FILE_NAME
   - Option
-      -i : (Input)load 할 파일명을 입력
+    -i : (Input)load 할 파일명을 입력
   - Description
-      - Docker Container의 커맨드, 이미지 이름, 태그 등 이미지의 모든 메타 데이터를 포함하여 하나의 파일로 추출
+    - Docker Container의 커맨드, 이미지 이름, 태그 등 이미지의 모든 메타 데이터를 포함하여 하나의 파일로 추출
   ```
 
 
@@ -193,82 +193,84 @@
   [root@localhost ~]# docker ps
   --------------------------------------
   - Command
-      - docker ps
+    - docker ps
   - Optaion
-      -a : All Docker container 조회
-      -q : Only Docker Container ID만 조회
+    -a : All Docker container 조회
+    -q : Only Docker Container ID만 조회
   - Description
-      - 옵션을 기재하지 않을 시, 실행중인 Docker Container를 조회
+    - 옵션을 기재하지 않을 시, 실행중인 Docker Container를 조회
 
 
   [root@localhost ~]# docker create -i -t --name web-server centos:7
   --------------------------------------
   - Command
-      - docker create IMAGE
+    - docker create IMAGE
   - Option
-      -i : 
-      -t : 
-      --name : Docker Container의 이름을 지정
+    -i : 
+    -t : 
+    --name : Docker Container의 이름을 지정
   - Description
-      - IMAGE를 이용하여 Docker Container 생성
-      - [docker pull:Docker Image가 없을 때] -> [docker create]
+    - IMAGE를 이용하여 Docker Container 생성
+    - [docker pull:Docker Image가 없을 때] -> [docker create]
 
 
   [root@localhost ~]# docker run -i -t centos:7
   --------------------------------------
   - Command
-      - docker run [Option] IMAGE
+    - docker run [Option] IMAGE
   - Option
-      -i : 
-      -t : 
-      -p : Port forwarding을 위한 옵션이며, [SourcePort:DesticationPort] 또는 [SourceIP:SourcePort:DestinationPort]로 기재
-           ex> docker run -i -t -p 10.222.52.114:80:8080
-               HOST IP인 '10.222.52.114'의 '80' Port로 진입 시, Docker Container의 '8080'Port로 Port forwarding을 진행.
-      -d : '-i -t' Option이 attach 가능한 상태로 진입하도록 한다면, '-d'옵션은 Detached Mod로 진입
-      -e : Docker Container 내부에서 사용하게 될 Enviroment(환경변수)를 설정
-      -v :
-           1. Host Sharing
-             - Host의 Directory를 Docker Container의 특정 Directory로 공유받는다(≒Volume Sharing)                       //[@Docker Volume]
-               ex> docker run --name volume_docker_container -v /home/database:/var/lib/mysql                       //[호스트 공유 디렉토리]:[도커 컨테이너의 디렉토리]
-           2. Docker Volume Sharing
-             - Docker Volume을 사용한다.
-               ex> docker run --name database-server -v docker_volume:/root/                                        //[Docker Vaolume의 이름]:[Docker Container의 공유 디렉토리]
-      --volumes-from: '-v'옵션을 사용하는 Docker Container의 '-v'옵션 값에 해당하는 Directory를 공유받는다                  //[@Docker Volume]
-                     ex> docker run --name database-server --volumes-from volume_docker_container                   //[@Docker Volume]
-                         Host의 '/home/database'의 Directory를 volume_docker_container가 공유받고 있기 때문에, 공유받는 TargetDirectory를 동일한 경로로 다시 공유 받는다.  
-      -link[deprecated] : 다른 Docker Container를 Alias를 지정한다.
-                          cf> A Docker Container에서 B Docker Container로 접근하는 방법 중 NAT로 받은 IP를 사용하는 방법이 있는데, Docker Egine은 Docker Container를 시작할 때마다 내부IP를 순차적으로 재할당한다.(DHCP개념).
-                              매번 변경되는 DockerContainer의 IP를 관리하지 않고, 다른 Docker Container의 이름을 Alias로 지정하여 관리한다.(Docker Container Name또한 변경에 가능성이 있기에, 직접쓰지 않는다.)
-                              ex> docker run --name web-server -link database-server:db-srv
-                                  db-srv라는 이름으로 database-server Docker Container에 접근할 수 있다.
-                          cf> deprecated 옵션이며, Docker Bridge를 사용을 권장한다.
+    -i : 
+    -t : 
+    -p : Port forwarding을 위한 옵션이며, [SourcePort:DesticationPort] 또는 [SourceIP:SourcePort:DestinationPort]로 기재
+      ex> docker run -i -t -p 10.222.52.114:80:8080
+          HOST IP인 '10.222.52.114'의 '80' Port로 진입 시, Docker Container의 '8080'Port로 Port forwarding을 진행.
+    -d : '-i -t' Option이 attach 가능한 상태로 진입하도록 한다면, '-d'옵션은 Detached Mod로 진입
+    -e : Docker Container 내부에서 사용하게 될 Enviroment(환경변수)를 설정
+    -v :
+      1. Host Sharing
+        - Host의 Directory를 Docker Container의 특정 Directory로 공유받는다(≒Volume Sharing)                       //[@Docker Volume]
+          ex> docker run --name volume_docker_container -v /home/database:/var/lib/mysql                       //[호스트 공유 디렉토리]:[도커 컨테이너의 디렉토리]
+      2. Docker Volume Sharing
+        - Docker Volume을 사용한다.
+          ex> docker run --name database-server -v docker_volume:/root/                                        //[Docker Vaolume의 이름]:[Docker Container의 공유 디렉토리]
+    --volumes-from: '-v'옵션을 사용하는 Docker Container의 '-v'옵션 값에 해당하는 Directory를 공유받는다                  //[@Docker Volume]
+      ex> docker run --name database-server --volumes-from volume_docker_container                   //[@Docker Volume]
+          Host의 '/home/database'의 Directory를 volume_docker_container가 공유받고 있기 때문에, 공유받는 TargetDirectory를 동일한 경로로 다시 공유 받는다.  
+    -link[deprecated] : 다른 Docker Container를 Alias를 지정한다.
+      cf> A Docker Container에서 B Docker Container로 접근하는 방법 중 NAT로 받은 IP를 사용하는 방법이 있는데, Docker Egine은 Docker Container를 시작할 때마다 내부IP를 순차적으로 재할당한다.(DHCP개념).
+          매번 변경되는 DockerContainer의 IP를 관리하지 않고, 다른 Docker Container의 이름을 Alias로 지정하여 관리한다.(Docker Container Name또한 변경에 가능성이 있기에, 직접쓰지 않는다.)
+      ex> docker run --name web-server -link database-server:db-srv
+          db-srv라는 이름으로 database-server Docker Container에 접근할 수 있다.
+      cf> deprecated 옵션이며, Docker Bridge를 사용을 권장한다.
   - Description
-      - 'centos:7'라는 Docker Image가 Local Docker Engine에 존재하지 않을 경우, Docker HUB에서 Docker Image를 Download받아 설치 후 Docker Container로 진입
-      - [docker pull:Docker Image가 없을 때] -> [docker create] -> [docker start] -> [docker attach: -i -t Option을 사용했을 때]
+    - 'centos:7'라는 Docker Image가 Local Docker Engine에 존재하지 않을 경우, Docker HUB에서 Docker Image를 Download받아 설치 후 Docker Container로 진입
+    - [docker pull:Docker Image가 없을 때] -> [docker create] -> [docker start] -> [docker attach: -i -t Option을 사용했을 때]
+  - Example
+    - mysql# docker run --name mysql-demo -e MYSQL_ROOT_PASSWORD=Pa22Word -d -p 3306:3306 mysql:latest 
 
 
   [root@localhost ~]# docker start web-server
   --------------------------------------
   - Command
-      - docker start CONTAINER
+    - docker start CONTAINER
   - Description
-      - CONTAINER를 실행
+    - CONTAINER를 실행
 
 
   [root@localhost ~]# docker restart web-server
   --------------------------------------
   - Command
-      - docker restart CONTAINER
+    - docker restart CONTAINER
   - Description
-      - CONTAINER를 재실행
+    - CONTAINER를 재실행
 
 
   [root@localhost ~]# docker attach web-server
   --------------------------------------
   - Command
-      - docker attach CONTAINER
+    - docker attach CONTAINER
   - Description
-      - CONTAINER으로 진입
+    - CONTAINER으로 진입
 
 
   [root@container ~]# exit
@@ -278,17 +280,17 @@
   Ctrl + P, Q
   --------------------------------------
   - Command
-      - exit
+    - exit
   - Description
-      - Ctrl + D: Docker Container를 종료하고, quit
-      - Ctrl + P, Q: Docker Container를 종료하지 않고, quit
+    - Ctrl + D: Docker Container를 종료하고, quit
+    - Ctrl + P, Q: Docker Container를 종료하지 않고, quit
 
 
   [root@container ~]# docker rm web-server
   --------------------------------------
   - Command
   - Description
-      - Docker Container를 삭제
+    - Docker Container를 삭제
   ```
 
 
@@ -297,19 +299,19 @@
   [root@localhost ~]# docker volume ls
   --------------------------------------
   - Command
-      - docker volume ls
+    - docker volume ls
   - Description
-      - Docker Volume 조회
+    - Docker Volume 조회
 
 
   [root@localhost ~]# docker volume create  --name docker_volume
   --------------------------------------
   - Command
-      - docker volume create
+    - docker volume create
   - Option
-      --name : 
+    --name : 
   - Description
-      - Docker Volume 생성
+    - Docker Volume 생성
   ```
 
 
@@ -318,9 +320,9 @@
   [root@container ~]:/# docker network ls
   --------------------------------------
   - Command
-      - docker network ls
+    - docker network ls
   - Description
-      - Network 목록 조회
+    - Network 목록 조회
   ```
 
 
@@ -384,80 +386,80 @@
   [root@localhost ~]# docker info | grep Swarm
   --------------------------------------
   - Command
-      - docker info
+    - docker info
   - Description
-      - Docker Engine의 Swarm Mode Cluster 정보를 확인
+    - Docker Engine의 Swarm Mode Cluster 정보를 확인
 
 
   [root@managernode ~]:/# docker node ls
   --------------------------------------
   - Command
-      - docker node ls
+    - docker node ls
   - Description
-      - Swarm Cluster에 등록된 Node들을 조회
+    - Swarm Cluster에 등록된 Node들을 조회
 
 
   [root@managernode ~]:/# docker swarm init --advertise-addr 192.168.0.100
   --------------------------------------
   - Command
-      - docker swarm init
+    - docker swarm init
   - Options
-      --advertise-addr: Docker Server가 Manager Node에 접근할 수 있도록 IP를 noti 
+    --advertise-addr: Docker Server가 Manager Node에 접근할 수 있도록 IP를 noti 
   - Description
-      - Manager 역할을 할 서버에 Swarm Cluster를 시작
+    - Manager 역할을 할 서버에 Swarm Cluster를 시작
 
 
   [root@managernode ~]:/# docker swarm join --token SWMTKN-1-5...
   --------------------------------------
   - Command
-      - docker swarm join
+    - docker swarm join
   - Options
-      --token: 해당 Swarm Cluster에 추가하기 위한 비밀키
+    --token: 해당 Swarm Cluster에 추가하기 위한 비밀키
   - Description
-      - 새로운 Worker Node를 해당 Swarm Cluster에 추가
+    - 새로운 Worker Node를 해당 Swarm Cluster에 추가
 
 
   [root@managernode ~]:/# docker swarm join-token first-worker-node
   --------------------------------------
   - Command
-      - docker swarm join-token NODE_NAME
+    - docker swarm join-token NODE_NAME
   - Description
-      - Node의 token을 확인
+    - Node의 token을 확인
 
 
   [root@first-worker-node ~]:/# docker swarm leave  --force
   --------------------------------------
   - Command
-      - docker swarm leaver
+    - docker swarm leaver
   - Options
-      --force: Manager Node는 해당 옵션을 추가해야만 삭제할 수 있다.
-               Manager Node를 삭제하면 해당 Manager Node에 저장돼 있던 Cluster 정보도 삭제된다.(주의!)
+    --force: Manager Node는 해당 옵션을 추가해야만 삭제할 수 있다.
+             Manager Node를 삭제하면 해당 Manager Node에 저장돼 있던 Cluster 정보도 삭제된다.(주의!)
   - Description
-      - Swarm Mode를 해제한다.
+    - Swarm Mode를 해제한다.
 
 
   [root@first-worker-node ~]:/# docker swarm rm
   --------------------------------------
   - Command
-      - docker swarm rm
+    - docker swarm rm
   - Description
-      - 해제된 Swarm Mode를 삭제한다.
+    - 해제된 Swarm Mode를 삭제한다.
 
 
   [root@managernode ~]:/# docker swarm promote first-worker-node
   --------------------------------------
   - Command
-      - docker swarm promote first-worker-node
+    - docker swarm promote first-worker-node
   - Description
-      - first-worker-node Worker Node를 Manager Node로 변경
+    - first-worker-node Worker Node를 Manager Node로 변경
 
 
   [root@managernode ~]:/# docker swarm demote first-worker-node
   --------------------------------------
   - Command
-      - docker swarm demote first-worker-node
+    - docker swarm demote first-worker-node
   - Description
-      - first-worker-node Manager Node를 Worker Node로 변경
+    - first-worker-node Manager Node를 Worker Node로 변경
   ```
 
 
