@@ -271,7 +271,7 @@
       - CONTAINER으로 진입
 
 
-  [root@container ~]:/# exit
+  [root@container ~]# exit
   또는
   Ctrl + D
   --------------------------------------
@@ -285,6 +285,12 @@
   --------------------------------------
   - Description
       - Docker Container를 종료하지 않고, quit
+
+  [root@container ~]# docker rm web-server
+  --------------------------------------
+  - Command
+  - Description
+      - Docker Container를 삭제
   ```
 
 
