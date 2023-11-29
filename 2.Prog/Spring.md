@@ -1402,6 +1402,7 @@
 |@RequestPart   |application/json+@RequestBody                           |HttpMessageConverter     |
 
 - Jackson Lib는 HttpMessageConverter를 확장한 lib이기 때문에, @ReqeustParam, @ModelAttribute는 @JsonProperty등이 적용되지 않는다.
+- ExtendedServletRequestDataBinder
 
 ### Bean
 #### Bean Hocker
