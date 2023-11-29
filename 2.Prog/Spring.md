@@ -2,6 +2,7 @@
   - Spring MVC
   - Spring Boot
     - Core
+    	- RequestParam, ModelAttribute, RequestBody, RequestPart
     - Security
     - JPA
     - Spring Boot 2.4.x ↑
@@ -1300,7 +1301,7 @@
   - 참고사이트: [https://blog.woniper.net/336](https://blog.woniper.net/336)
   
   
-## Spring Project creating
+### Spring Project creating
   - Spring Initializr 사용방법(2가지)
     ~~~
     1. Spring 공식 홈페이지(spring.io)에서 제공하는 기능을 사용합니다.
@@ -1374,7 +1375,7 @@
       
   - 참고사이트: [https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/](https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/)
   
-## profiles with maven3
+### profiles with maven3
   - You can provide commandline argument like this:
   ```console
   mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=dev"
@@ -1392,19 +1393,27 @@
   java -jar app.jar --spring.profiles.active=dev (Note order)
   ```
 
-## Bean
-### Bean Hocker
-#### BeanDefinitionRegistryPostProcessor
+### RequestParam, ModelAttribute, RequestBody, RequestPart
+|               |Content-Type                                            |Binding                  |
+|---------------|--------------------------------------------------------|-------------------------|
+|@RequestParam  |QueryString                                             |Converter, PropertyEditor|
+|@ModelAttribute|QueryString <br>application/json <br>multipart/form-data|Constructor/Setter       |
+|@RequestBody   |application/json                                        |HttpMessageConverter     |
+|@RequestPart   |application/json+@RequestBody                           |HttpMessageConverter     |
+
+### Bean
+#### Bean Hocker
+##### BeanDefinitionRegistryPostProcessor
   - Bean 등록 목적
-#### BeanFactoryPostProcessor
+##### BeanFactoryPostProcessor
   - Bean 정의를 재정의 또는 속성추가 목적
-#### BeanPostProcessor
+##### BeanPostProcessor
   - Bean 인스턴스를 재정의 목적
   
   - 참고사이트: [https://thecodinglog.github.io/spring/2019/01/29/dynamic-spring-bean-registration.html](https://thecodinglog.github.io/spring/2019/01/29/dynamic-spring-bean-registration.html)
 
-### Conditional Bean Registration(조건부 빈 등록)
-#### Java
+#### Conditional Bean Registration(조건부 빈 등록)
+##### Java
   - 참고사이트: [https://sodocumentation.net/ko/spring/topic/4732/spring%EC%9D%98-%EC%A1%B0%EA%B1%B4%EB%B6%80-%EB%B9%88-%EB%93%B1%EB%A1%9D](https://sodocumentation.net/ko/spring/topic/4732/spring%EC%9D%98-%EC%A1%B0%EA%B1%B4%EB%B6%80-%EB%B9%88-%EB%93%B1%EB%A1%9D)
   ```console
   public class PropertyCondition implements Condition {
@@ -1434,8 +1443,8 @@
   }
   ```
 
-#### Annotation
-##### Class Conditional
+##### Annotation
+###### Class Conditional
   - @ConditionalOnClass
   - @ConditionalOnMissingClass
   ```console
@@ -1448,11 +1457,11 @@
   }
   ```
   
-##### Bean Conditional
+###### Bean Conditional
   - @ConditionalOnBean
   - @ConditionalOnMissingBean
   
-##### Property Conditional
+###### Property Conditional
   - @ConditionalOnProperty
   ```console
   @ConditionalOnProperty(value='somebean.enabled', matchIfMissing = true, havingValue="yes")
@@ -1461,13 +1470,13 @@
   }
   ```
   
-##### Resource Conditional
+###### Resource Conditional
   - @ConditionalOnResource
   ```console
   @ConditionalOnResource(resources = "classpath:init-db.sql") 
   ```
   
-##### WebApplication Conditional
+###### WebApplication Conditional
   - @@ConditionalOnWebApplication
   - @ConditionalOnNotWebApplication
   ```console
@@ -1476,14 +1485,14 @@
   public class MyWebMvcAutoConfiguration {...}
   ```
   
-##### Expression Conditional
+###### Expression Conditional
   - @ConditionalOnExpression
   ```console
   @ConditionalOnExpression("${rest.security.enabled}==false")
   ```
 
-## Transactional
-### Prior knowledge
+### Transactional
+#### Prior knowledge
   - ACID(원자성, 일관성, 고립성, 지속성): transaction이 안전하게 수행된다는 것을 보장하기 위한 성질
     - Atomicity(원자성): 트랜잭션은 하나의 원자처럼 취급되어야 한다.
 	                       즉 부분적으로 실행되어, 특정 부분만 반영되고 나머지는 반영되지 않으면 안된다는 뜻.
@@ -1500,8 +1509,8 @@
 	  			                  전형적으로 모든 트랜잭션은 로그로 남고 시스템 장애 발생 전 상태로 되돌릴 수 있다.
 		  		                  트랜잭션은 로그에 모든 것이 저장된 후에만 commit 상태로 간주될 수 있다.
   
-### Transactional Annotation
-#### Level
+#### Transactional Annotation
+##### Level
   - 0Lv, DEFAULT
   - 1Lv, READ_UNCOMMITED
   - 2Lv, READ_COMMITED
@@ -1510,7 +1519,7 @@
 
   - 참고사이트: [https://nesoy.github.io/articles/2019-05/Database-Transaction-isolation](https://nesoy.github.io/articles/2019-05/Database-Transaction-isolation)
 
-#### propagation
+##### propagation
   - Spring의 @Transactional의 propagation 속성으로 다음과 같은 설정
   - Propagation
     - REQUIRED : 부모 트랜잭션 내에서 실행하며 부모 트랜잭션이 없을 경우 새로운 트랜잭션을 생성
