@@ -9,39 +9,37 @@
 # Spring Boot
   - 참고사이트: [https://spring.io/projects/spring-batch#learn](https://spring.io/projects/spring-batch#learn)
 
-## 용어설명
-  - JobExecution
-    - Job을 이용하여, JobInstance를 실행하도록 시도하는 객체
-    - JobInstance의 라이프사이클 정보(시작시간, 종료시간, 종료코드 등)를 담고있음.
-  - Job
-    - 배치처리 과정을 하나의 단위로 묶은 객체(약간 Configurer느낌)
-  - JobInstance
-    - Job의 실행단위(Job(약간 Configurer느낌)을 실행한 단위)
-  - JobParameter
-    - JobInstance를 구별할 수 있게하며, JobInstance에 매개변수 역활
-  - Step
-    - ItemReader
-    - ItemWriter
-    - ItemProcessor
-    - Tasklet
-  - StepExecution
-  - ExecutionContext
-    - JobExecutionContext
-    - StepExecutionContext
-  - JobRepositroy
-  - JobLauncher
-
 ## Spring Meta Table
   ![Spring Meta Table](https://github.com/zlagusdbs/study/blob/ac5949d9e566e97e94b6aafb703aba28348ed138/resource/Prog,%20Spring%20Batch,%20Spring%20Meta%20Table.png)
-  
-  - BATCH_JOB_INSTANCE
+
+  - Job
+    - 배치처리 과정을 하나의 단위로 묶은 객체(약간 Configurer느낌)
+  - JobInstance(BATCH_JOB_INSTANCE)
+    - Job의 실행단위(Job(약간 Configurer느낌)을 실행한 단위)
     - JobInstance에 대한 모든 정보를 포함
   - BATCH_JOB_EXECUTION_PARAMS
+    - JobInstance를 구별할 수 있게하며, JobInstance에 매개변수 역활
     - Job을 실행 시킬 때 사용한 JobParameters 정보를 저장
-  - BATCH_JOB_EXECUTION
+  - JobExecution(BATCH_JOB_EXECUTION)
+    - Job을 이용하여, JobInstance를 실행하도록 시도하는 객체
+    - JobInstance의 라이프사이클 정보(시작시간, 종료시간, 종료코드 등)를 담고있음.
     - JobExecution에 대한 정보를 저장
+    - JobInstance에 대한 단 한번의 시도를 의미하는 객체로서, Job 실행 중에 발생한 정보들을 저장하고 있는 객체
+      - 시간, 상태(시작,완료,실패), 종료상태의 속성을 갖음
+    - JobExecution의 실행 상태 결과가 'COMPLETED' 될 때까지 하나의 JobInstance 내에서 여러번의 시도가 생길 수 있으며, 'COMPLETED' 상태라면 재실행할 수 없다.(단, allowStartIfComplete으로 허용할 수 있음)
   - BATCH_JOB_EXECUTION_CONTEXT
-  - BATCH_STEP_EXECUTION
+  - Step(BATCH_STEP_EXECUTION)
+    - Batch Job을 구성하는 독립적인 하나의 단계로서 실제 배치 처리를 정의하고 컨트롤하는 데 필요한 모든 정보를 가지고 있는 도메인 객체
+    - 기본 구현체
+      - TaskletStep
+        - 가장 기본이 되는 클래스로서 Tasklet 타입의 구현체들을 제어
+      - PartitionStep
+        - Multi-Thread 방식으로 하나의 Step을 여러 개로 분리해서 실행한다.
+      - JobStep
+        - Step 내에서 Job을 실행하도록 한다.
+      - FlowStep
+        - Step 내에서 Flow를 실행하도록 한다.
+        - Flow는 여러 Step을 여러 개로 분리해서(병렬처리) 실행한다.
   - BATCH_STEP_EXECUTION_CONTEXT
 
 ## Step
@@ -70,6 +68,7 @@
             .build();
     }
     ```
+    
   - chunk
     - chunk 기반처리
     - ItemReader, ItemProcessor, ItemWriter 를 이용하여 처리
