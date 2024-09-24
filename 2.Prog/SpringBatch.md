@@ -40,8 +40,17 @@
       - FlowStep
         - Step 내에서 Flow를 실행하도록 한다.
         - Flow는 여러 Step을 여러 개로 분리해서(병렬처리) 실행한다.
-  - BATCH_STEP_EXECUTION_CONTEXT
-    - 
+  - ExecutionContext(BATCH_STEP_EXECUTION_CONTEXT)
+    - Batch에서 유지 및 관리하는 키/값으로 된 컬렉션으로 JobExecution 또는 StepExecution 객체의 상태(state)를 저장하는 공유 객체
+
+## JobRepository
+  - Batch 작업 중의 정보를 저장하는 저장소 역활
+  - JobLauncher, Job, Step 구현체 내부에서 CRUD 기능을 처리
+  - Used
+    - @EnableBatchProcessing 어노테이션 선언으로 빈으로 자동등록 가능
+    - BatchConfigurer 인터페이스를 구현하거나 BasicBatchConfigurer를 상속해서 JobRepository를 커스터마이징 할 수 있다.
+      - JDBC 방식으로 설정: JobRepositoryFactoryBean
+      - InMemory 방식으로 설정: MapJobRepositoryFactoryBean
 
 ## Step
   - 일반적인 Step 일 때.
