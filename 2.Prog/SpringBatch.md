@@ -44,7 +44,10 @@
     - 
 
 ## Step
-![Spring Batch, Step, Architecture](https://github.com/zlagusdbs/study/blob/2bc44afebdd3cf36efdf7a1866f4713751bbaa3a/resource/Prog,%20Spring%20Batch,%20architecture.PNG)
+  - 일반적인 Step 일 때.
+    ![Spring Batch, Step, Architecture](https://github.com/zlagusdbs/study/blob/2bc44afebdd3cf36efdf7a1866f4713751bbaa3a/resource/Prog,%20Spring%20Batch,%20architecture.PNG)
+
+  - Multi-Thread 방식의 Step 일 때.
 
 ### 처리방식
   - tasklet
