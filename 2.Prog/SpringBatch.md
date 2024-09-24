@@ -43,7 +43,7 @@
   - ExecutionContext(BATCH_STEP_EXECUTION_CONTEXT)
     - Batch에서 유지 및 관리하는 키/값으로 된 컬렉션으로 JobExecution 또는 StepExecution 객체의 상태(state)를 저장하는 공유 객체
 
-## JobRepository
+### JobRepository
   - Batch 작업 중의 정보를 저장하는 저장소 역활
   - JobLauncher, Job, Step 구현체 내부에서 CRUD 기능을 처리
   - Used
@@ -52,13 +52,13 @@
       - JDBC 방식으로 설정: JobRepositoryFactoryBean
       - InMemory 방식으로 설정: MapJobRepositoryFactoryBean
 
-## Step
+### Step
   - 일반적인 Step 일 때.
     ![Spring Batch, Step, Architecture](https://github.com/zlagusdbs/study/blob/2bc44afebdd3cf36efdf7a1866f4713751bbaa3a/resource/Prog,%20Spring%20Batch,%20architecture.PNG)
 
   - Multi-Thread 방식의 Step 일 때.
 
-### 처리방식
+#### 처리방식
   - tasklet
     - task 기반처리
     ```
@@ -88,15 +88,35 @@
     ```
     ```
 
+##### chunk
+  - ItemReader
+  - ItemProcessor
+    - CompositeItemProcessor
+    - ClassifierCompositeItemProcessor
+  - ItemWriter
+    - FlatFileItemWriter
+    - XMLStaxEventItemWriter
+    - JsonFileItemWriter
+    - JdbcBatchItemWriter
+      - JdbcCursorItemReader 설정과 마찬가지로 datasource를 지정하고, sql 속성에 실행할 쿼리를 설정
+      - JDBC의 Batch 기능을 사용하여 bulk isnert/update/delete 방식으로 처리
+        - 여기서 bulk란, 쿼리 하나당 Database Server와 IO를 맺는게 아니고, Buffer에 일정하게 데이터를 적재하여, Database Server와 IO를 맺고 쿼리를 실행시키는 방법
+      - 일괄처리이기 때문에 성능에 이점을 갖음
+    - JpaItemWriter
+      - JPA Entity 기반으로 데이터를 처리하며, EntityManagerFactory를 주입받아 사용한다.
+      - Entity를 하나씩 chunk 크기 만큼 insert 혹은 merge한 닫음 flush한다.
+      - 전달받은 Item타입은 Entity Class가 되어야 한다.
+    - ItemWriterAdapter
+      - Batch Job 안에 이미 있는 DAO나 다른 서비스를 ItemWriter 안에서 사용하고자 할 때 위임 역활을 한다.
 
-## FaultTolerant
+#### FaultTolerant
   - Spring Batch의 반복 및 오류제어
   - Skip
     - ItemReader, ItemProcessor, ItemWriter에  
   - Retry
     - ItemProcessor, ItemWriter에 적용가능
 
-## Repeat
+#### Repeat
 - Spring Batch의 반복을 제어하는 기능을 제공
 - Step, Chunk의 반복을 RepeatOperation을 사용하여 처리(Default 구현체로 RepeatTemplate가 존재)
 ```
@@ -120,7 +140,7 @@ Job -> Step -> RepeatTemplate -iterator()-> RepeatCallback -doInIteratorion()-> 
                
 ```
 
-### Repeat의 종료
+#### Repeat의 종료
 - RepeatStatus
   - CONTINUABLE : repeat
   - FINISHED : exit
@@ -146,7 +166,7 @@ Job -> Step -> RepeatTemplate -iterator()-> RepeatCallback -doInIteratorion()-> 
   - 비정상 종료를 marking
   - RepeatCallback안에서 예외발생 시, RepeatTemplate가 ExceptionHandler를 참조해서 예외를 다시 발생할지 결정(다시 예외발생 시, 반복종료)
 
-## Skip
+#### Skip
 - 데이터를 처리하는 동안 Exception이 발생하였을 경우, 해당 데이터를 처리하지 않고, 다음 데이터를 처리할 수 있게하는 기능
 ```
 public Step exampleStep(){
@@ -169,19 +189,19 @@ public Step exampleStep(){
 - at ItemWriter : ItemWriter에서 예외발생 시, ItemReader부터 모든Chunk(예외가 발생한 Item 포함)를 다시 받는다.
                   단, 더이상 ItemProcessor에서 Chunk단위로 받지 않고, 한 건씩 받아 처리하게 되어진다.
 
-### SkipPolicy<interface>의 구현체
+##### SkipPolicy<interface>의 구현체
   - AlwaysSkipItemSkipPolicy : 항상 skip
   - ExceptionClassifierSkipPolicy : 예외대상을 분류하여 skip
   - CompositeSkipPolicy : 여러 SkipPolicy를 탐색하면서 skip
   - LimitCheckingItemSkipPolicy : count 및 예외대상의 결과에 따라 skip(DEFAULT)
   - NeverSkipItemSkipPolicy : None skip
 
-## Listeners
+#### Listeners
   - Listener는 Spring Batch 실행 중, 각 실행 단계에 발생하는 event를 받아 활용할 수 있도록 제공하는 interceptor기능의 class(뭐.. Interceptor 또는 AOP라 생각하면 된다)
   
-### Job
+##### Job
   - JobExecutionListener: Job 실행 전후
-### Step
+##### Step
   - StepExecutionListener: Step 실행 전후
   - ChunkListener: transaction이 시작되기 전
     - Method
@@ -298,7 +318,7 @@ public Step exampleStep(){
       ========== writer : [0, 1, 2]
       ========== onWriteError : [0, 1, 2]  // 이후 skip이 없음으로 Job은 종료된다.
       ```
-### Skip & Retry
+##### Skip & Retry
   - SkipListener: Item처리가 skip 될 경, skip된 Item을 추적
   - Chunk(Read, Processor, Write) 한 싸이클이 돈 후에 Listener가 작동한다고 하는데... 내가 테스트 할 때는 비동기로 도는것 처럼 테스트가 되었는데.. 이것은 core좀 따봐야겠다.
     - Method
