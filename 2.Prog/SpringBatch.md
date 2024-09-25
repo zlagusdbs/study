@@ -6,7 +6,7 @@
 
 ---
 
-# Spring Boot
+# Spring Batch
   - 참고사이트: [https://spring.io/projects/spring-batch#learn](https://spring.io/projects/spring-batch#learn)
 
 ## Spring Meta Table
@@ -52,11 +52,67 @@
       - JDBC 방식으로 설정: JobRepositoryFactoryBean
       - InMemory 방식으로 설정: MapJobRepositoryFactoryBean
 
+### Job
+
+#### JobLauncerApplicationRunner
+  - Spring Batch 작업을 시작하는 ApplicationRunner 로서 BatchAutoConfiguration에서 생성된다.
+  - Spring Boot에서 제공하는 ApplicationRunner의 구현체
+
+#### BatchProperties
+  - Spring Batch의 환경 설정 클래스
+  - yml
+  ```
+  # application{-xxx}.yml
+  batch:
+    job:
+      name: ${job.name:NONE}
+    initialize-schema: NEVER
+    tablePrefix: SYSTEM
+  ```
+
+#### JobBuilderFactory / JobBuilder
+  - JobBuilderFactory
+    - JobBuilder를 생성하는 Factory Class으로 get(String name) Method를 제공
+  - JobBuilder
+    - SimpleJobBuilder
+      - SimpleJob을 생성하는 Builder Class
+    - FlowJobBuilder
+      - FlowJob을 생성하는 Builder Class
+     
+#### SimpleJob
+  - Step을 실행시키는 Job 구현체
+  ```
+  public Job batchJob() {
+    return jobBuilderFactory.get("batchJob")  // JobBuilder를 생성하는 Factory
+      .start(Step)                            // 처음 실행 할 Step
+      .next(Step)                             // 다음에 실행 할 Step
+      .incrementer(JobParametersIncrementer)  // JobParameter의 값을 자동으로 증가해주는 JobParametersIncrementer 설정
+      .preventRestart(true)                   // Job의 재시작 가능 여부 설정
+      .validator(JobParameterValidator)       // Job 실행 전, Parameter의 validation을 진행
+      .listener(JobExecutionListener)         // Job 라이프 사이클의 특정 시점에 콜백을 제공받도록 Listener 설정
+      .build();
+  }
+  ```
+
 ### Step
   - 일반적인 Step 일 때.
     ![Spring Batch, Step, Architecture](https://github.com/zlagusdbs/study/blob/2bc44afebdd3cf36efdf7a1866f4713751bbaa3a/resource/Prog,%20Spring%20Batch,%20architecture.PNG)
 
   - Multi-Thread 방식의 Step 일 때.
+
+#### StepBuilderFactory / StepBuilder
+
+##### StepBuilder
+
+###### TaskletStepBuilder
+
+###### SimpleStepBuilder
+
+###### PartitionStepBuilder
+
+###### JobStepBuilder
+
+###### FlowStepBuilder
 
 #### 처리방식
   - tasklet
