@@ -103,12 +103,14 @@
 #### StepBuilderFactory / StepBuilder
 
 ##### StepBuilder
-
 ###### TaskletStepBuilder
+  - Tasklet 기반처리
 
 ###### SimpleStepBuilder
+  - Chunk 기반처리
 
 ###### PartitionStepBuilder
+  - Multi-Thread 방식으로 Step을 처리
 
 ###### JobStepBuilder
 
