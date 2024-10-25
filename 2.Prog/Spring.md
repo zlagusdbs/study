@@ -1324,22 +1324,20 @@
 
 ### Spring Boot Config
 - 종류
-```
-# spring.config.location
-Spring Boot 애플리케이션이 시작될 때 기본적으로 사용할 구성 파일의 위치를 지정합니다.
-이 속성을 설정하면, 지정한 경로에서 구성 파일을 로드하고 다른 경로에서 설정한 파일은 무시됩니다.
-예를 들어, spring.config.location=classpath:/custom-config/로 설정하면, 해당 경로에서만 설정 파일을 찾습니다.
+  - spring.config.location
+    Spring Boot 애플리케이션이 시작될 때 기본적으로 사용할 구성 파일의 위치를 지정합니다.
+    이 속성을 설정하면, 지정한 경로에서 구성 파일을 로드하고 다른 경로에서 설정한 파일은 무시됩니다.
+    예를 들어, spring.config.location=classpath:/custom-config/로 설정하면, 해당 경로에서만 설정 파일을 찾습니다.
 
-# spring.config.additional-location
-추가적인 설정 파일의 위치를 지정합니다.
-spring.config.location과 함께 사용되며, 기존의 기본 위치를 유지하면서 추가적으로 다른 파일을 로드합니다.
-예를 들어, spring.config.additional-location=classpath:/extra-config/로 설정하면, 기본 경로의 설정 파일을 로드한 뒤 추가 경로의 설정 파일도 함께 로드합니다.
+  - spring.config.additional-location
+    추가적인 설정 파일의 위치를 지정합니다.
+    spring.config.location과 함께 사용되며, 기존의 기본 위치를 유지하면서 추가적으로 다른 파일을 로드합니다.
+    예를 들어, spring.config.additional-location=classpath:/extra-config/로 설정하면, 기본 경로의 설정 파일을 로드한 뒤 추가 경로의 설정 파일도 함께 로드합니다.
 
-# spring.config.import
-다른 설정 파일을 가져오는 데 사용됩니다.
-주로 YAML 또는 프로퍼티 파일을 가져올 때 사용되며, 지정된 파일을 포함합니다.
-예를 들어, spring.config.import=optional:classpath:/external-config.yml와 같이 설정하면, 해당 파일을 조건부로 가져옵니다. 파일이 없으면 오류가 발생하지 않습니다.
-```
+  - spring.config.import
+    다른 설정 파일을 가져오는 데 사용됩니다.
+    주로 YAML 또는 프로퍼티 파일을 가져올 때 사용되며, 지정된 파일을 포함합니다.
+    예를 들어, spring.config.import=optional:classpath:/external-config.yml와 같이 설정하면, 해당 파일을 조건부로 가져옵니다. 파일이 없으면 오류가 발생하지 않습니다.
 
 - 개념
   - .properties
@@ -1378,19 +1376,19 @@ spring.config.location과 함께 사용되며, 기존의 기본 위치를 유지
           classpath:/config/
           classpath:/
     ```
-    - 환경변수
-    - command line args
+  - 환경변수
+  - command line args
       
-    - 사용방법
-    ```console
-    [user@localhost ~]# java -jar -Dspring.profiles.active=dev board-0.0.1-SNAPSHOT.jar
+  - 사용방법
+  ```console
+  [user@localhost ~]# java -jar -Dspring.profiles.active=dev board-0.0.1-SNAPSHOT.jar
     
-    또는
+  또는
     
-    [user@localhost ~]# java -jar -Dspring-boot.run.profiles=dev board-0.0.1-SNAPSHOT.jar
-    ```
+  [user@localhost ~]# java -jar -Dspring-boot.run.profiles=dev board-0.0.1-SNAPSHOT.jar
+  ```
       
-  - 참고사이트: [https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/](https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/)
+- 참고사이트: [https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/](https://www.latera.kr/reference/java/2019-09-29-spring-boot-config-externalize/)
   
 ### profiles with maven3
   - You can provide commandline argument like this:
