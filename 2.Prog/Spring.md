@@ -1321,47 +1321,65 @@
       - 일반적으로 group은 project의 도메인 및 Default package 경로를 뜻하며, artifact는 프로젝트 명을 암시합니다.
     - Dependencies
       - 프로젝트의 의존성을 추가합니다. (간단히 소프트웨어의 플러그인 정도로 생각하면 됩니다.)
-    
-  - Spring Boot Config
-    - 개념
-      - .properties
-      - yaml
-        - 파일명 또는 경로변경/추가
-        ```console
-        [user@localhost ~]# java -jar myproject.jar --spring.config.name=myproject.yaml
-        --------------------------------------
-          - Describe
-            - 파일명 변경
+
+### Spring Boot Config
+- 종류
+```
+# spring.config.location
+Spring Boot 애플리케이션이 시작될 때 기본적으로 사용할 구성 파일의 위치를 지정합니다.
+이 속성을 설정하면, 지정한 경로에서 구성 파일을 로드하고 다른 경로에서 설정한 파일은 무시됩니다.
+예를 들어, spring.config.location=classpath:/custom-config/로 설정하면, 해당 경로에서만 설정 파일을 찾습니다.
+
+# spring.config.additional-location
+추가적인 설정 파일의 위치를 지정합니다.
+spring.config.location과 함께 사용되며, 기존의 기본 위치를 유지하면서 추가적으로 다른 파일을 로드합니다.
+예를 들어, spring.config.additional-location=classpath:/extra-config/로 설정하면, 기본 경로의 설정 파일을 로드한 뒤 추가 경로의 설정 파일도 함께 로드합니다.
+
+# spring.config.import
+다른 설정 파일을 가져오는 데 사용됩니다.
+주로 YAML 또는 프로퍼티 파일을 가져올 때 사용되며, 지정된 파일을 포함합니다.
+예를 들어, spring.config.import=optional:classpath:/external-config.yml와 같이 설정하면, 해당 파일을 조건부로 가져옵니다. 파일이 없으면 오류가 발생하지 않습니다.
+```
+
+- 개념
+  - .properties
+  - yaml
+    - 파일명 또는 경로변경/추가
+    ```console
+    [user@localhost ~]# java -jar myproject.jar --spring.config.name=myproject.yaml
+    --------------------------------------
+      - Describe
+        - 파일명 변경
         
         
-        [user@localhost ~]# java -jar myproject.jar --spring.config.location=classpath:/myproject/{또는 파일명 변경 시, classpath:/myproject/myproject.yaml}
-        --------------------------------------
-          - Describe
-            - 파일경로 변경
-          - Result: 기존 4개 경로에서, Customizing된 경로 1개로 변경된다.
-            - 기존 경로(4개)
-              file:./config/
-              file:./
-              classpath:/config/
-              classpath:/
-            - Customizing되어 변경된 경로(1개)
-              classpath:/myproject/
+    [user@localhost ~]# java -jar myproject.jar --spring.config.location=classpath:/myproject/{또는 파일명 변경 시, classpath:/myproject/myproject.yaml}
+    --------------------------------------
+      - Describe
+        - 파일경로 변경
+      - Result: 기존 4개 경로에서, Customizing된 경로 1개로 변경된다.
+        - 기존 경로(4개)
+          file:./config/
+          file:./
+          classpath:/config/
+          classpath:/
+        - Customizing되어 변경된 경로(1개)
+          classpath:/myproject/
         
         
-        [user@localhost ~]# java -jar myproject.jar --spring.config.additional-location=classpath:/custom-config/,file:./custom-config/
-        --------------------------------------
-          - Describe
-            - 파일경로 추가
-          - Result
-            - file:./custom-config/
-              classpath:custom-config/
-              file:./config/
-              file:./
-              classpath:/config/
-              classpath:/
-        ```
-      - 환경변수
-      - command line args
+    [user@localhost ~]# java -jar myproject.jar --spring.config.additional-location=classpath:/custom-config/,file:./custom-config/
+    --------------------------------------
+      - Describe
+        - 파일경로 추가
+      - Result
+        - file:./custom-config/
+          classpath:custom-config/
+          file:./config/
+          file:./
+          classpath:/config/
+          classpath:/
+    ```
+    - 환경변수
+    - command line args
       
     - 사용방법
     ```console
