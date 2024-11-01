@@ -169,6 +169,6 @@
 
 ---
 # Reference
-https://zbvs.tistory.com/35
+- https://zbvs.tistory.com/35
 ---
 
