@@ -104,9 +104,7 @@ public class Order{
 
 # Hexagonal Architecture
 - Hexagonal Architecture
-    - ![Hexagonal Architecture](../resource/Prog,%20Software Architecture,%20Hexagonal%20Architecture.PNG)
-  - Docker Network Architecture
-    - ![Database Server Setting](../resource/Infra,%20Docker,%20docker%20network.png)
+    - ![Hexagonal Architecture](../resource/Prog,%20Software%20Architecture,%20Hexagonal%20Architecture.PNG)
 
 - Pacakge
   ```
