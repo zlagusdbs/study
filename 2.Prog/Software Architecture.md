@@ -103,7 +103,7 @@ public class Order{
 ---
 
 # Hexagonal Architecture
-- ![Hexagonal Architecture](../resource/Prog, Software Architecture, Hexagonal Architecture.PNG)
+![Hexagonal Architecture](../resource/Prog,%20Software Architecture,%20Hexagonal%20Architecture.PNG)
 
 ```
 account
