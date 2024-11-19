@@ -1,9 +1,9 @@
 # Theory
 - DDD(Domain Driven Design)
-- 
+- Hexagonal Architecture
+
 
 ---
-
 
 # DDD(Domain Driven Design)
 최범균., 『도메인 주도 개발 시작하기, DDD 핵심 개념 정리부터 구현까지』, 한빛미디어(2022)
@@ -101,3 +101,22 @@ public class Order{
 
 
 ---
+
+# Hexagonal Architecture
+- ![Hexagonal Architecture](../resource/Prog,%20Software%20Architecture,%20Hexagonal%20Architecture.png)
+
+```
+account
+  ├─ adator
+  │  ├─ in
+  │  │  └─ web
+  │  └─ out
+  │     └─ persistence
+  ├─ application
+  │  ├─ port
+  │  │  ├─ in
+  │  │  └─ out
+  │  └─ service
+  └─ domain
+```
+
