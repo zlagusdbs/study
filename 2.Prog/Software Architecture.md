@@ -108,7 +108,7 @@ public class Order{
 
 - Pacakge
   ```
-  account
+  sample  // Domain Name과 같은 모듈명
     ├─ adator
     │  ├─ in
     │  │  └─ web
