@@ -103,20 +103,22 @@ public class Order{
 ---
 
 # Hexagonal Architecture
-![Hexagonal Architecture](../resource/Prog,%20Software Architecture,%20Hexagonal%20Architecture.PNG)
+- Hexagonal Architecture
+    - ![Hexagonal Architecture](../resource/Prog,%20Software Architecture,%20Hexagonal%20Architecture.PNG)
 
-```
-account
-  ├─ adator
-  │  ├─ in
-  │  │  └─ web
-  │  └─ out
-  │     └─ persistence
-  ├─ application
-  │  ├─ port
-  │  │  ├─ in
-  │  │  └─ out
-  │  └─ service
-  └─ domain
-```
+- Pacakge
+  ```
+  account
+    ├─ adator
+    │  ├─ in
+    │  │  └─ web
+    │  └─ out
+    │     └─ persistence
+    ├─ application
+    │  ├─ port
+    │  │  ├─ in
+    │  │  └─ out
+    │  └─ service
+    └─ domain
+  ```
 
