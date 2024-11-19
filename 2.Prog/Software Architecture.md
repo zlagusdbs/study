@@ -104,7 +104,7 @@ public class Order{
 
 # Hexagonal Architecture
 - Hexagonal Architecture
-    - ![Hexagonal Architecture](../resource/Prog,%20Software%20Architecture,%20Hexagonal%20Architecture.PNG)
+    ![Hexagonal Architecture](../resource/Prog,%20Software%20Architecture,%20Hexagonal%20Architecture.PNG)
 
 - Pacakge
   ```
@@ -112,13 +112,22 @@ public class Order{
     ├─ adator
     │  ├─ in
     │  │  └─ web
+    │  │     └─ Controller
     │  └─ out
     │     └─ persistence
+    │        └─ <EntityPort{+AnotherPort} Imple>EntityAdapter
+    │        └─ <interface>EntityRepository
+    │        └─ Entity
+    │        └─ EntityMapper
     ├─ application
     │  ├─ port
     │  │  ├─ in
+    │  │  │  └─ <interface>Usecase
     │  │  └─ out
+    │  │     └─ <interface>EntityPort
     │  └─ service
+    │       └─ <Usecase Imple>UsecaseService
     └─ domain
+       └─ EntityDomain
   ```
 
