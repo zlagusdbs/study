@@ -4,6 +4,9 @@
   - Delta Sharing
   - 성능최적화
 
+---
+
+
 # Unity Catalog
 Governance Solution: 시스템 전반적으로 access control(접근제어), auditing(감사), lineage(계보), and data discovery(데이터 조회)를 통괄
 
