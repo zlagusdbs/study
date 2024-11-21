@@ -4,6 +4,7 @@
   - Delta Sharing
   - 성능최적화
 - Delta Live Tables
+- Workflow
 
 ---
 
@@ -56,3 +57,7 @@ Data를 동적으로 Clustering함과 동시에 최적화 작업을 진행하고
 Streaming Data 또는 ETL Data를 처리하기 위한 **데이터 처리 프레임워크**
 데이터 변환로직에 대해 Python, SQL로 정의하기만 하면 DLT 파이프라인 클러스터 관리, 데이터 품질 및 오류처리를 자동으로 처리
 AutoLoader 기술을 통해 데이터의 증분 적재지원
+
+# Workflow
+Delta Live Tables 보다 더 높은 수준의 Orchestration Tool
+
