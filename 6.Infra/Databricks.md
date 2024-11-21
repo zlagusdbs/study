@@ -37,8 +37,9 @@ S3, ADLS Gen2, GCS 스토리지기반의 데이터를을 테이블 단위로 저
 Aparche Spark와 통합되어 SQL, Python, Scala API 등을 활용하여 DML 작업한다.
 
 ### Lakehouse
-Medallion Architecture
-  - 전통적인 Layer(Staging, Base DW, Data Mart)에서 새로운 Layer(Bronze, Silver, Gold)로 정의하며, Data가 각 Layer를 통과하는 동안 데이터의 구조와 품질을 증분적, 점진적으로 개선할 수 있도록 한다.
+Data Lake와 Data Warehouse의 통합. 즉, 비정형 데이터와 정형 데이터를 단일 위치에서 저장, 관리 및 분석하는 데이터 아키텍처 플랫폼.
+Medallion Architecture를 사용한다.
+  - Medallion Architecture: 전통적인 Layer(Staging, Base DW(Data Warehouse), Data Mart)를 새로운 Layer(Bronze(비정형), Silver(반정형), Gold(정형))로 정의하며, Data가 각 Layer를 통과하는 동안 데이터의 구조와 품질을 증분적, 점진적으로 개선할 수 있도록 한다.
 
 ### Delta Sharing
 실제 데이터를 전송하는것이 아닌, 조회 권한을 전송함으로 데이터 공유 후에도 데이터 통제권을 갖을 수 있고, 데이터를 주고받는 과정에 네트워크 cost를 줄일 수 있다.
