@@ -106,28 +106,43 @@ public class Order{
 - Hexagonal Architecture
     ![Hexagonal Architecture](../resource/Prog,%20Software%20Architecture,%20Hexagonal%20Architecture.PNG)
 
-- Pacakge
+- 내가 정의한 Pacakge
   ```
-  sample  // Domain Name과 같은 모듈명
-    ├─ adator
-    │  ├─ in
-    │  │  └─ web
-    │  │     └─ Controller
-    │  └─ out
-    │     └─ persistence
-    │        └─ <EntityPort{+AnotherPort} Imple>EntityAdapter
-    │        └─ <interface>EntityRepository
-    │        └─ Entity
-    │        └─ EntityMapper
+  member
+    ├─ infrastructure
+    │  └─ adaptor
+    │      ├─ in
+    │      │   ├─ web
+    │      │   │   └─ MemberController
+    │      │   └─ model
+    │      │       └─ MemberRequest
+    │      │       └─ MemberResponse
+    │      └─ out
+    │          └─ persistence
+    │              ├─ member
+    │              │   └─ MemberAdapter implements MemberPort
+    │              │   └─ <interface>MemberRepository
+    │              │   └─ MemberEntity
+    │              │   └─ MemberEntityMapper  // to MemberDomain
+    │              └─ benefit
+    │                  └─ BenefitAdapter implements BenefitPort
+    │                  └─ <interface>BenefitRepository
+    │                  └─ BenefitEntity
+    │                  └─ BenefitEntityMapper  // to BenefitDomain
     ├─ application
     │  ├─ port
-    │  │  ├─ in
-    │  │  │  └─ <interface>Usecase
-    │  │  └─ out
-    │  │     └─ <interface>EntityPort
+    │  │  ├─ in    // Primary Port
+    │  │  │  └─ <interface>MemberUseCase
+    │  │  └─ out   // Secondary Port
+    │  │     └─ <interface>MemberPort
+    │  │     └─ <interface>BenefitPort
     │  └─ service
-    │       └─ <Usecase Imple>UsecaseService
-    └─ domain
-       └─ EntityDomain
+    │       └─ MemberService implements MemberUseCase	// has a Transactional(Agreegate Service)
+    └─ domain  // application 영역에서는 model으로만 대화를 합니다. 여기서 DDD를 적용할 수 있다.
+       └─ MemberDomain
+       └─ BenefitDomain
   ```
 
+- Reference
+  ![https://dzone.com/articles/hello-hexagonal-architecture-1](https://dzone.com/articles/hello-hexagonal-architecture-1)
+  ![https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749](https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749)
