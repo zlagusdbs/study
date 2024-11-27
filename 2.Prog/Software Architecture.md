@@ -143,7 +143,7 @@ public class Order{
        └─ BenefitDomain
   ```
 
-- Reference
+- Reference  
   ![https://dzone.com/articles/hello-hexagonal-architecture-1](https://dzone.com/articles/hello-hexagonal-architecture-1)  
   ![https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749](https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749)  
   ![https://github.com/thombergs/buckpal.git](https://github.com/thombergs/buckpal.git)  
