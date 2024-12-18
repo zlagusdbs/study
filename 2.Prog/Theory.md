@@ -1,6 +1,7 @@
 # Theory
 - OOP
   - SOLID
+- Partitioning, Sharding
 - Transaction
 - Blocking vs Non-Blocking / Sync vs Async
 - Cache Design Pattern
@@ -48,6 +49,13 @@
           }
       }
       ```
+
+
+# Partitioning, Sharding
+## Strategy
+- Key Based
+- Range Based
+- Directory Based
 
 
 # Transaction
