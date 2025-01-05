@@ -1,6 +1,7 @@
 # Overview
 Elasticsearch
 
+
 # Quickstart
 - 색인(indexing) : 데이터가 검색될 수 있는 구조로 변경하기 위해 원본 문서를 검색어 토큰들으로 변환하여 저장하는 일련의 과정
 - 인덱스(index, indices) : 색인을 거친 결과물, 또는 색인된 데이터가 저장되는 저장소입니다. 또한 Elasticsearch에서 도큐먼트들의 논리적인 집합을 표현하는 단위이기도 하다
@@ -22,6 +23,7 @@ $ bin/elasticsearch -E cluster.name=my-cluster -E node.name="node-1"
 ## Download
 [Elasticsearch](https://www.elastic.co)  
 [Java Version 확인](https://www.elastic.co/support/matrix#matrix_jvm)
+
 
 # Envrionment
 ## Java Option
@@ -143,6 +145,40 @@ http:
   node.name: ${HOSTNAME}
   network.host: ${ES_NETWORK_HOST}
   ```
+
+
+# Architecture
+## Cluster
+Elasticsearch의 노드들은 클라이언트와의 통신을 위한 http 포트(9200~9299), 노드 간의 데이터 교환을 위한 tcp 포트 (9300~9399) 총 2개의 네트워크 통신을 열어두고 있습니다.
+일반적으로 1개의 물리 서버마다 하나의 노드를 실행하는 것을 권장하고 있습니다.
+3개의 다른 물리 서버에서 각각 1개 씩의 노드를 실행하면 각 클러스터는 다음과 같이 구성됩니다.
+
+## Node
+### Master Node(=Dedicated Master Node)
+인덱스의 메타 데이터, 샤드의 위치와 같은 클러스터 상태(Cluster Status) 정보를 관리하는 등 단지 마스터 노드의 역할만을 수행한다.
+```
+# config/elasticsearch.yml
+node:
+  master: true
+  data: false
+```
+### Data Node
+실제로 색인된 데이터를 저장하고 있는 노드
+```
+# config/elasticsearch.yml
+node:
+  master: false
+  data: true
+```
+### Split Brain
+각자의 클러스터에 데이터가 추가되거나 변경되고 나면 나중에 네트워크가 복구 되고 하나의 클러스터로 다시 합쳐졌을 때 데이터 정합성에 문제가 생기고 데이터 무결성이 유지될 수 없게 되는 문제를 Split Brain 이라고 합니다.
+```
+# config/elasticsearch.yml
+discovery.zen.minimum_master_nodes: 2    # =((전체 마스터 후보 노드 / 2) + 1)
+```
+
+## Index & Shard
+
 
 # Reference
 [이보다 더 깔끔한 강의는 없었던거 같다.](https://esbook.kimjmin.net/)
