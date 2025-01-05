@@ -1,6 +1,15 @@
 # Overview
 Elasticsearch
 
+## RDBMS와 Elasticsearch의 용어비교
+| RDBMS     | Elasticsearch  |
+|-----------|-----------------|
+| Schema    | Mapping         |
+| Database  | Index           |
+| Partition | Shard           |
+| Table     | Type            |
+| Row       | Document        |
+| Column    | Field           |
 
 # Quickstart
 - 색인(indexing) : 데이터가 검색될 수 있는 구조로 변경하기 위해 원본 문서를 검색어 토큰들으로 변환하여 저장하는 일련의 과정
