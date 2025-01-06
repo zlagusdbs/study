@@ -12,11 +12,6 @@ Elasticsearch
 | Column    | Field           |
 
 # Quickstart
-- 색인(indexing) : 데이터가 검색될 수 있는 구조로 변경하기 위해 원본 문서를 검색어 토큰들으로 변환하여 저장하는 일련의 과정
-- 인덱스(index, indices) : 색인을 거친 결과물, 또는 색인된 데이터가 저장되는 저장소입니다. 또한 Elasticsearch에서 도큐먼트들의 논리적인 집합을 표현하는 단위이기도 하다
-- 검색(search) : 인덱스에 들어있는 검색어 토큰들을 포함하고 있는 문서를 찾아가는 과정
-- 질의(query) : 사용자가 원하는 문서를 찾거나 집계 결과를 출력하기 위해 검색 시 입력하는 검색어 또는 검색 조건
-
 elasticsearch.yml 파일에 설정하는 것 외에도 Elasticsearch 실행 시 커맨드 명령에 -E <옵션>=<값> 을 이용해서 환경 설정이 가능합니다. 예를 들어 클러스터명은 my-cluster 노드명은 node-1로 노드를 실행하기 위해서는 다음과 같이 실행합니.
 ```
 # 환경 설정이 elasticsearch.yml 과 커맨드 명령 -E 에 모두 있는 경우에는 -E 커맨드 명령에서 한 설정이 더 우선해서 적용이 됩니다.
@@ -33,6 +28,21 @@ $ bin/elasticsearch -E cluster.name=my-cluster -E node.name="node-1"
 [Elasticsearch](https://www.elastic.co)  
 [Java Version 확인](https://www.elastic.co/support/matrix#matrix_jvm)
 
+## Analyzer
+- 색인(indexing) : 데이터가 검색될 수 있는 구조로 변경하기 위해 원본 문서를 검색어 토큰들으로 변환하여 저장하는 일련의 과정
+- 인덱스(index, indices) : 색인을 거친 결과물, 또는 색인된 데이터가 저장되는 저장소입니다. 또한 Elasticsearch에서 도큐먼트들의 논리적인 집합을 표현하는 단위이기도 하다
+- 검색(search) : 인덱스에 들어있는 검색어 토큰들을 포함하고 있는 문서를 찾아가는 과정
+- 질의(query) : 사용자가 원하는 문서를 찾거나 집계 결과를 출력하기 위해 검색 시 입력하는 검색어 또는 검색 조건
+
+```
+# Text Analyzer
+text -> Character Filters -> Tokenizer -> TokenFilter -> Inverted Index
+          Pattern Replace      Tokenizer    lowercase
+          Mapping                           stop
+          HTML Strip                        snowball
+```
+
+### 
 
 # Envrionment
 ## Java Option
