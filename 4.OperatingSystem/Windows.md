@@ -4,7 +4,8 @@
 ---
 
 # WSL(Windows Subsystem for Linux)
-Windows에서는 바로 사용할 수 없음으로 winodws를 linux처럼 사용할 수 있도록 하는 WSL을 설치해야 한다.
+winodws를 linux처럼 사용할 수 있도록 하는 WSL을 설치해야 한다.
+docker를 windows에서 cli 환경으로 설치할 때 필요하다.
 
 ```bash
 # 1. WSL Install
