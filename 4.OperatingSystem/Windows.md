@@ -1,14 +1,7 @@
 # WindowsOS
 
----
 
-# Window
-## 멀티태스킹
-  - window를 화면 구석으로 Drag할 경우, 자동으로 window가 구석으로 맞춰진다.
-  - 이게 난 너무너무 싫타...
-  ```
-  [설정] > [멀티태스킹] > '창 맞춤' > "끔"
-  ```
+---
 
 # WSL(Windows Subsystem for Linux)
 Windows에서는 바로 사용할 수 없음으로 winodws를 linux처럼 사용할 수 있도록 하는 WSL을 설치해야 한다.
@@ -82,3 +75,10 @@ root
 # WSL 배포판 삭제
 C:\Users\anonymous> wsl --unregister Ubuntu-24.04
 ```
+
+# UI 환경
+  - window를 화면 구석으로 Drag할 경우, 자동으로 window가 구석으로 맞춰진다.
+  - 이게 난 너무너무 싫타...
+  ```
+  [설정] > [멀티태스킹] > '창 맞춤' > "끔"
+  ```
