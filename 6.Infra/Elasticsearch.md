@@ -11,7 +11,48 @@ Elasticsearch
 | Row       | Document        |
 | Column    | Field           |
 
+
 # Quickstart
+## Local
+### Elasticsearch Docker Install
+[https://www.elastic.co/guide/en/elasticsearch/reference/8.17/install-elasticsearch.html](https://www.elastic.co/guide/en/elasticsearch/reference/8.17/install-elasticsearch.html)
+```bash
+hyunyukim@D-045522-00:~$ sudo docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+installing...
+ 
+hyunyukim@D-045522-00:~$ sudo docker images
+REPOSITORY                                      TAG       IMAGE ID       CREATED         SIZE
+docker.elastic.co/elasticsearch/elasticsearch   8.4.3     ce2b9dc7fe85   2 years ago     1.26GB
+ 
+ 
+---
+ 
+# Troubleshooting
+## 1. 인증서오류시
+hyunyukim@D-045522-00:~$ sudo docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+Error response from daemon: Get "https://docker.elastic.co/v2/": tls: failed to verify certificate: x509: certificate signed by unknown authority
+ 
+### 1-1. 인증서 확인
+hyunyukim@D-045522-00:~$ openssl s_client -connect docker.elastic.co:443 -showcerts
+ 
+### 1-2. 인증서 추가
+hyunyukim@D-045522-00:~$ sudo vim /usr/local/share/ca-certificates/GMARKET_RSA_CA.crt
+-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----
+ 
+### 1-3. 인증서 적용
+hyunyukim@D-045522-00:~$ sudo update-ca-certificates
+ 
+### 1-4. 인증서 적용확인
+hyunyukim@D-045522-00:~$ grep 인증서내용 /etc/ssl/certs/ca-certificates.crt
+```
+
+### Single-node cluster
+[https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html](https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html)  
+
+
+## Cluster
 elasticsearch.yml 파일에 설정하는 것 외에도 Elasticsearch 실행 시 커맨드 명령에 -E <옵션>=<값> 을 이용해서 환경 설정이 가능합니다. 예를 들어 클러스터명은 my-cluster 노드명은 node-1로 노드를 실행하기 위해서는 다음과 같이 실행합니.
 ```
 # 환경 설정이 elasticsearch.yml 과 커맨드 명령 -E 에 모두 있는 경우에는 -E 커맨드 명령에서 한 설정이 더 우선해서 적용이 됩니다.
@@ -24,10 +65,7 @@ $ bin/elasticsearch -E cluster.name=my-cluster -E node.name="node-1"
 [2019-08-26T14:23:51,456][INFO ][o.e.n.Node               ] [node-1] JVM arguments [-Xms1g, -Xmx1g, -XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -Des.networkaddress.cache.ttl=60, -Des.networkaddress.cache.negative.ttl=10, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -XX:-OmitStackTraceInFastThrow, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dio.netty.recycler.maxCapacityPerThread=0, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -Djava.io.tmpdir=/var/folders/0d/m7m670h13pz3lvr9xjz07zk80000gn/T/elasticsearch-5549928559955731670, -XX:+HeapDumpOnOutOfMemoryError, -XX:HeapDumpPath=data, -XX:ErrorFile=logs/hs_err_pid%p.log, -XX:+PrintGCDetails, -XX:+PrintGCDateStamps, -XX:+PrintTenuringDistribution, -XX:+PrintGCApplicationStoppedTime, -Xloggc:logs/gc.log, -XX:+UseGCLogFileRotation, -XX:NumberOfGCLogFiles=32, -XX:GCLogFileSize=64m, -Dio.netty.allocator.type=unpooled, -XX:MaxDirectMemorySize=536870912, -Des.path.home=/Users/kimjmin/elastic/getStart/elasticsearch-7.3.0, -Des.path.conf=/Users/kimjmin/elastic/getStart/elasticsearch-7.3.0/config, -Des.distribution.flavor=default, -Des.distribution.type=tar, -Des.bundled_jdk=true]
 ```
 
-## Download
-[Elasticsearch](https://www.elastic.co)  
-[Java Version 확인](https://www.elastic.co/support/matrix#matrix_jvm)
-
+# Document
 ## Analyzer
 - 색인(indexing) : 데이터가 검색될 수 있는 구조로 변경하기 위해 원본 문서를 검색어 토큰들으로 변환하여 저장하는 일련의 과정
 - 인덱스(index, indices) : 색인을 거친 결과물, 또는 색인된 데이터가 저장되는 저장소입니다. 또한 Elasticsearch에서 도큐먼트들의 논리적인 집합을 표현하는 단위이기도 하다
@@ -42,17 +80,16 @@ text -> Character Filters -> Tokenizer -> TokenFilter -> Inverted Index
           HTML Strip                        snowball
 ```
 
-### 
-
-# Envrionment
-## Java Option
-### Java Heap Memory
+## Cluster
+### Envrionment
+#### Java Option
+##### Java Heap Memory
 - jvm.options
 ```
 -Xms1g
 -Xmx1g
 ```
-## Elasticsearch Option
+#### Elasticsearch Option
 ```
 # config/elasticsearch.yml
 cluster:
@@ -165,15 +202,13 @@ http:
   network.host: ${ES_NETWORK_HOST}
   ```
 
-
-# Architecture
-## Cluster
+### Architecture
 Elasticsearch의 노드들은 클라이언트와의 통신을 위한 http 포트(9200~9299), 노드 간의 데이터 교환을 위한 tcp 포트 (9300~9399) 총 2개의 네트워크 통신을 열어두고 있습니다.
 일반적으로 1개의 물리 서버마다 하나의 노드를 실행하는 것을 권장하고 있습니다.
 3개의 다른 물리 서버에서 각각 1개 씩의 노드를 실행하면 각 클러스터는 다음과 같이 구성됩니다.
 
-## Node
-### Master Node(=Dedicated Master Node)
+#### Node
+##### Master Node(=Dedicated Master Node)
 인덱스의 메타 데이터, 샤드의 위치와 같은 클러스터 상태(Cluster Status) 정보를 관리하는 등 단지 마스터 노드의 역할만을 수행한다.
 ```
 # config/elasticsearch.yml
@@ -181,7 +216,7 @@ node:
   master: true
   data: false
 ```
-### Data Node
+##### Data Node
 실제로 색인된 데이터를 저장하고 있는 노드
 ```
 # config/elasticsearch.yml
@@ -189,15 +224,18 @@ node:
   master: false
   data: true
 ```
-### Split Brain
+##### Split Brain
 각자의 클러스터에 데이터가 추가되거나 변경되고 나면 나중에 네트워크가 복구 되고 하나의 클러스터로 다시 합쳐졌을 때 데이터 정합성에 문제가 생기고 데이터 무결성이 유지될 수 없게 되는 문제를 Split Brain 이라고 합니다.
 ```
 # config/elasticsearch.yml
 discovery.zen.minimum_master_nodes: 2    # =((전체 마스터 후보 노드 / 2) + 1)
 ```
-
-## Index & Shard
+##### Index & Shard
 
 
 # Reference
-[이보다 더 깔끔한 강의는 없었던거 같다.](https://esbook.kimjmin.net/)
+[Elasticsearch 공식 홈페이지](https://www.elastic.co/guide/en/elasticsearch/reference/8.17/release-highlights.html)
+
+[Version Check](https://www.elastic.co/support/matrix#matrix_jvm)
+
+[Elasticsearch Cluster Blog](https://esbook.kimjmin.net/)
