@@ -230,7 +230,6 @@ node:
 # config/elasticsearch.yml
 discovery.zen.minimum_master_nodes: 2    # =((전체 마스터 후보 노드 / 2) + 1)
 ```
-##### Index & Shard
 
 
 # Reference
