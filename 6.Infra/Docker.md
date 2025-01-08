@@ -260,7 +260,7 @@
       cf> deprecated 옵션이며, Docker Bridge를 사용을 권장한다.
   - Description
     - 'centos:7'라는 Docker Image가 Local Docker Engine에 존재하지 않을 경우, Docker HUB에서 Docker Image를 Download받아 설치 후 Docker Container로 진입
-    - [docker pull:Docker Image가 없을 때] -> [docker create] -> [docker start] -> [docker attach: -i -t Option을 사용했을 때]
+    - [docker pull:Docker Image가 없을 때] -> [docker create] -> [docker start] -> [docker attach]
   - Example
     - mysql# docker run --name mysql-demo -e MYSQL_ROOT_PASSWORD=Pa22Word -d -p 3306:3306 mysql:latest
 
@@ -285,7 +285,7 @@
     - docker attach CONTAINER
   - Description
     - 실행중인 CONTAINER에 진입
-    - 단, docker run 시 /bin/bash 옵션을 주지 않았다면, docker attach를 실행하여도 /bin/bash로 세션이 맺어지지않는다
+    - 단, docker run 시 /bin/bash 옵션을 주지 않았다면, docker attach를 실행하여도 /bin/bash로 세션이 맺어지지않는다(docker run 에 의존적)
     - 그래서 난 그냥 docker exec -it 옵션으로 실행하는걸 선호한다.
 
 
