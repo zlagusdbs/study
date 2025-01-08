@@ -214,6 +214,22 @@
     - [docker pull:Docker Image가 없을 때] -> [docker create]
 
 
+  [root@localhost ~]# docker start web-server
+  --------------------------------------
+  - Command
+    - docker start CONTAINER
+  - Description
+    - CONTAINER를 실행
+
+
+  [root@localhost ~]# docker restart web-server
+  --------------------------------------
+  - Command
+    - docker restart CONTAINER
+  - Description
+    - CONTAINER를 재실행
+
+
   [root@localhost ~]# docker run -i -t centos:7
   --------------------------------------
   - Command
@@ -224,7 +240,7 @@
     -p : Port forwarding을 위한 옵션이며, [SourcePort:DesticationPort] 또는 [SourceIP:SourcePort:DestinationPort]로 기재
       ex> docker run -i -t -p 10.222.52.114:80:8080
           HOST IP인 '10.222.52.114'의 '80' Port로 진입 시, Docker Container의 '8080'Port로 Port forwarding을 진행.
-    -d : '-i -t' Option이 attach 가능한 상태로 진입하도록 한다면, '-d'옵션은 Detached Mod로 진입
+    -d : '-i -t' Option이 attach 가능한 상태로 진입하도록 한다면, '-d'옵션은 Detached Mod(=백그라운드)로 진입
     -e : Docker Container 내부에서 사용하게 될 Enviroment(환경변수)를 설정
     -v :
       1. Host Sharing
@@ -246,39 +262,31 @@
     - 'centos:7'라는 Docker Image가 Local Docker Engine에 존재하지 않을 경우, Docker HUB에서 Docker Image를 Download받아 설치 후 Docker Container로 진입
     - [docker pull:Docker Image가 없을 때] -> [docker create] -> [docker start] -> [docker attach: -i -t Option을 사용했을 때]
   - Example
-    - mysql# docker run --name mysql-demo -e MYSQL_ROOT_PASSWORD=Pa22Word -d -p 3306:3306 mysql:latest 
+    - mysql# docker run --name mysql-demo -e MYSQL_ROOT_PASSWORD=Pa22Word -d -p 3306:3306 mysql:latest
 
 
-  [root@localhost ~]# docker start web-server
+  [root@localhost ~]# docker exec web-server ls
+  [root@localhost ~]# docker exec -it web-server /bin/bash
   --------------------------------------
   - Command
-    - docker start CONTAINER
+    - docker exec [OPTIONS] CONTAINER COMMAND [ARG…]
+    - docker exec -it CONTAINER 또는 CONTAINER_ID /bin/bash
   - Description
-    - CONTAINER를 실행
+    - 실행중인 CONTAINER에 진입
+    - 컨테이터 외부에서 명령을 실행시키기 위한 것
 
-
-  [root@localhost ~]# docker restart web-server
-  --------------------------------------
-  - Command
-    - docker restart CONTAINER
-  - Description
-    - CONTAINER를 재실행
-
+    - CONTAINER 내부에 들어가지 않고, 실행중인 CONTAINER에 명령을 실행
+    - CONTAINER 내부에 들어가서(표준 입출력을 컨테이너에 붙여서) 직접 명령 할 수 있게하는 명령어로도 사용할 수 있다.
+    
 
   [root@localhost ~]# docker attach web-server
   --------------------------------------
   - Command
     - docker attach CONTAINER
   - Description
-    - CONTAINER를 실행 후 진입
-
-
-  [root@localhost ~]# docker exec web-server -it /bin/bash
-  --------------------------------------
-  - Command
-    - docker exec CONTAINER
-  - Description
     - 실행중인 CONTAINER에 진입
+    - 단, docker run 시 /bin/bash 옵션을 주지 않았다면, docker attach를 실행하여도 /bin/bash로 세션이 맺어지지않는다
+    - 그래서 난 그냥 docker exec -it 옵션으로 실행하는걸 선호한다.
 
 
   [root@container ~]# exit
