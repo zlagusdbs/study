@@ -267,16 +267,19 @@
 
   [root@localhost ~]# docker exec web-server ls
   [root@localhost ~]# docker exec -it web-server /bin/bash
+  [root@localhost ~]# docker exec -itu 0 web-server /bin/bash
   --------------------------------------
   - Command
     - docker exec [OPTIONS] CONTAINER COMMAND [ARG…]
     - docker exec -it CONTAINER 또는 CONTAINER_ID /bin/bash
+    - docker exec -itu 0 CONTAINER 또는 CONTAINER_ID /bin/bash
   - Description
     - 실행중인 CONTAINER에 진입
     - 컨테이터 외부에서 명령을 실행시키기 위한 것
 
     - CONTAINER 내부에 들어가지 않고, 실행중인 CONTAINER에 명령을 실행
     - CONTAINER 내부에 들어가서(표준 입출력을 컨테이너에 붙여서) 직접 명령 할 수 있게하는 명령어로도 사용할 수 있다.
+    - CONTAINER 내부에 root user로 진입
     
 
   [root@localhost ~]# docker attach web-server
