@@ -187,6 +187,24 @@ FATA[0000] error in config: cannot use vmType: 'qemu', error: qemu-img not found
 
 hyunyukim@LM-046570-00 ~ % brew install qemu
 
+# brew install qemu error
+hyunyukim@LM-046570-00 ~ % brew install qemu
+Error: You are using macOS 12.
+...
+
+Error: A newer Command Line Tools release is available.
+...
+
+If that doesnt show you any updates, run:
+  sudo rm -rf /Library/Developer/CommandLineTools
+  sudo xcode-select --install
+
+Alternatively, manually download them from:
+  https://developer.apple.com/download/all/.
+You should download the Command Line Tools for Xcode 14.2.
+
+hyunyukim@LM-046570-00 ~ % sudo rm -rf /Library/Developer/CommandLineTools
+hyunyukim@LM-046570-00 ~ % sudo xcode-select --install
 ```
 
 ##### Reference
