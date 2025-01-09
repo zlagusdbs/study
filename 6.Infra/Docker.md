@@ -190,8 +190,8 @@ hyunyukim@LM-046570-00 ~ % brew install qemu
 ```
 
 ##### Reference
-[Colima Github](https://github.com/abiosoft/colima)  
-[Colima Blog](https://smallsharpsoftwaretools.com/tutorials/use-colima-to-run-docker-containers-on-macos/)  
+[Colima Github: https://github.com/abiosoft/colima](https://github.com/abiosoft/colima)  
+[Colima Blog: https://smallsharpsoftwaretools.com/tutorials/use-colima-to-run-docker-containers-on-macos/](https://smallsharpsoftwaretools.com/tutorials/use-colima-to-run-docker-containers-on-macos/)  
 
 #### Rancher Desktop
 
