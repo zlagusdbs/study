@@ -152,9 +152,9 @@ hyunyukim@D-045522-00:~$ sudo systemctl start docker
 ```
 
 ### Mac
-Mac에서 Linux를 실행하려면 전체 Linux OS가 가상화되어 실행되어야 한다.
-Windows에서는 WSL을 이용하여 docker를 그대로 설치하여 제약없이(eg. wsl이 결국 브릿지를 거치기 때문에 vpn등 사용시 mtu 조절이 필요할 수 있는 제약이 있음)사용 가능하다.
-하지만 Mac은 Linux 스택을 그대로 사용할 수 없기때문에 VM을 반드시 띄운 후 사용하거나, Mac에서 Linux를 실행하기 위해 전체 운영 체제를 실행하는 VM for Mac 대신, 필요한 애플리케이션과 라이브러리만 격리하여 실행한다.
+Mac에서 Linux를 실행하려면 전체 Linux OS가 가상화되어 실행되어야 한다.  
+Windows에서는 WSL을 이용하여 docker를 그대로 설치하여 제약없이(eg. wsl이 결국 브릿지를 거치기 때문에 vpn등 사용시 mtu 조절이 필요할 수 있는 제약이 있음)사용 가능하다.  
+하지만 Mac은 Linux 스택을 그대로 사용할 수 없기때문에 VM을 반드시 띄운 후 사용하거나, Mac에서 Linux를 실행하기 위해 전체 운영 체제를 실행하는 VM for Mac 대신, 필요한 애플리케이션과 라이브러리만 격리하여 실행한다.  
 
 > Linux VM for Mac(lima 등)
 >> Linux 전체를 실행
