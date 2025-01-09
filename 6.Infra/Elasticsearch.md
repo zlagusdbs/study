@@ -15,7 +15,7 @@ Elasticsearch
 # Quickstart
 ## Local
 ### Elasticsearch Docker Install
-[https://www.elastic.co/guide/en/elasticsearch/reference/8.17/install-elasticsearch.html](https://www.elastic.co/guide/en/elasticsearch/reference/8.17/install-elasticsearch.html)
+Install Elasticsearch with Docker  
 ```bash
 hyunyukim@D-045522-00:~$ sudo docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.3
 installing...
@@ -48,6 +48,50 @@ hyunyukim@D-045522-00:~$ sudo update-ca-certificates
 hyunyukim@D-045522-00:~$ grep 인증서내용 /etc/ssl/certs/ca-certificates.crt
 ```
 
+Start a single-node Cluster with Docker  
+```bash
+# network 생성
+hyunyukim@D-045522-00:~$ sudo docker network create elastic
+ 
+# elastic application 실행
+hyunyukim@D-045522-00:~$ docker run --name es01 --net elastic -p 9200:9200 -d -it docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+ 
+# 실행중인 elatic application에 진입하여, "elastic" 유저의 비밀번호를 초기화
+hyunyukim@D-045522-00:~$ docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic -i
+ 
+# 인증서 백업
+hyunyukim@D-045522-00:~$ docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+ 
+# 호출테스트
+hyunyukim@D-045522-00:~$ curl --cacert http_ca.crt -u elastic https://localhost:9200
+Enter host password for user 'elastic':
+{
+  "name" : "acae9b41ed0a",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "oGE_27KmTYGPIjEx9Iybww",
+  "version" : {
+    "number" : "8.4.3",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "42f05b9372a9a4a470db3b52817899b99a76ee73",
+    "build_date" : "2022-10-04T07:17:24.662462378Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.3.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+ 
+# elastic application 재실행시..
+# hyunyukim@D-045522-00:~$ sudo docker start es01
+ 
+# elatic application 진입시
+# hyunyukim@D-045522-00:~$  sudo docker exec -it es01 /bin/bash
+```
+
+[https://www.elastic.co/guide/en/elasticsearch/reference/8.17/install-elasticsearch.html](https://www.elastic.co/guide/en/elasticsearch/reference/8.17/install-elasticsearch.html)
+
 ### Single-node cluster
 [https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html](https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html)  
 
@@ -66,7 +110,27 @@ $ bin/elasticsearch -E cluster.name=my-cluster -E node.name="node-1"
 ```
 
 # Document
-## Analyzer
+## Query
+Elasticsearch는 여러 가지 방식으로 쿼리를 작성할 수 있는 기능을 제공하며, 제공하는 방식은 대표적으로 4가지 정도가 된다.
+
+### Query DSL(Domain Specific Language)
+Elasticsearch에서 가장 기본적인 쿼리언어로 JSON 형식으로 쿼리를 작성
+
+### EQL(Event Query Language)
+Elasticsearch에서 Event Data(보안로그, 시계열데이터 등)을 분석하기 위한 쿼리언어로, 시간기반 이벤트를 다루는데 최적화되어있다.
+
+### SQL(Structured Query Language)
+Elasticsearch에서 관계형 데이터베이스에서 사용하는 전통적인 SQL 쿼리언어
+
+### ESQL(Elasticsearch SQL)
+Elasticsearch에서 SQL 스타일의 쿼리언어를 직접 제공한 쿼리언어. SQL 유사하지만, Elasticsearch에 최적화된 쿼리 형식을 제공
+
+## Scripting
+사용지 지정 표현식
+
+### Painless Scripting Language
+
+## Architecture
 - 색인(indexing) : 데이터가 검색될 수 있는 구조로 변경하기 위해 원본 문서를 검색어 토큰들으로 변환하여 저장하는 일련의 과정
 - 인덱스(index, indices) : 색인을 거친 결과물, 또는 색인된 데이터가 저장되는 저장소입니다. 또한 Elasticsearch에서 도큐먼트들의 논리적인 집합을 표현하는 단위이기도 하다
 - 검색(search) : 인덱스에 들어있는 검색어 토큰들을 포함하고 있는 문서를 찾아가는 과정
@@ -81,6 +145,35 @@ text -> Character Filters -> Tokenizer -> TokenFilter -> Inverted Index
 ```
 
 ## Cluster
+### Architecture
+Elasticsearch의 노드들은 클라이언트와의 통신을 위한 http 포트(9200~9299), 노드 간의 데이터 교환을 위한 tcp 포트 (9300~9399) 총 2개의 네트워크 통신을 열어두고 있습니다.
+일반적으로 1개의 물리 서버마다 하나의 노드를 실행하는 것을 권장하고 있습니다.
+3개의 다른 물리 서버에서 각각 1개 씩의 노드를 실행하면 각 클러스터는 다음과 같이 구성됩니다.
+
+#### Node
+##### Master Node(=Dedicated Master Node)
+인덱스의 메타 데이터, 샤드의 위치와 같은 클러스터 상태(Cluster Status) 정보를 관리하는 등 단지 마스터 노드의 역할만을 수행한다.
+```
+# config/elasticsearch.yml
+node:
+  master: true
+  data: false
+```
+##### Data Node
+실제로 색인된 데이터를 저장하고 있는 노드
+```
+# config/elasticsearch.yml
+node:
+  master: false
+  data: true
+```
+##### Split Brain
+각자의 클러스터에 데이터가 추가되거나 변경되고 나면 나중에 네트워크가 복구 되고 하나의 클러스터로 다시 합쳐졌을 때 데이터 정합성에 문제가 생기고 데이터 무결성이 유지될 수 없게 되는 문제를 Split Brain 이라고 합니다.
+```
+# config/elasticsearch.yml
+discovery.zen.minimum_master_nodes: 2    # =((전체 마스터 후보 노드 / 2) + 1)
+```
+
 ### Envrionment
 #### Java Option
 ##### Java Heap Memory
@@ -201,35 +294,6 @@ http:
   node.name: ${HOSTNAME}
   network.host: ${ES_NETWORK_HOST}
   ```
-
-### Architecture
-Elasticsearch의 노드들은 클라이언트와의 통신을 위한 http 포트(9200~9299), 노드 간의 데이터 교환을 위한 tcp 포트 (9300~9399) 총 2개의 네트워크 통신을 열어두고 있습니다.
-일반적으로 1개의 물리 서버마다 하나의 노드를 실행하는 것을 권장하고 있습니다.
-3개의 다른 물리 서버에서 각각 1개 씩의 노드를 실행하면 각 클러스터는 다음과 같이 구성됩니다.
-
-#### Node
-##### Master Node(=Dedicated Master Node)
-인덱스의 메타 데이터, 샤드의 위치와 같은 클러스터 상태(Cluster Status) 정보를 관리하는 등 단지 마스터 노드의 역할만을 수행한다.
-```
-# config/elasticsearch.yml
-node:
-  master: true
-  data: false
-```
-##### Data Node
-실제로 색인된 데이터를 저장하고 있는 노드
-```
-# config/elasticsearch.yml
-node:
-  master: false
-  data: true
-```
-##### Split Brain
-각자의 클러스터에 데이터가 추가되거나 변경되고 나면 나중에 네트워크가 복구 되고 하나의 클러스터로 다시 합쳐졌을 때 데이터 정합성에 문제가 생기고 데이터 무결성이 유지될 수 없게 되는 문제를 Split Brain 이라고 합니다.
-```
-# config/elasticsearch.yml
-discovery.zen.minimum_master_nodes: 2    # =((전체 마스터 후보 노드 / 2) + 1)
-```
 
 
 # Reference
