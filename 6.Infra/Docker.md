@@ -20,6 +20,136 @@
 
   - 참고사이트: [https://docs.microsoft.com/ko-kr/dotnet/architecture/containerized-lifecycle/what-is-docker](https://docs.microsoft.com/ko-kr/dotnet/architecture/containerized-lifecycle/what-is-docker)
 
+## Quickstart
+### Windows
+Docker는 Linux의 자체기능(chroot, cgroup, namespacce 등)을 활용한 기술이다.
+Windows에서는 바로 사용할 수 없음으로 winodws를 linux처럼 사용할 수 있도록 하는 WSL을 설치해야 한다.
+
+WSL(Windows Subsystem for Linux) Install
+```bash
+# cf. 설치를 시작하기 앞서, windows 기능 확인을 해야 할 수 있다.
+#     제어판 > 프로그램 및 기능 > Windows 기능 켜기/끄기 > Hyper-V, Linux용 Windows 하위 시스템 check
+# 1. WSL Install
+## WSL을 실행하고, Linux를 설치하는데 필요한 기능을 사용하도록 설정.
+C:\Users\anonymous> wsl --install
+ 
+## WSL는 WSL1, WSL2가 있는데, WSL2를 사용한다.
+C:\Users\anonymous> wsl --set-default-version 2
+WSL 2와의 주요 차이점에 대한 자세한 내용은 https://aka.ms/wsl2를 참조하세요
+ 
+# 2. Linux Install
+## 설치 가능한 목록을 확인할 수 있다. (개인 취향에 맞는 Linux를 설치하면 된다. 본문에서는 Ubuntu를 설치)
+C:\Users\anonymous> wsl --list --online
+다음은 설치할 수 있는 유효한 배포 목록입니다.
+'wsl --install -d <배포>'를 사용하여 설치하세요.
+ 
+NAME                            FRIENDLY NAME
+Ubuntu                          Ubuntu
+Debian                          Debian GNU/Linux
+kali-linux                      Kali Linux Rolling
+Ubuntu-18.04                    Ubuntu 18.04 LTS
+Ubuntu-20.04                    Ubuntu 20.04 LTS
+Ubuntu-22.04                    Ubuntu 22.04 LTS
+Ubuntu-24.04                    Ubuntu 24.04 LTS
+OracleLinux_7_9                 Oracle Linux 7.9
+OracleLinux_8_7                 Oracle Linux 8.7
+OracleLinux_9_1                 Oracle Linux 9.1
+openSUSE-Leap-15.6              openSUSE Leap 15.6
+SUSE-Linux-Enterprise-15-SP5    SUSE Linux Enterprise 15 SP5
+SUSE-Linux-Enterprise-15-SP6    SUSE Linux Enterprise 15 SP6
+openSUSE-Tumbleweed             openSUSE Tumbleweed
+ 
+## Ubuntu-24.04 Install
+C:\Users\anonymous> wsl --install -d Ubuntu-24.04
+ 
+## 설치된 Linux 배포판을 나열하고 각각 설정된 WSL 버전을 확인할 수 있다.
+### wsl 최신버전으로 업데이트(bash 환경에서 systemctl을 사용할 수 있도록 지원한다.)
+C:\Users\anonymous> wsl --update
+C:\Users\anonymous> wsl -list -verbose
+ 
+# 3. Bash Shell 설정
+## windows prompt에서 bash 환경으로 진입
+C:\Users\anonymous> bash
+Welcome to Ubuntu 24.04.1 LTS (GNU/Linux 4.4.0-19041-Microsoft x86_64)
+ 
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+ 
+ System information as of Tue Jan  7 15:30:19 KST 2025
+ 
+  System load:    0.52      Processes:             8
+  Usage of /home: unknown   Users logged in:       0
+  Memory usage:   44%       IPv4 address for eth0: 192.168.21.134
+  Swap usage:     0%
+ 
+This message is shown once a day. To disable it please create the
+/root/.hushlogin file.
+ 
+## bash sell 동작 확인
+hyunyukim@D-045522-00:~$ whoami
+root
+ 
+ 
+---
+ 
+# WSL 배포판 삭제
+C:\Users\anonymous> wsl --unregister Ubuntu-24.04
+```
+
+Docker Install
+```bash
+# windows prompt에서 bash 환경으로 변경
+C:\Users\anonymous> bash
+ 
+hyunyukim@D-045522-00:~$ sudo apt-get update
+hyunyukim@D-045522-00:~$ sudo apt-get install ca-certificates curl
+hyunyukim@D-045522-00:~$ sudo install -m 0755 -d /etc/apt/keyrings
+hyunyukim@D-045522-00:~$ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+hyunyukim@D-045522-00:~$ sudo chmod a+r /etc/apt/keyrings/docker.asc
+hyunyukim@D-045522-00:~$ echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+
+Install the Docker Pacakges
+```bash
+hyunyukim@D-045522-00:~$ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+hyunyukim@D-045522-00:~$ docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+c1ec31eb5944: Pull complete
+Digest: sha256:5b3cc85e16e3058003c13b7821318369dad01dac3dbb877aac3c28182255c724
+Status: Downloaded newer image for hello-world:latest
+ 
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+ 
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+ 
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+ 
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+ 
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+ 
+# docker가 실행되어있지 않을 수 있다. 이때 docker를 실행하면 된다.
+hyunyukim@D-045522-00:~$ sudo systemctl status docker
+hyunyukim@D-045522-00:~$ sudo systemctl start docker
+```
+
 ## 개요
 ### Docker [ 관리단위 : Container ]
   - Docker 위치 확인
