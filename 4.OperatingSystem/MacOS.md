@@ -59,19 +59,19 @@
   $ brew cask install Brackets
   ```
 
-# Containerd for Mac
+# Linux VM for Mac
+Mac에서 Linux를 실행하려면 전체 Linux OS가 가상화되어 실행되어야 한다.
 Windows에서는 WSL을 이용하여 docker를 그대로 설치하여 제약없이(eg. wsl이 결국 브릿지를 거치기 때문에 vpn등 사용시 mtu 조절이 필요할 수 있는 제약이 있음)사용 가능하다.
-하지만 Mac은 Linux 스택을 그대로 사용할 수 없기때문에 VM을 반드시 띄운 후 사용해야 한다.
+하지만 Mac은 Linux 스택을 그대로 사용할 수 없기때문에 VM을 반드시 띄운 후 사용해야한다.
+
+UTM, Lima, VirtualBox, VMWare Fusion, Parallels Desktop 등 다양한 소프트웨어가 존재한다.
 
 ## UTM
 macOS와 iOS에서 사용 가능한 가상화 소프트웨어로, QEMU를 기반으로 다양한 운영 체제를 가상화할 수 있습니다. 오픈소스이며, 사용자가 리눅스를 포함한 여러 OS를 가상 머신으로 실행할 수 있게 해줍니다.
 
 ## Lima
 기본적으로 lima는 containerd를 실행하여 컨테이너를 관리하며, 컨테이너 생성, 시작, 중지, 이미지 가져오기 및 저장, 마운트 구성, 네트워킹 등의 역할을 한다.
-Docker를 사용하는 목적이라면, 가장 인기있다. Docker 버전을 테스트 했을때 기존의 대부분의 동작들이 거의 완벽하게 호환되기때문.
-
-> =Docker Desktop for Mac
-
+Docker를 사용하는 목적이라면, 가장 인기있다. Docker 버전을 테스트 했을때 기존의 대부분의 동작들이 거의 완벽하게 호환되기때문.
 ```base
 # lima install
 hyunyukim@LM-046570-00 ~ % brew install lima
@@ -92,10 +92,17 @@ hyunyukim@LM-046570-00 ~ % limactl remove default
 ### Reference
 [https://github.com/lima-vm/lima](https://github.com/lima-vm/lima)
 
-## Multipass
-Canonical (우분투의 개발사)에서 만든 경량화된 가상 머신 관리 도구
 
-## Bagrant
+# Containerd for Mac
+Mac에서 Linux를 실행하기 위해 전체 운영 체제를 실행하는 VM for Mac 대신, 필요한 애플리케이션과 라이브러리만 격리하여 실행한다.
+Mac에서 Linux 컨테이너를 실행하려면 Docker와 같은 컨테이너화 도구를 사용합니다.
 
-## Parallels Desktop
+Colima, minikube 등 다양한 소프트웨어가 존재한다.
+
+## Colima
+Lima를 기반으로 하여 Docker 환경을 더 사용자 친화적이고 간편하게 설정하도록 중점을 둔 소프트웨어
+
+## Minikube
+Minikube는 macOS에서 Kubernetes 클러스터를 로컬로 실행할 수 있게 해주는 도구
+Minikube는 Kubernetes의 컨테이너 런타임으로 containerd를 선택할 수 있는 옵션을 제공한다.
 
