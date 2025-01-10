@@ -101,6 +101,12 @@ Colima, minikube 등 다양한 소프트웨어가 존재한다.
 
 ## Colima
 Lima를 기반으로 하여 Docker 환경을 더 사용자 친화적이고 간편하게 설정하도록 중점을 둔 소프트웨어
+#### docker colima
+```bash
+hyunyukim@LM-046570-00 ~ % brew install colima
+
+hyunyukim@LM-046570-00 ~ % colima start
+```
 
 ## Minikube
 Minikube는 macOS에서 Kubernetes 클러스터를 로컬로 실행할 수 있게 해주는 도구
