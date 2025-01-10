@@ -169,12 +169,10 @@ Docker Desktop 대체제
 - Podman
 - Minukube + Hyperkit
 
-#### colima
+#### docker colima
 ```bash
-hyunyukim@LM-046570-00 ~ % brew install colima docker docker-compose
-
-hyunyukim@LM-046570-00 ~ % mkdir -p ~/.docker/cli-plugins
-hyunyukim@LM-046570-00 ~ % ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
+hyunyukim@LM-046570-00 ~ % brew install docker docker-compose
+hyunyukim@LM-046570-00 ~ % brew install colima
 
 hyunyukim@LM-046570-00 ~ % colima start
 
