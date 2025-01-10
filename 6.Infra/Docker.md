@@ -206,6 +206,10 @@ hyunyukim@LM-046570-00 ~ % sudo xcode-select --install
 
 ## 만약 위의 명령어로도 안된다면, MacOS upgrade를 해야 한다.
 ## 난 MacOS 12 버전을 사용하는데 되지 않았고, upgrade 이후 15버전이 되어서야 가능했다.
+
+# FATA[0070] error starting vm: error at 'creating and starting': exit status 1
+이것은.. 혹시 터미널을 여러개 띄우면서 발생할 수 있으니.. 터미널을 모두 종료후에 하나만 재실행해서 다시 테스트해보자.
+
 ```
 
 ##### Reference
