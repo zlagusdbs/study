@@ -176,6 +176,11 @@ hyunyukim@LM-046570-00 ~ % brew install colima
 
 hyunyukim@LM-046570-00 ~ % colima start
 
+hyunyukim@LM-046570-00 ~ % docker network create {네트워크이름}
+hyunyukim@LM-046570-00 ~ % docker run --name {어플리케이션_별칭} --net {네트워크이름} -p 9200:9200 -d -it {이미지경로}
+
+hyunyukim@LM-046570-00 ~ % docker exec -it -u root {어플리케이션_별칭} /bin/bash
+
 
 ---
 
