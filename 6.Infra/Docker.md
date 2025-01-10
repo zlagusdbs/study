@@ -205,6 +205,9 @@ You should download the Command Line Tools for Xcode 14.2.
 
 hyunyukim@LM-046570-00 ~ % sudo rm -rf /Library/Developer/CommandLineTools
 hyunyukim@LM-046570-00 ~ % sudo xcode-select --install
+
+## 만약 위의 명령어로도 안된다면, MacOS upgrade를 해야 한다.
+## 난 MacOS 12 버전을 사용하는데 되지 않았고, upgrade 이후 15버전이 되어서야 가능했다.
 ```
 
 ##### Reference
