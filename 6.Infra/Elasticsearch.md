@@ -13,8 +13,8 @@ Elasticsearch
 
 
 # Quickstart
-## Local
-### Elasticsearch Docker Install
+## With Docker
+### Elasticsearch Install
 Install Elasticsearch with Docker  
 ```bash
 hyunyukim@D-045522-00:~$ sudo docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.3
@@ -95,6 +95,34 @@ Enter host password for user 'elastic':
 ### Single-node cluster
 [https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html](https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html)  
 
+### Elasticsearch Download
+```text
+# MAC
+ 
+# Elasticsearch Download
+hyunyukim@LM-046570 % curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.4.0-darwin-x86_64.tar.gz
+hyunyukim@LM-046570 % curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.4.0-darwin-x86_64.tar.gz.sha512 | shasum -a 512 -c -
+hyunyukim@LM-046570 % tar -xzf elasticsearch-8.4.0-darwin-x86_64.tar.gz
+ 
+# Kibana Download
+hyunyukim@LM-046570 % curl -O https://artifacts.elastic.co/downloads/kibana/kibana-8.4.0-darwin-x86_64.tar.gz
+hyunyukim@LM-046570 % curl https://artifacts.elastic.co/downloads/kibana/kibana-8.4.0-darwin-x86_64.tar.gz.sha512 | shasum -a 512 -c -
+hyunyukim@LM-046570 % tar -xzf kibana-8.4.0-darwin-x86_64.tar.gz
+ 
+# Elasticsearch PlugIn Download
+hyunyukim@LM-046570 % git clone https://github.gmarket.com/org-ebaykorea/starchip-elasticsearch-plugin.git
+ 
+ 
+---
+ 
+# Windows
+ 
+# Elasticsearch Download
+https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.4.0-windows-x86_64.zip
+ 
+# Kibana Download
+https://artifacts.elastic.co/downloads/kibana/kibana-8.4.0-windows-x86_64.zip
+```
 
 ## Cluster
 elasticsearch.yml 파일에 설정하는 것 외에도 Elasticsearch 실행 시 커맨드 명령에 -E <옵션>=<값> 을 이용해서 환경 설정이 가능합니다. 예를 들어 클러스터명은 my-cluster 노드명은 node-1로 노드를 실행하기 위해서는 다음과 같이 실행합니.
