@@ -1,7 +1,8 @@
 # Overview
-Elasticsearch
-
-## RDBMS와 Elasticsearch의 용어비교
+Elasticsearch desciption...  
+  
+  
+< RDBMS와 Elasticsearch의 용어비교 >  
 | RDBMS     | Elasticsearch  |
 |-----------|-----------------|
 | Schema    | Mapping         |
@@ -14,35 +15,34 @@ Elasticsearch
 
 # Quickstart
 ## With Docker
-### Elasticsearch Install
 Install Elasticsearch with Docker  
 ```bash
-hyunyukim@D-045522-00:~$ sudo docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+hyunyukim@D-045522-00:~$ docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.3
 installing...
  
-hyunyukim@D-045522-00:~$ sudo docker images
+hyunyukim@D-045522-00:~$ docker images
 REPOSITORY                                      TAG       IMAGE ID       CREATED         SIZE
 docker.elastic.co/elasticsearch/elasticsearch   8.4.3     ce2b9dc7fe85   2 years ago     1.26GB
- 
+
  
 ---
- 
+
 # Troubleshooting
 ## 1. 인증서오류시
-hyunyukim@D-045522-00:~$ sudo docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+hyunyukim@D-045522-00:~$ docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.3
 Error response from daemon: Get "https://docker.elastic.co/v2/": tls: failed to verify certificate: x509: certificate signed by unknown authority
  
 ### 1-1. 인증서 확인
 hyunyukim@D-045522-00:~$ openssl s_client -connect docker.elastic.co:443 -showcerts
  
 ### 1-2. 인증서 추가
-hyunyukim@D-045522-00:~$ sudo vim /usr/local/share/ca-certificates/GMARKET_RSA_CA.crt
+hyunyukim@D-045522-00:~$ vim /usr/local/share/ca-certificates/GMARKET_RSA_CA.crt
 -----BEGIN CERTIFICATE-----
 ...
 -----END CERTIFICATE-----
  
 ### 1-3. 인증서 적용
-hyunyukim@D-045522-00:~$ sudo update-ca-certificates
+hyunyukim@D-045522-00:~$ update-ca-certificates
  
 ### 1-4. 인증서 적용확인
 hyunyukim@D-045522-00:~$ grep 인증서내용 /etc/ssl/certs/ca-certificates.crt
@@ -51,7 +51,7 @@ hyunyukim@D-045522-00:~$ grep 인증서내용 /etc/ssl/certs/ca-certificates.crt
 Start a single-node Cluster with Docker  
 ```bash
 # network 생성
-hyunyukim@D-045522-00:~$ sudo docker network create elastic
+hyunyukim@D-045522-00:~$ docker network create elastic
  
 # elastic application 실행
 hyunyukim@D-045522-00:~$ docker run --name es01 --net elastic -p 9200:9200 -d -it docker.elastic.co/elasticsearch/elasticsearch:8.4.3
@@ -84,18 +84,14 @@ Enter host password for user 'elastic':
 }
  
 # elastic application 재실행시..
-# hyunyukim@D-045522-00:~$ sudo docker start es01
+# hyunyukim@D-045522-00:~$ docker start es01
  
 # elatic application 진입시
-# hyunyukim@D-045522-00:~$  sudo docker exec -it es01 /bin/bash
+# hyunyukim@D-045522-00:~$  docker exec -it es01 /bin/bash
 ```
-
 [https://www.elastic.co/guide/en/elasticsearch/reference/8.17/install-elasticsearch.html](https://www.elastic.co/guide/en/elasticsearch/reference/8.17/install-elasticsearch.html)
 
-### Single-node cluster
-[https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html](https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html)  
-
-### Elasticsearch Download
+## Get Binary Source Code
 ```text
 # MAC
  
@@ -111,6 +107,9 @@ hyunyukim@LM-046570 % tar -xzf kibana-8.4.0-darwin-x86_64.tar.gz
  
 # Elasticsearch PlugIn Download
 hyunyukim@LM-046570 % git clone https://github.gmarket.com/org-ebaykorea/starchip-elasticsearch-plugin.git
+
+## Single-node cluster
+[https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html](https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html)  
  
  
 ---
