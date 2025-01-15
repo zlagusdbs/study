@@ -157,7 +157,7 @@ TokenFilter
 ### In Spring Framework
 Plugin
 ```java
-public class MyActionPlugin implements ActionPlugin {
+public class MyActionPlugin implements Plugin {
     @Override
     public Collection<Object> createComponents(Client client, ClusterService clusterService, ThreadPool threadPool,
                                                ResourceWatcherService resourceWatcherService, ScriptService scriptService,
@@ -200,26 +200,19 @@ public class MyActionPlugin implements ActionPlugin {
 }
  
 public interface ActionPlugin {
-    /**
-     * action 등록
-     */
-    public List<RestHandler> getRestHandlers(final Settings settings,
-                                             final RestController restController,
-                                             final ClusterSettings clusterSettings,
-                                             final IndexScopedSettings indexScopedSettings,
-                                             final SettingsFilter settingsFilter,
-                                             final IndexNameExpressionResolver indexNameExpressionResolver,
-                                             final Supplier<DiscoveryNodes> nodesInCluster);
+    ...
 }
- 
+
+
+---
+
 public class CouponPriceCalculateAction extends BaseRestHandler {
     ....
 }
- 
-public CouponPriceCalculateAction extends BaseRestHandler {
-    ...
-}
- 
+
+/**
+ * Elasticsearch REST API의 요청을 처리하는 기본 클래스
+ */ 
 public abstract class BaseRestHandler implements RestHandler {
     ...
 }
