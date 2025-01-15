@@ -1,6 +1,8 @@
 # Overview
-Elasticsearch desciption...  
-  
+- 색인(indexing) : 데이터가 검색될 수 있는 구조로 변경하기 위해 원본 문서를 검색어 토큰들으로 변환하여 저장하는 일련의 과정  
+- 인덱스(index, indices) : 색인을 거친 결과물, 또는 색인된 데이터가 저장되는 저장소입니다. 또한 Elasticsearch에서 도큐먼트들의 논리적인 집합을 표현하는 단위이기도 하다  
+- 검색(search) : 인덱스에 들어있는 검색어 토큰들을 포함하고 있는 문서를 찾아가는 과정  
+- 질의(query) : 사용자가 원하는 문서를 찾거나 집계 결과를 출력하기 위해 검색 시 입력하는 검색어 또는 검색 조건  
   
 < RDBMS와 Elasticsearch의 용어비교 >  
 | RDBMS     | Elasticsearch  |
@@ -91,7 +93,7 @@ Enter host password for user 'elastic':
 ```
 [https://www.elastic.co/guide/en/elasticsearch/reference/8.17/install-elasticsearch.html](https://www.elastic.co/guide/en/elasticsearch/reference/8.17/install-elasticsearch.html)
 
-## Get Binary Source Code
+## With Binary
 ```text
 # MAC
  
@@ -123,7 +125,7 @@ https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.4.0-windows
 https://artifacts.elastic.co/downloads/kibana/kibana-8.4.0-windows-x86_64.zip
 ```
 
-## Cluster
+## Install a cluster env
 elasticsearch.yml 파일에 설정하는 것 외에도 Elasticsearch 실행 시 커맨드 명령에 -E <옵션>=<값> 을 이용해서 환경 설정이 가능합니다. 예를 들어 클러스터명은 my-cluster 노드명은 node-1로 노드를 실행하기 위해서는 다음과 같이 실행합니.
 ```
 # 환경 설정이 elasticsearch.yml 과 커맨드 명령 -E 에 모두 있는 경우에는 -E 커맨드 명령에서 한 설정이 더 우선해서 적용이 됩니다.
@@ -137,6 +139,121 @@ $ bin/elasticsearch -E cluster.name=my-cluster -E node.name="node-1"
 ```
 
 # Document
+## Text Analyzer
+```
+# Analyzer
+text -> Character Filters -> Tokenizer -> TokenFilter -> Inverted Index
+          Pattern Replace      Tokenizer    lowercase
+          Mapping                           stop
+          HTML Strip                        snowball
+```
+Character Filters
+  텍스트 분석 중 가장 먼저 처리되는 과정으로 색인된 텍스트가 토크나이저에 의해 텀으로 분리되기 전에 전체 문장에 대해 적용되는 일종의 전처리 도구
+Tokenizer
+  Text 단어를 분리하며,  데이터 분석 과정에서 토크나이저는 반드시 한 개
+TokenFilter
+  분리된 각각의 텀 들을 지정한 규칙에 따라 처리를 해 주는데, 이는 검색 가능토록 가공하는 행위와 같다
+
+### In Spring Framework
+Plugin
+```java
+public class MyActionPlugin implements ActionPlugin {
+    @Override
+    public Collection<Object> createComponents(Client client, ClusterService clusterService, ThreadPool threadPool,
+                                               ResourceWatcherService resourceWatcherService, ScriptService scriptService,
+                                               NamedXContentRegistry xContentRegistry, Environment environment,
+                                               NodeEnvironment nodeEnvironment, NamedWriteableRegistry namedWriteableRegistry,
+                                               IndexNameExpressionResolver indexNameExpressionResolver,
+                                               Supplier<RepositoriesService> repositoriesServiceSupplier, Tracer tracer) {
+        ...
+    }
+ 
+    @Override
+    public List<Setting<?>> getSettings() {
+        ...
+    }
+ 
+    @Override
+    public void close() {
+        ...
+    }
+}
+ 
+public abstract class Plugin implements Closeable {
+    ...
+}
+```
+
+ActionPlugin
+```java
+public class MyActionPlugin implements ActionPlugin {
+    @Override
+    public List<RestHandler> getRestHandlers(final Settings settings,
+                                             final RestController restController,
+                                             final ClusterSettings clusterSettings,
+                                             final IndexScopedSettings indexScopedSettings,
+                                             final SettingsFilter settingsFilter,
+                                             final IndexNameExpressionResolver indexNameExpressionResolver,
+                                             final Supplier<DiscoveryNodes> nodesInCluster) {
+        return Collections.singletonList(new CouponPriceCalculateAction());
+    }
+}
+ 
+public interface ActionPlugin {
+    /**
+     * action 등록
+     */
+    public List<RestHandler> getRestHandlers(final Settings settings,
+                                             final RestController restController,
+                                             final ClusterSettings clusterSettings,
+                                             final IndexScopedSettings indexScopedSettings,
+                                             final SettingsFilter settingsFilter,
+                                             final IndexNameExpressionResolver indexNameExpressionResolver,
+                                             final Supplier<DiscoveryNodes> nodesInCluster);
+}
+ 
+public class CouponPriceCalculateAction extends BaseRestHandler {
+    ....
+}
+ 
+public CouponPriceCalculateAction extends BaseRestHandler {
+    ...
+}
+ 
+public abstract class BaseRestHandler implements RestHandler {
+    ...
+}
+```
+
+AnalysisPlugin
+```java
+
+public class MyActionPlugin implements AnalysisPlugin {
+    /**
+     * 분석기 등록
+     */
+    @Override
+    public Map<String, AnalysisModule.AnalysisProvider<AnalyzerProvider<? extends Analyzer>>> getAnalyzers();
+ 
+    /**
+     * 토크나이저 등록
+     */
+    @Override
+    public Map<String, AnalysisModule.AnalysisProvider<TokenizerFactory>> getTokenizers();
+ 
+    /**
+     * 필터 등록
+     */
+    @Override
+    public Map<String, AnalysisModule.AnalysisProvider<TokenFilterFactory>> getTokenFilters();
+}
+
+
+public interface AnalysisPlugin {
+     ...
+}
+```
+
 ## Query
 Elasticsearch는 여러 가지 방식으로 쿼리를 작성할 수 있는 기능을 제공하며, 제공하는 방식은 대표적으로 4가지 정도가 된다.
 
@@ -186,26 +303,6 @@ DELETE _scripts/<script-id>
 # example
 DELETE _scripts/my-sotred-script
 ```
-
-### Expression
-
-### Mustache
-
-### Java(Advanced scripts using script engines)
-
-## Text Analyzer
-```
-# Analyzer
-text -> Character Filters -> Tokenizer -> TokenFilter -> Inverted Index
-          Pattern Replace      Tokenizer    lowercase
-          Mapping                           stop
-          HTML Strip                        snowball
-```
-
-색인(indexing) : 데이터가 검색될 수 있는 구조로 변경하기 위해 원본 문서를 검색어 토큰들으로 변환하여 저장하는 일련의 과정
-인덱스(index, indices) : 색인을 거친 결과물, 또는 색인된 데이터가 저장되는 저장소입니다. 또한 Elasticsearch에서 도큐먼트들의 논리적인 집합을 표현하는 단위이기도 하다
-검색(search) : 인덱스에 들어있는 검색어 토큰들을 포함하고 있는 문서를 찾아가는 과정
-질의(query) : 사용자가 원하는 문서를 찾거나 집계 결과를 출력하기 위해 검색 시 입력하는 검색어 또는 검색 조건
 
 ## Cluster
 ### Architecture
