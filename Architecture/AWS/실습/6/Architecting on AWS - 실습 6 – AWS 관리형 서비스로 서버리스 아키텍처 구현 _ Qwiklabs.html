@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://kgit.qwiklabs.com/classrooms/154/labs/1161 -->
+<html lang="ko" class="mdl-js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="[]" name="active-experiments">
+<meta content="{&quot;userId&quot;:968}" name="help-api-product-data">
+<meta name="csrf-param" content="authenticity_token">
+<meta name="csrf-token" content="vN8HztXwInEBJikW7pb95l95qdoLgUt2JUKsmPgFuH4XGZn1V35DwqhBVREZLsVCfvAu3I6aC1FpVhUHlNaazw==">
+<title>Architecting on AWS - 실습 6 – AWS 관리형 서비스로 서버리스 아키텍처 구현 | Qwiklabs</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0" name="viewport">
+<meta content="1rRsY0INj8RvwB5EF5pwdxt2A2P9aDgAlsICaJ0d5w0" name="google-site-verification">
+<meta content="#3681E4" property="msapplication-TileColor">
+<meta content="/favicon-144.png" property="msapplication-TileImage">
+<meta content="이 실습에서는 AWS 관리형 서비스를 사용하여 서버리스 아키텍처를 구현합니다." name="description">
+<meta content="Qwiklabs" name="author">
+<meta content="Architecting on AWS - 실습 6 – AWS 관리형 서비스로 서버리스 아키텍처 구현 | Qwiklabs" property="og:title">
+<meta content="website" property="og:type">
+<meta content="/favicon-144.png" property="og:image">
+<meta content="Qwiklabs" property="og:site_name">
+<meta content="이 실습에서는 AWS 관리형 서비스를 사용하여 서버리스 아키텍처를 구현합니다." property="og:description">
+<meta content="/qwiklabs_logo_900x887.png" property="og:logo" size="900x887">
+<meta content="/qwiklabs_logo_994x187.png" property="og:logo" size="994x187">
+<link href="https://kgit.qwiklabs.com/favicon-32.png" rel="shortcut icon">
+<link color="#3681E4" href="https://kgit.qwiklabs.com/favicon-svg.svg" rel="mask-icon">
+<link href="https://kgit.qwiklabs.com/favicon-180.png" rel="apple-touch-icon-precomposed">
+<link rel="stylesheet" media="screen" href="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/css">
+
+<link rel="stylesheet" media="screen" href="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/ko-7c4d85e3db7c28c14f71b18551da7ddc227e8f9b85777ece770fcbd96d9ef753.css">
+<!--[if lt IE 9]>
+<script src='http://html5shim.googlecode.com/svn/trunk/html5.js' type='text/javascript'></script>
+<![endif]-->
+<!--[endif]>  <![endif]-->
+<script type="text/javascript" id="www-widgetapi-script" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/www-widgetapi.js.다운로드" async=""></script><script>
+//<![CDATA[
+window.gon={};gon.current_user={"firstname":"HyunYun","lastname":"Kim","fullname":"HyunYun Kim","company":"\uc2e0\uc138\uacc4\uc544\uc774\uc564\uc528","email":"202030@shinsegae.com","origin":"kgit, direct","subscriptions":0,"id":"1173d4dad0fdbba2daa2b9611a473a4c","qlCreatedAt":"2020-11-16 06:45:52 UTC","optIn":true};gon.segment=null;gon.deployment="kgit";
+//]]>
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "url": "https://www.qwiklabs.com/",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://www.qwiklabs.com/catalog?keywords={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script id="ze-snippet" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/snippet.js.다운로드"></script>
+
+
+
+<link rel="stylesheet" media="all" href="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/application-a48fd8ab04c0345dd9a201ae73ef24d124fa56f5b9edba6652249ebed2e54384.css">
+<script>
+  EVENT_SOURCE_BASE_URL = "https://kgit.qwiklabs.com/nchan-sub?id=";
+</script>
+<script src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/webcomponents-loader-408088dc333247a761de5f2b2a4ba1cabd2bc36579f83ba92a559eb3682a9b77.js.다운로드"></script>
+<script src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/hallofmirrors__ko-a7bd36c5193761e4067e04d04a0744fe48f0d6a0c3fbe65b67e1da087108bb61.js.다운로드"></script>
+<custom-style>
+  <style is="custom-style">[hidden] {
+  display: none !important;
+}
+
+</style>
+</custom-style>
+<custom-style>
+  <style is="custom-style">html {
+  --layout_-_display:  flex;;
+
+      --layout-inline_-_display:  inline-flex;;
+
+      --layout-horizontal_-_display:  var(--layout_-_display); --layout-horizontal_-_-ms-flex-direction:  row; --layout-horizontal_-_-webkit-flex-direction:  row; --layout-horizontal_-_flex-direction:  row;;
+
+      --layout-horizontal-reverse_-_display:  var(--layout_-_display); --layout-horizontal-reverse_-_-ms-flex-direction:  row-reverse; --layout-horizontal-reverse_-_-webkit-flex-direction:  row-reverse; --layout-horizontal-reverse_-_flex-direction:  row-reverse;;
+
+      --layout-vertical_-_display:  var(--layout_-_display); --layout-vertical_-_-ms-flex-direction:  column; --layout-vertical_-_-webkit-flex-direction:  column; --layout-vertical_-_flex-direction:  column;;
+
+      --layout-vertical-reverse_-_display:  var(--layout_-_display); --layout-vertical-reverse_-_-ms-flex-direction:  column-reverse; --layout-vertical-reverse_-_-webkit-flex-direction:  column-reverse; --layout-vertical-reverse_-_flex-direction:  column-reverse;;
+
+      --layout-wrap_-_-ms-flex-wrap:  wrap; --layout-wrap_-_-webkit-flex-wrap:  wrap; --layout-wrap_-_flex-wrap:  wrap;;
+
+      --layout-wrap-reverse_-_-ms-flex-wrap:  wrap-reverse; --layout-wrap-reverse_-_-webkit-flex-wrap:  wrap-reverse; --layout-wrap-reverse_-_flex-wrap:  wrap-reverse;;
+
+      --layout-flex-auto_-_-ms-flex:  1 1 auto; --layout-flex-auto_-_-webkit-flex:  1 1 auto; --layout-flex-auto_-_flex:  1 1 auto;;
+
+      --layout-flex-none_-_-ms-flex:  none; --layout-flex-none_-_-webkit-flex:  none; --layout-flex-none_-_flex:  none;;
+
+      --layout-flex_-_-ms-flex:  1 1 0.000000001px; --layout-flex_-_-webkit-flex:  1; --layout-flex_-_flex:  1; --layout-flex_-_-webkit-flex-basis:  0.000000001px; --layout-flex_-_flex-basis:  0.000000001px;;
+
+      --layout-flex-2_-_-ms-flex:  2; --layout-flex-2_-_-webkit-flex:  2; --layout-flex-2_-_flex:  2;;
+
+      --layout-flex-3_-_-ms-flex:  3; --layout-flex-3_-_-webkit-flex:  3; --layout-flex-3_-_flex:  3;;
+
+      --layout-flex-4_-_-ms-flex:  4; --layout-flex-4_-_-webkit-flex:  4; --layout-flex-4_-_flex:  4;;
+
+      --layout-flex-5_-_-ms-flex:  5; --layout-flex-5_-_-webkit-flex:  5; --layout-flex-5_-_flex:  5;;
+
+      --layout-flex-6_-_-ms-flex:  6; --layout-flex-6_-_-webkit-flex:  6; --layout-flex-6_-_flex:  6;;
+
+      --layout-flex-7_-_-ms-flex:  7; --layout-flex-7_-_-webkit-flex:  7; --layout-flex-7_-_flex:  7;;
+
+      --layout-flex-8_-_-ms-flex:  8; --layout-flex-8_-_-webkit-flex:  8; --layout-flex-8_-_flex:  8;;
+
+      --layout-flex-9_-_-ms-flex:  9; --layout-flex-9_-_-webkit-flex:  9; --layout-flex-9_-_flex:  9;;
+
+      --layout-flex-10_-_-ms-flex:  10; --layout-flex-10_-_-webkit-flex:  10; --layout-flex-10_-_flex:  10;;
+
+      --layout-flex-11_-_-ms-flex:  11; --layout-flex-11_-_-webkit-flex:  11; --layout-flex-11_-_flex:  11;;
+
+      --layout-flex-12_-_-ms-flex:  12; --layout-flex-12_-_-webkit-flex:  12; --layout-flex-12_-_flex:  12;;
+
+      
+
+      --layout-start_-_-ms-flex-align:  start; --layout-start_-_-webkit-align-items:  flex-start; --layout-start_-_align-items:  flex-start;;
+
+      --layout-center_-_-ms-flex-align:  center; --layout-center_-_-webkit-align-items:  center; --layout-center_-_align-items:  center;;
+
+      --layout-end_-_-ms-flex-align:  end; --layout-end_-_-webkit-align-items:  flex-end; --layout-end_-_align-items:  flex-end;;
+
+      --layout-baseline_-_-ms-flex-align:  baseline; --layout-baseline_-_-webkit-align-items:  baseline; --layout-baseline_-_align-items:  baseline;;
+
+      
+
+      --layout-start-justified_-_-ms-flex-pack:  start; --layout-start-justified_-_-webkit-justify-content:  flex-start; --layout-start-justified_-_justify-content:  flex-start;;
+
+      --layout-center-justified_-_-ms-flex-pack:  center; --layout-center-justified_-_-webkit-justify-content:  center; --layout-center-justified_-_justify-content:  center;;
+
+      --layout-end-justified_-_-ms-flex-pack:  end; --layout-end-justified_-_-webkit-justify-content:  flex-end; --layout-end-justified_-_justify-content:  flex-end;;
+
+      --layout-around-justified_-_-ms-flex-pack:  distribute; --layout-around-justified_-_-webkit-justify-content:  space-around; --layout-around-justified_-_justify-content:  space-around;;
+
+      --layout-justified_-_-ms-flex-pack:  justify; --layout-justified_-_-webkit-justify-content:  space-between; --layout-justified_-_justify-content:  space-between;;
+
+      --layout-center-center_-_-ms-flex-align:  var(--layout-center_-_-ms-flex-align); --layout-center-center_-_-webkit-align-items:  var(--layout-center_-_-webkit-align-items); --layout-center-center_-_align-items:  var(--layout-center_-_align-items); --layout-center-center_-_-ms-flex-pack:  var(--layout-center-justified_-_-ms-flex-pack); --layout-center-center_-_-webkit-justify-content:  var(--layout-center-justified_-_-webkit-justify-content); --layout-center-center_-_justify-content:  var(--layout-center-justified_-_justify-content);;
+
+      
+
+      --layout-self-start_-_-ms-align-self:  flex-start; --layout-self-start_-_-webkit-align-self:  flex-start; --layout-self-start_-_align-self:  flex-start;;
+
+      --layout-self-center_-_-ms-align-self:  center; --layout-self-center_-_-webkit-align-self:  center; --layout-self-center_-_align-self:  center;;
+
+      --layout-self-end_-_-ms-align-self:  flex-end; --layout-self-end_-_-webkit-align-self:  flex-end; --layout-self-end_-_align-self:  flex-end;;
+
+      --layout-self-stretch_-_-ms-align-self:  stretch; --layout-self-stretch_-_-webkit-align-self:  stretch; --layout-self-stretch_-_align-self:  stretch;;
+
+      --layout-self-baseline_-_-ms-align-self:  baseline; --layout-self-baseline_-_-webkit-align-self:  baseline; --layout-self-baseline_-_align-self:  baseline;;
+
+      
+
+      --layout-start-aligned_-_-ms-flex-line-pack:  start; --layout-start-aligned_-_-ms-align-content:  flex-start; --layout-start-aligned_-_-webkit-align-content:  flex-start; --layout-start-aligned_-_align-content:  flex-start;;
+
+      --layout-end-aligned_-_-ms-flex-line-pack:  end; --layout-end-aligned_-_-ms-align-content:  flex-end; --layout-end-aligned_-_-webkit-align-content:  flex-end; --layout-end-aligned_-_align-content:  flex-end;;
+
+      --layout-center-aligned_-_-ms-flex-line-pack:  center; --layout-center-aligned_-_-ms-align-content:  center; --layout-center-aligned_-_-webkit-align-content:  center; --layout-center-aligned_-_align-content:  center;;
+
+      --layout-between-aligned_-_-ms-flex-line-pack:  justify; --layout-between-aligned_-_-ms-align-content:  space-between; --layout-between-aligned_-_-webkit-align-content:  space-between; --layout-between-aligned_-_align-content:  space-between;;
+
+      --layout-around-aligned_-_-ms-flex-line-pack:  distribute; --layout-around-aligned_-_-ms-align-content:  space-around; --layout-around-aligned_-_-webkit-align-content:  space-around; --layout-around-aligned_-_align-content:  space-around;;
+
+      
+
+      --layout-block_-_display:  block;;
+
+      --layout-invisible_-_visibility:  hidden !important;;
+
+      --layout-relative_-_position:  relative;;
+
+      --layout-fit_-_position:  absolute; --layout-fit_-_top:  0; --layout-fit_-_right:  0; --layout-fit_-_bottom:  0; --layout-fit_-_left:  0;;
+
+      --layout-scroll_-_-webkit-overflow-scrolling:  touch; --layout-scroll_-_overflow:  auto;;
+
+      --layout-fullbleed_-_margin:  0; --layout-fullbleed_-_height:  100vh;;
+
+      
+
+      --layout-fixed-top_-_position:  fixed; --layout-fixed-top_-_top:  0; --layout-fixed-top_-_left:  0; --layout-fixed-top_-_right:  0;;
+
+      --layout-fixed-right_-_position:  fixed; --layout-fixed-right_-_top:  0; --layout-fixed-right_-_right:  0; --layout-fixed-right_-_bottom:  0;;
+
+      --layout-fixed-bottom_-_position:  fixed; --layout-fixed-bottom_-_right:  0; --layout-fixed-bottom_-_bottom:  0; --layout-fixed-bottom_-_left:  0;;
+
+      --layout-fixed-left_-_position:  fixed; --layout-fixed-left_-_top:  0; --layout-fixed-left_-_bottom:  0; --layout-fixed-left_-_left:  0;;
+}
+
+</style>
+</custom-style><style>[hidden] { display: none !important; }</style><custom-style>
+  <style is="custom-style">html {
+  --google-red-100: #f4c7c3;
+      --google-red-300: #e67c73;
+      --google-red-500: #db4437;
+      --google-red-700: #c53929;
+
+      --google-blue-100: #c6dafc;
+      --google-blue-300: #7baaf7;
+      --google-blue-500: #4285f4;
+      --google-blue-700: #3367d6;
+
+      --google-green-100: #b7e1cd;
+      --google-green-300: #57bb8a;
+      --google-green-500: #0f9d58;
+      --google-green-700: #0b8043;
+
+      --google-yellow-100: #fce8b2;
+      --google-yellow-300: #f7cb4d;
+      --google-yellow-500: #f4b400;
+      --google-yellow-700: #f09300;
+
+      --google-grey-100: #f5f5f5;
+      --google-grey-300: #e0e0e0;
+      --google-grey-500: #9e9e9e;
+      --google-grey-700: #616161;
+
+      
+
+      --paper-red-50: #ffebee;
+      --paper-red-100: #ffcdd2;
+      --paper-red-200: #ef9a9a;
+      --paper-red-300: #e57373;
+      --paper-red-400: #ef5350;
+      --paper-red-500: #f44336;
+      --paper-red-600: #e53935;
+      --paper-red-700: #d32f2f;
+      --paper-red-800: #c62828;
+      --paper-red-900: #b71c1c;
+      --paper-red-a100: #ff8a80;
+      --paper-red-a200: #ff5252;
+      --paper-red-a400: #ff1744;
+      --paper-red-a700: #d50000;
+
+      --paper-pink-50: #fce4ec;
+      --paper-pink-100: #f8bbd0;
+      --paper-pink-200: #f48fb1;
+      --paper-pink-300: #f06292;
+      --paper-pink-400: #ec407a;
+      --paper-pink-500: #e91e63;
+      --paper-pink-600: #d81b60;
+      --paper-pink-700: #c2185b;
+      --paper-pink-800: #ad1457;
+      --paper-pink-900: #880e4f;
+      --paper-pink-a100: #ff80ab;
+      --paper-pink-a200: #ff4081;
+      --paper-pink-a400: #f50057;
+      --paper-pink-a700: #c51162;
+
+      --paper-purple-50: #f3e5f5;
+      --paper-purple-100: #e1bee7;
+      --paper-purple-200: #ce93d8;
+      --paper-purple-300: #ba68c8;
+      --paper-purple-400: #ab47bc;
+      --paper-purple-500: #9c27b0;
+      --paper-purple-600: #8e24aa;
+      --paper-purple-700: #7b1fa2;
+      --paper-purple-800: #6a1b9a;
+      --paper-purple-900: #4a148c;
+      --paper-purple-a100: #ea80fc;
+      --paper-purple-a200: #e040fb;
+      --paper-purple-a400: #d500f9;
+      --paper-purple-a700: #aa00ff;
+
+      --paper-deep-purple-50: #ede7f6;
+      --paper-deep-purple-100: #d1c4e9;
+      --paper-deep-purple-200: #b39ddb;
+      --paper-deep-purple-300: #9575cd;
+      --paper-deep-purple-400: #7e57c2;
+      --paper-deep-purple-500: #673ab7;
+      --paper-deep-purple-600: #5e35b1;
+      --paper-deep-purple-700: #512da8;
+      --paper-deep-purple-800: #4527a0;
+      --paper-deep-purple-900: #311b92;
+      --paper-deep-purple-a100: #b388ff;
+      --paper-deep-purple-a200: #7c4dff;
+      --paper-deep-purple-a400: #651fff;
+      --paper-deep-purple-a700: #6200ea;
+
+      --paper-indigo-50: #e8eaf6;
+      --paper-indigo-100: #c5cae9;
+      --paper-indigo-200: #9fa8da;
+      --paper-indigo-300: #7986cb;
+      --paper-indigo-400: #5c6bc0;
+      --paper-indigo-500: #3f51b5;
+      --paper-indigo-600: #3949ab;
+      --paper-indigo-700: #303f9f;
+      --paper-indigo-800: #283593;
+      --paper-indigo-900: #1a237e;
+      --paper-indigo-a100: #8c9eff;
+      --paper-indigo-a200: #536dfe;
+      --paper-indigo-a400: #3d5afe;
+      --paper-indigo-a700: #304ffe;
+
+      --paper-blue-50: #e3f2fd;
+      --paper-blue-100: #bbdefb;
+      --paper-blue-200: #90caf9;
+      --paper-blue-300: #64b5f6;
+      --paper-blue-400: #42a5f5;
+      --paper-blue-500: #2196f3;
+      --paper-blue-600: #1e88e5;
+      --paper-blue-700: #1976d2;
+      --paper-blue-800: #1565c0;
+      --paper-blue-900: #0d47a1;
+      --paper-blue-a100: #82b1ff;
+      --paper-blue-a200: #448aff;
+      --paper-blue-a400: #2979ff;
+      --paper-blue-a700: #2962ff;
+
+      --paper-light-blue-50: #e1f5fe;
+      --paper-light-blue-100: #b3e5fc;
+      --paper-light-blue-200: #81d4fa;
+      --paper-light-blue-300: #4fc3f7;
+      --paper-light-blue-400: #29b6f6;
+      --paper-light-blue-500: #03a9f4;
+      --paper-light-blue-600: #039be5;
+      --paper-light-blue-700: #0288d1;
+      --paper-light-blue-800: #0277bd;
+      --paper-light-blue-900: #01579b;
+      --paper-light-blue-a100: #80d8ff;
+      --paper-light-blue-a200: #40c4ff;
+      --paper-light-blue-a400: #00b0ff;
+      --paper-light-blue-a700: #0091ea;
+
+      --paper-cyan-50: #e0f7fa;
+      --paper-cyan-100: #b2ebf2;
+      --paper-cyan-200: #80deea;
+      --paper-cyan-300: #4dd0e1;
+      --paper-cyan-400: #26c6da;
+      --paper-cyan-500: #00bcd4;
+      --paper-cyan-600: #00acc1;
+      --paper-cyan-700: #0097a7;
+      --paper-cyan-800: #00838f;
+      --paper-cyan-900: #006064;
+      --paper-cyan-a100: #84ffff;
+      --paper-cyan-a200: #18ffff;
+      --paper-cyan-a400: #00e5ff;
+      --paper-cyan-a700: #00b8d4;
+
+      --paper-teal-50: #e0f2f1;
+      --paper-teal-100: #b2dfdb;
+      --paper-teal-200: #80cbc4;
+      --paper-teal-300: #4db6ac;
+      --paper-teal-400: #26a69a;
+      --paper-teal-500: #009688;
+      --paper-teal-600: #00897b;
+      --paper-teal-700: #00796b;
+      --paper-teal-800: #00695c;
+      --paper-teal-900: #004d40;
+      --paper-teal-a100: #a7ffeb;
+      --paper-teal-a200: #64ffda;
+      --paper-teal-a400: #1de9b6;
+      --paper-teal-a700: #00bfa5;
+
+      --paper-green-50: #e8f5e9;
+      --paper-green-100: #c8e6c9;
+      --paper-green-200: #a5d6a7;
+      --paper-green-300: #81c784;
+      --paper-green-400: #66bb6a;
+      --paper-green-500: #4caf50;
+      --paper-green-600: #43a047;
+      --paper-green-700: #388e3c;
+      --paper-green-800: #2e7d32;
+      --paper-green-900: #1b5e20;
+      --paper-green-a100: #b9f6ca;
+      --paper-green-a200: #69f0ae;
+      --paper-green-a400: #00e676;
+      --paper-green-a700: #00c853;
+
+      --paper-light-green-50: #f1f8e9;
+      --paper-light-green-100: #dcedc8;
+      --paper-light-green-200: #c5e1a5;
+      --paper-light-green-300: #aed581;
+      --paper-light-green-400: #9ccc65;
+      --paper-light-green-500: #8bc34a;
+      --paper-light-green-600: #7cb342;
+      --paper-light-green-700: #689f38;
+      --paper-light-green-800: #558b2f;
+      --paper-light-green-900: #33691e;
+      --paper-light-green-a100: #ccff90;
+      --paper-light-green-a200: #b2ff59;
+      --paper-light-green-a400: #76ff03;
+      --paper-light-green-a700: #64dd17;
+
+      --paper-lime-50: #f9fbe7;
+      --paper-lime-100: #f0f4c3;
+      --paper-lime-200: #e6ee9c;
+      --paper-lime-300: #dce775;
+      --paper-lime-400: #d4e157;
+      --paper-lime-500: #cddc39;
+      --paper-lime-600: #c0ca33;
+      --paper-lime-700: #afb42b;
+      --paper-lime-800: #9e9d24;
+      --paper-lime-900: #827717;
+      --paper-lime-a100: #f4ff81;
+      --paper-lime-a200: #eeff41;
+      --paper-lime-a400: #c6ff00;
+      --paper-lime-a700: #aeea00;
+
+      --paper-yellow-50: #fffde7;
+      --paper-yellow-100: #fff9c4;
+      --paper-yellow-200: #fff59d;
+      --paper-yellow-300: #fff176;
+      --paper-yellow-400: #ffee58;
+      --paper-yellow-500: #ffeb3b;
+      --paper-yellow-600: #fdd835;
+      --paper-yellow-700: #fbc02d;
+      --paper-yellow-800: #f9a825;
+      --paper-yellow-900: #f57f17;
+      --paper-yellow-a100: #ffff8d;
+      --paper-yellow-a200: #ffff00;
+      --paper-yellow-a400: #ffea00;
+      --paper-yellow-a700: #ffd600;
+
+      --paper-amber-50: #fff8e1;
+      --paper-amber-100: #ffecb3;
+      --paper-amber-200: #ffe082;
+      --paper-amber-300: #ffd54f;
+      --paper-amber-400: #ffca28;
+      --paper-amber-500: #ffc107;
+      --paper-amber-600: #ffb300;
+      --paper-amber-700: #ffa000;
+      --paper-amber-800: #ff8f00;
+      --paper-amber-900: #ff6f00;
+      --paper-amber-a100: #ffe57f;
+      --paper-amber-a200: #ffd740;
+      --paper-amber-a400: #ffc400;
+      --paper-amber-a700: #ffab00;
+
+      --paper-orange-50: #fff3e0;
+      --paper-orange-100: #ffe0b2;
+      --paper-orange-200: #ffcc80;
+      --paper-orange-300: #ffb74d;
+      --paper-orange-400: #ffa726;
+      --paper-orange-500: #ff9800;
+      --paper-orange-600: #fb8c00;
+      --paper-orange-700: #f57c00;
+      --paper-orange-800: #ef6c00;
+      --paper-orange-900: #e65100;
+      --paper-orange-a100: #ffd180;
+      --paper-orange-a200: #ffab40;
+      --paper-orange-a400: #ff9100;
+      --paper-orange-a700: #ff6500;
+
+      --paper-deep-orange-50: #fbe9e7;
+      --paper-deep-orange-100: #ffccbc;
+      --paper-deep-orange-200: #ffab91;
+      --paper-deep-orange-300: #ff8a65;
+      --paper-deep-orange-400: #ff7043;
+      --paper-deep-orange-500: #ff5722;
+      --paper-deep-orange-600: #f4511e;
+      --paper-deep-orange-700: #e64a19;
+      --paper-deep-orange-800: #d84315;
+      --paper-deep-orange-900: #bf360c;
+      --paper-deep-orange-a100: #ff9e80;
+      --paper-deep-orange-a200: #ff6e40;
+      --paper-deep-orange-a400: #ff3d00;
+      --paper-deep-orange-a700: #dd2c00;
+
+      --paper-brown-50: #efebe9;
+      --paper-brown-100: #d7ccc8;
+      --paper-brown-200: #bcaaa4;
+      --paper-brown-300: #a1887f;
+      --paper-brown-400: #8d6e63;
+      --paper-brown-500: #795548;
+      --paper-brown-600: #6d4c41;
+      --paper-brown-700: #5d4037;
+      --paper-brown-800: #4e342e;
+      --paper-brown-900: #3e2723;
+
+      --paper-grey-50: #fafafa;
+      --paper-grey-100: #f5f5f5;
+      --paper-grey-200: #eeeeee;
+      --paper-grey-300: #e0e0e0;
+      --paper-grey-400: #bdbdbd;
+      --paper-grey-500: #9e9e9e;
+      --paper-grey-600: #757575;
+      --paper-grey-700: #616161;
+      --paper-grey-800: #424242;
+      --paper-grey-900: #212121;
+
+      --paper-blue-grey-50: #eceff1;
+      --paper-blue-grey-100: #cfd8dc;
+      --paper-blue-grey-200: #b0bec5;
+      --paper-blue-grey-300: #90a4ae;
+      --paper-blue-grey-400: #78909c;
+      --paper-blue-grey-500: #607d8b;
+      --paper-blue-grey-600: #546e7a;
+      --paper-blue-grey-700: #455a64;
+      --paper-blue-grey-800: #37474f;
+      --paper-blue-grey-900: #263238;
+
+      
+      --dark-divider-opacity: 0.12;
+      --dark-disabled-opacity: 0.38; 
+      --dark-secondary-opacity: 0.54;
+      --dark-primary-opacity: 0.87;
+
+      
+      --light-divider-opacity: 0.12;
+      --light-disabled-opacity: 0.3; 
+      --light-secondary-opacity: 0.7;
+      --light-primary-opacity: 1.0;
+}
+
+</style>
+</custom-style><custom-style>
+  <style is="custom-style">html {
+  --primary-text-color: var(--light-theme-text-color);
+      --primary-background-color: var(--light-theme-background-color);
+      --secondary-text-color: var(--light-theme-secondary-color);
+      --disabled-text-color: var(--light-theme-disabled-color);
+      --divider-color: var(--light-theme-divider-color);
+      --error-color: var(--paper-deep-orange-a700);
+
+      
+      --primary-color: var(--paper-indigo-500);
+      --light-primary-color: var(--paper-indigo-100);
+      --dark-primary-color: var(--paper-indigo-700);
+
+      --accent-color: var(--paper-pink-a200);
+      --light-accent-color: var(--paper-pink-a100);
+      --dark-accent-color: var(--paper-pink-a400);
+
+
+      
+      --light-theme-background-color: #ffffff;
+      --light-theme-base-color: #000000;
+      --light-theme-text-color: var(--paper-grey-900);
+      --light-theme-secondary-color: #737373;  
+      --light-theme-disabled-color: #9b9b9b;  
+      --light-theme-divider-color: #dbdbdb;
+
+      
+      --dark-theme-background-color: var(--paper-grey-900);
+      --dark-theme-base-color: #ffffff;
+      --dark-theme-text-color: #ffffff;
+      --dark-theme-secondary-color: #bcbcbc;  
+      --dark-theme-disabled-color: #646464;  
+      --dark-theme-divider-color: #3c3c3c;
+
+      
+      --text-primary-color: var(--dark-theme-text-color);
+      --default-primary-color: var(--primary-color);
+}
+
+</style>
+</custom-style><script async="" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/lazy.min.js.다운로드"></script><script src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/loader.js.다운로드"></script>
+<script src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/iframe_api"></script>
+<script src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/vendor-45d462772c30000424907184f70c7157e95fb6227698d1671c5051818a6f60d8.js.다운로드"></script>
+<script src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/application-65b84955f0314cf3720e1765a0a4f8ec90a07908f549f456c81b575dbe6b0a78.js.다운로드"></script>
+</head>
+<body class="application-new focuses focuses-show l-full lab-show no-nav">
+<div class="header-container">
+<div class="header">
+<ql-icon-button class="js-nav-toggle header__nav-panel-button l-mrm">menu</ql-icon-button>
+<div class="header__title">
+<a class="icon-button" href="https://kgit.qwiklabs.com/classrooms/154"><ql-icon>arrow_back</ql-icon></a>
+
+<h1 class="headline-5">
+Architecting on AWS - 실습 6 – AWS 관리형 서비스로 서버리스 아키텍처 구현
+</h1>
+</div>
+<div class="header__actions">
+<ql-icon-button class="header__button--search js-header-search-bar-button">search</ql-icon-button>
+<ql-icon-button id="control-panel-target" style="display: none;">
+dashboard
+</ql-icon-button>
+<ql-menu for="#control-panel-target" id="control-panel-menu" style="left: -1000px; top: -1000px; opacity: 0;"></ql-menu>
+
+<ql-help context="lab" productdata="{&quot;userId&quot;:968}" data-analytics-action="opened_help" data-analytics-label="lab"></ql-help>
+<a class="header-my-account-button icon-button js-my-account-button">
+<img class="avatar " alt="avatar image" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/2a0839b753ab873a84b69bdf084260da.png">
+</a>
+<div class="header-my-account-menu js-my-account-menu">
+<div class="card elevation-2 no-padding">
+<div class="my-account-menu__top">
+<img class="avatar " alt="avatar image" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/2a0839b753ab873a84b69bdf084260da.png">
+<div class="my-account-menu__info">
+<h4 class="subtitle-headline-1">
+HyunYun Kim
+</h4>
+<p class="body-2 text--gray">
+<span>202030@shinsegae.com</span>
+</p>
+<a class="button" href="https://kgit.qwiklabs.com/my_account/profile">내 계정</a>
+</div>
+</div>
+<div class="my-account-menu__bottom">
+<a data-analytics-action="clicked_sign_out" class="button button--hairline" rel="nofollow" data-method="delete" href="https://kgit.qwiklabs.com/users/sign_out">로그아웃</a>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+<div class="header__search-bar js-header-search-bar">
+<form class="js-search-form-mobile" onsubmit="ql.searchFilter(); return false;" action="https://kgit.qwiklabs.com/searches/lab" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token" value="vN8HztXwInEBJikW7pb95l95qdoLgUt2JUKsmPgFuH4XGZn1V35DwqhBVREZLsVCfvAu3I6aC1FpVhUHlNaazw==">
+<input type="text" name="keywords" id="keywords" placeholder="검색" maxlength="255" aria-label="catalog search bar">
+</form>
+
+<ql-icon-button class="js-close-search-bar">close</ql-icon-button>
+</div>
+</div>
+
+<nav class="nav-bar">
+<a class="nav-bar__item js-navigation-button" href="https://kgit.qwiklabs.com/"><ql-icon class="nav-bar__item__icon">
+home
+</ql-icon>
+<span class="nav-bar__item__label">
+홈
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button" href="https://kgit.qwiklabs.com/catalog"><ql-icon class="nav-bar__item__icon">
+school
+</ql-icon>
+<span class="nav-bar__item__label">
+카탈로그
+</span>
+</a>
+<a class="nav-bar__item js-navigation-button  active" aria-current="page" href="https://kgit.qwiklabs.com/my_learning"><ql-icon class="nav-bar__item__icon">
+event_note
+</ql-icon>
+<span class="nav-bar__item__label">
+내 학습
+</span>
+</a>
+</nav>
+
+<nav class="nav-panel js-nav-panel">
+<div class="nav-panel__logo">
+<div class="custom-logo"><img src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/logo_kgitbank.png"></div>
+</div>
+<a title="홈" tabindex="-1" class="nav-panel__item js-navigation-button" href="https://kgit.qwiklabs.com/"><ql-icon class="nav-panel__item__icon">
+home
+</ql-icon>
+<div class="nav-panel__item__label">
+홈
+</div>
+</a>
+<a title="카탈로그" tabindex="-1" class="nav-panel__item js-navigation-button" href="https://kgit.qwiklabs.com/catalog"><ql-icon class="nav-panel__item__icon">
+school
+</ql-icon>
+<div class="nav-panel__item__label">
+카탈로그
+</div>
+</a>
+<a title="내 학습" tabindex="-1" class="nav-panel__item js-navigation-button active" aria-current="page" href="https://kgit.qwiklabs.com/my_learning"><ql-icon class="nav-panel__item__icon">
+event_note
+</ql-icon>
+<div class="nav-panel__item__label">
+내 학습
+</div>
+</a>
+<div class="nav-panel__spacer"></div>
+<a title="Profile" tabindex="-1" class="nav-panel__item js-navigation-button" href="https://kgit.qwiklabs.com/my_account/profile"><ql-icon class="nav-panel__item__icon">
+account_circle
+</ql-icon>
+<div class="nav-panel__item__label">
+Profile
+</div>
+</a>
+<a title="Credits &amp; Subscriptions" tabindex="-1" class="nav-panel__item js-navigation-button" href="https://kgit.qwiklabs.com/my_account/credits"><ql-icon class="nav-panel__item__icon">
+money
+</ql-icon>
+<div class="nav-panel__item__label">
+Credits &amp; Subscriptions
+</div>
+</a>
+<a title="Security" tabindex="-1" class="nav-panel__item js-navigation-button" href="https://kgit.qwiklabs.com/my_account/security"><ql-icon class="nav-panel__item__icon">
+security
+</ql-icon>
+<div class="nav-panel__item__label">
+Security
+</div>
+</a>
+<div class="nav-panel__spacer"></div>
+<a class="nav-panel__item" tabindex="-1" href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#"><ql-help>
+<div class="nav-panel__help-item">
+<ql-icon class="nav-panel__item__icon">help</ql-icon>
+<div class="nav-panel__item__label">Help</div>
+</div>
+</ql-help>
+</a><div class="nav-panel__small-links">
+<a tabindex="-1" href="https://kgit.qwiklabs.com/privacy_policy">개인정보 보호</a>
+<a tabindex="-1" href="https://kgit.qwiklabs.com/terms_of_service">약관</a>
+</div>
+</nav>
+<div class="nav-panel__overlay js-nav-toggle"></div>
+
+<main class="js-main">
+<span class="hidden" id="flash-sibling-before"></span>
+
+<div class="l-main-wrapper" id="main-wrapper">
+
+
+
+
+
+
+
+<ql-drawer-container class="js-lab-state" data-analytics-payload="{&quot;label&quot;:&quot;Architecting on AWS - 실습 6 – AWS 관리형 서비스로 서버리스 아키텍처 구현&quot;,&quot;lab_name&quot;:&quot;Architecting on AWS - 실습 6 – AWS 관리형 서비스로 서버리스 아키텍처 구현&quot;,&quot;classroom_name&quot;:null,&quot;deployment&quot;:&quot;kgit&quot;}" data-focus-id="1161" data-lab-billing-limit="0.0" data-lab-duration="10800" data-parent="classroom" id="lab-container">
+<ql-drawer id="terminal-drawer" slot="drawer" style="width: 1440px;">
+<ql-cloud-terminal class="terminal"></ql-cloud-terminal>
+</ql-drawer>
+<ql-drawer-content class="js-lab-wrapper" id="lab-content" slot="drawer-content">
+<ql-drawer-container id="lab-content-container">
+<ql-drawer id="control-panel-drawer" open="" slot="drawer" width="320" style="width: 320px;">
+<ql-lab-control-panel class="ql-lab-control-panel__max-height control-panel js-lab-control-panel" connectionfiles="[]" labcontrolbutton="{&quot;disabled&quot;:false,&quot;pending&quot;:false,&quot;running&quot;:false}" labdetails="[]" labtimer="{&quot;ticking&quot;:false,&quot;secondsRemaining&quot;:10800}" studentresources="[]">
+</ql-lab-control-panel>
+</ql-drawer>
+<ql-drawer-content id="lab-instructions" slot="drawer-content">
+<div class="alert alert--fake js-alert">
+<p class="alert__message js-alert-message"></p>
+<a class="alert__close js-alert-close">
+<i class="fa fa-times"></i>
+</a>
+<iframe class="l-ie-iframe-fix" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/saved_resource.html"></iframe>
+</div>
+<div class="js-lab-content lab-content__renderable-instructions">
+<div class="lab-preamble">
+<h1 class="lab-preamble__title">
+Architecting on AWS - 실습 6 – AWS 관리형 서비스로 서버리스 아키텍처 구현
+</h1>
+<div class="lab-preamble__details subtitle-headline-1">
+<span>3시간 </span>
+<span>무료</span>
+<div class="lab__rating">
+<a href="https://kgit.qwiklabs.com/focuses/1161/reviews?parent=catalog"><div class="rateit" data-rateit-readonly="true" data-rateit-value="0"><div class="rateit-reset" style="display: none;"></div><div class="rateit-range" style="width: 80px; height: 16px;"><div class="rateit-selected" style="height: 16px; width: 0px;"></div><div class="rateit-hover" style="height:16px"></div></div></div>
+
+</a><a data-target="#lab-review-modal" data-toggle="modal">
+실습 평가하기
+</a>
+</div>
+</div>
+</div>
+
+<div class="js-markdown-instructions markdown-lab-instructions no-select" id="markdown-lab-instructions">
+<p><img src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/aws-logo.png" alt=""></p>
+
+
+
+<p>© 2020 Amazon Web Services, Inc. 및 자회사. All rights reserved. 본 내용은 Amazon Web Services, Inc.의 사전 서면 허가 없이 전체 또는 일부를 복제하거나 재배포할 수 없습니다. 상업적인 복제, 임대 또는 판매는 금지됩니다.</p>
+
+<p>본 과정에 대한 수정 사항이나 의견이 있으면 <a href="mailto:aws-course-feedback@amazon.com" target="_blank">aws-course-feedback@amazon.com</a>으로 이메일을 보내주십시오.</p>
+
+<p>다른 질문이 있으면 <a href="https://aws.amazon.com/contact-us/aws-training/" target="_blank">https://aws.amazon.com/contact-us/aws-training/</a>으로 연락해 주십시오.</p>
+
+<h2 id="step1">실습 개요</h2>
+
+<p>전통적으로 애플리케이션은 서버에서 실행됩니다. 이는 물리적 서버 또는 물리적 서버 외에 실행 중인 가상 환경일 수 있지만 서버 구매와 서버 프로비저닝 및 용량 관리가 필요합니다. 대신 AWS Lambda는 서버를 미리 할당할 필요 없이 서버리스 코드를 실행할 수 있습니다. 코드를 제공하고 트리거를 정의하기만 하면 됩니다. 함수는 필요할 때마다(주당 1회 또는 초당 수백 번) 실행할 수 있으며 사용한 만큼만 비용을 지불합니다.</p>
+
+<p>이 실습에서는 파일을 Amazon Simple Storage Service(Amazon S3)에 업로드할 때 Lambda 함수를 트리거하는 방법을 설명합니다. 파일은 Amazon DynamoDB 테이블에 로드되며, DynamoDB에서 데이터를 직접 가져오는 대시보드 페이지에서 데이터를 볼 수 있습니다. 이 솔루션은 완전한 서버리스이고 자동으로 확장 가능하며 비용이 매우 저렴합니다.</p>
+
+<p>시스템에서 Amazon Elastic Compute Cloud(Amazon EC2)를 사용하지 <em>않습니다</em>. 시스템은 사용할 때는 자동으로 확장되고 사용하지 않을 때는 거의 비용이 발생하지 <em>않습니다</em>(데이터 스토리지에 불과 몇 센트).</p>
+
+<p><strong>목표</strong></p>
+
+<p>이 실습을 완료하면 다음을 할 수 있게 됩니다.</p>
+<ul>
+<li>Lambda 함수 생성</li>
+<li>Amazon S3 및 DynamoDB에서 Lambda 함수 트리거</li>
+<li>알림을 전송하도록 Amazon SNS를 구성</li>
+</ul>
+<p><strong>시나리오</strong></p>
+
+<p>현재 재고 추적 시스템을 만드는 중입니다. 전 세계 스토어에서 재고 파일을 Amazon S3에 업로드합니다. 팀에서는 재고 수준을 보고 재고 수준이 낮을 때 알림을 보낼 수 있기를 바랍니다.</p>
+
+<p>다음 다이어그램은 이 워크플로를 보여줍니다.</p>
+
+<p><img src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/flow.png" alt="워크플로"></p>
+
+<p>시나리오 워크플로는 다음과 같습니다.</p>
+<ul>
+<li>재고 파일을 Amazon S3 버킷에 업로드합니다.</li>
+<li>그러면 Lambda 함수가 트리거되어 파일을 읽고 항목을 DynamoDB 테이블에 삽입합니다.</li>
+<li>서버리스 웹 기반 대시보드 애플리케이션이 Amazon Cognito를 사용하여 AWS에 인증한 다음 DynamoDB 테이블에 대한 액세스 권한을 얻어 재고 수준을 표시합니다.</li>
+<li>다른 Lambda 함수가 DynamoDB 테이블에서 업데이트를 수신하고 재고품이 떨어지면 Amazon Simple Notification Service(Amazon SNS) 주제에 메시지를 보냅니다,</li>
+<li>그런 다음 Amazon SNS가 사용자에게 SMS 또는 이메일 알림을 보내 추가 재고를 요청합니다.</li>
+</ul>
+<p><strong>소요 시간</strong></p>
+
+<p>이 실습을 완료하는 데는 약 <strong>20분</strong>이 소요됩니다.</p>
+
+
+
+<h2 id="step2">실습 시작</h2>
+<ol start="1">
+<li>화면 상단의 <span style="background-color:#34A853;font-family:Google Sans;font-weight:bold;font-size:90%;color:white;border-color:#34A853;border-radius:4px;border-width:2px;border-style:solid;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">Start Lab</span>을 클릭해 실습을 시작합니다.</li>
+</ol>
+<p>실습 환경 생성 프로세스의 진행률이 상태 표시줄에 표시됩니다. 실습 리소스 생성 중에 AWS Management Console에 액세스할 수는 있지만, 프로세스가 완료되기 전까지는 일부 AWS 리소스를 사용하지 못할 수도 있습니다.</p>
+
+<p><i class="fas fa-info-circle"></i>토큰을 입력하라는 메시지가 표시되면, 여러분에게 배포된 토큰(또는 구매한 크레딧)을 사용합니다.</p>
+<ol start="2">
+<li><p><span style="background-color:#F9AB00;font-family:Google Sans;font-weight:bold;font-size:90%;color:white;border-color:#F9AB00;border-radius:4px;border-width:2px;border-style:solid;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">Open Console</span>을 클릭합니다.<br>
+그러면 AWS Management Console 로그인 페이지가 열립니다.</p></li>
+<li><p>Sign-in 페이지에서 다음을 구성합니다.</p></li>
+</ol><ul>
+<li>
+<strong>IAM user name:</strong> <input readonly="" class="copyable-inline-input" size="10" type="text" value="awsstudent">
+</li>
+<li>
+<strong>Password:</strong> 이 지침의 왼쪽에 있는 <strong>Password</strong>의 값을 붙여 넣습니다.</li>
+<li>
+<span style="background-color:#257ACF;font-weight:bold;font-size:90%;color:white;border-radius:5px;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Sign In</span>을 클릭합니다.</li>
+</ul><ol start="4">
+<li>콘솔 페이지가 열리면 왼쪽 하단으로 스크롤하여 언어 설정을 <strong>한국어</strong>에서 <strong>English (US)</strong> 로 반드시 변경해 주세요.</li>
+</ol>
+<p><strong>지시가 없다면 리전을 변경하지 마십시오</strong>.</p>
+
+
+
+<h3>일반적인 로그인 오류</h3>
+
+<h4>오류: You must first log out</h4>
+
+<p><img src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/logouterror.png" alt=""></p>
+
+<p><strong>You must first log out before logging into a different AWS account</strong> 라는 메시지가 표시된다면,</p>
+<ul>
+<li>
+<strong>click here</strong> 를 클릭합니다.</li>
+<li>브라우저 탭을 닫고 초기 실습 창으로 돌아갑니다.</li>
+<li>
+<span style="background-color:white;font-family:Google Sans;font-weight:bold;font-size:90%;color:#1a73e8;border-color:#dadce0;border-radius:4px;border-width:2px;border-style:solid;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">Open Console</span>을 다시 클릭합니다.</li>
+</ul>
+
+
+<h2 id="step3">작업 1: Lambda 함수를 생성하여 데이터 로드</h2>
+
+<p>이 작업에서는 Lambda 함수를 생성하여 재고 파일을 처리합니다. Lambda 함수는 다음 다이어그램에 표시된 것과 같이 파일을 읽고 DynamoDB 테이블에 정보를 삽입합니다.</p>
+
+<p><img src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/lambda-1.png" alt="Lambda 함수"></p>
+<ol start="5">
+<li><p>AWS Management Console의 <span style="background-color:#232f3e;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;">Services <i class="fas fa-angle-down"></i></span> 메뉴에서 <strong>Lambda</strong>를 클릭합니다.</p></li>
+<li><p><span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create function</span>을 클릭합니다.</p></li>
+</ol>
+<p><i class="fas fa-info-circle"></i> <strong>참고</strong> <em>블루프린트</em>는 Lambda 함수 작성에 사용하는 코드 템플릿입니다. 블루프린트는 Alexa 기술 생성 및 Amazon Kinesis Data Firehose 스트림 처리 같은 표준 Lambda 트리거의 경우에 제공됩니다. 본 실습에서는 사전 작성된 Lambda 함수를 제공하므로 처음부터 함수를 작성합니다.</p>
+<ol start="7">
+<li>다음을 구성합니다.</li>
+</ol><ul>
+<li>
+<strong>Author from scratch</strong>를 선택합니다.</li>
+<li>
+<strong>Function name:</strong> <input readonly="" class="copyable-inline-input" size="14" type="text" value="Load-Inventory">
+</li>
+<li>
+<strong>Runtime:</strong> <em>Python 3.8</em>
+</li>
+<li>
+<i class="fas fa-caret-right"></i> <strong>Change default execution role</strong>을 확장합니다.</li>
+<li>
+<strong>Execution role:</strong> <strong>Use an existing role</strong>을 선택합니다.</li>
+<li>
+<strong>Existing role:</strong> <em>Lambda-Load-Inventory-Role</em>
+</li>
+</ul>
+<p>이 역할은 Lambda 함수에 실행 권한을 부여하므로 Lambda 함수가 Amazon S3 및 DynamoDB에 액세스할 수 있습니다.</p>
+<ol start="8">
+<li><p><span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create function</span>을 클릭합니다.</p></li>
+<li><p><strong>Function code</strong> 섹션까지 스크롤을 내린 다음, 코드 편집기에 표시되는 모든 코드를 삭제합니다.</p></li>
+<li><p>다음 코드를 복사해 <strong>Function code</strong> 편집기에 붙여넣습니다.</p></li>
+</ol><pre class="highlight python"><code><span class="c"># Load-Inventory Lambda function</span>
+<span class="c">#</span>
+<span class="c"># This function is triggered by an object being created in an Amazon S3 bucket.</span>
+<span class="c"># The file is downloaded and each line is inserted into a DynamoDB table.</span>
+
+<span class="kn">import</span> <span class="nn">json</span><span class="p">,</span> <span class="n">urllib</span><span class="p">,</span> <span class="n">boto3</span><span class="p">,</span> <span class="n">csv</span>
+
+<span class="c"># Connect to S3 and DynamoDB</span>
+<span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s">'s3'</span><span class="p">)</span>
+<span class="n">dynamodb</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s">'dynamodb'</span><span class="p">)</span>
+
+<span class="c"># Connect to the DynamoDB tables</span>
+<span class="n">inventoryTable</span> <span class="o">=</span> <span class="n">dynamodb</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s">'Inventory'</span><span class="p">);</span>
+
+<span class="c"># This handler is executed every time the Lambda function is triggered</span>
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+
+  <span class="c"># Show the incoming event in the debug log</span>
+  <span class="k">print</span><span class="p">(</span><span class="s">"Event received by Lambda function: "</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+
+  <span class="c"># Get the bucket and object key from the event</span>
+  <span class="n">bucket</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s">'Records'</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s">'s3'</span><span class="p">][</span><span class="s">'bucket'</span><span class="p">][</span><span class="s">'name'</span><span class="p">]</span>
+  <span class="n">key</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">unquote_plus</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s">'Records'</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s">'s3'</span><span class="p">][</span><span class="s">'object'</span><span class="p">][</span><span class="s">'key'</span><span class="p">])</span>
+  <span class="n">localFilename</span> <span class="o">=</span> <span class="s">'/tmp/inventory.txt'</span>
+
+  <span class="c"># Download the file from S3 to the local filesystem</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">localFilename</span><span class="p">)</span>
+  <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">bucket</span><span class="p">))</span>
+    <span class="k">raise</span> <span class="n">e</span>
+
+  <span class="c"># Read the Inventory CSV file</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">localFilename</span><span class="p">)</span> <span class="k">as</span> <span class="n">csvfile</span><span class="p">:</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">','</span><span class="p">)</span>
+
+    <span class="c"># Read each row in the file</span>
+    <span class="n">rowCount</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+      <span class="n">rowCount</span> <span class="o">+=</span> <span class="mi">1</span>
+
+      <span class="c"># Show the row in the debug log</span>
+      <span class="k">print</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">'store'</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s">'item'</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s">'count'</span><span class="p">])</span>
+
+      <span class="k">try</span><span class="p">:</span>
+        <span class="c"># Insert Store, Item, and Count into the Inventory table</span>
+        <span class="n">inventoryTable</span><span class="o">.</span><span class="n">put_item</span><span class="p">(</span>
+          <span class="n">Item</span><span class="o">=</span><span class="p">{</span>
+            <span class="s">'Store'</span><span class="p">:</span>  <span class="n">row</span><span class="p">[</span><span class="s">'store'</span><span class="p">],</span>
+            <span class="s">'Item'</span><span class="p">:</span>   <span class="n">row</span><span class="p">[</span><span class="s">'item'</span><span class="p">],</span>
+            <span class="s">'Count'</span><span class="p">:</span>  <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">'count'</span><span class="p">])})</span>
+
+      <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+         <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+         <span class="k">print</span><span class="p">(</span><span class="s">"Unable to insert data into DynamoDB table"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="c"># Finished!</span>
+    <span class="k">return</span> <span class="s">"</span><span class="si">%</span><span class="s">d counts inserted"</span> <span class="o">%</span> <span class="n">rowCount</span>
+</code><button class="button button--text button--small copy-button js-copy-button-0"><ql-icon>content_copy</ql-icon></button></pre>
+<p>코드를 검사합니다. 여기에서 다음 단계를 수행합니다.</p>
+<ul>
+<li>Amazon S3에 업로드되어 함수를 트리거한 파일을 다운로드합니다.</li>
+<li>파일의 각 줄을 루프 처리합니다.</li>
+<li>데이터를 DynamoDB <em>Inventory</em> 테이블에 삽입합니다.</li>
+</ul><ol start="11">
+<li>페이지 상단에서 <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Deploy</span>를 클릭합니다.</li>
+</ol>
+<p>다음으로 파일이 업로드될 때 Lambda 함수를 트리거하도록 Amazon S3를 구성합니다.</p>
+
+<h2 id="step4">작업 2: Amazon S3 이벤트 구성</h2>
+
+<p>전 세계 매장이 재고 추적 시스템에 로드할 재고 파일을 제공합니다. 매장은 FTP를 통하지 않고 Amazon S3에 파일을 직접 업로드할 수 있습니다. 이는 웹 페이지나 스크립트 또는 프로그램의 일부를 통해 가능합니다. 다음 다이어그램과 같이 파일이 수신되면 Lambda 함수가 트리거되어 DynamoDB 테이블에 재고 파일을 자동으로 로드합니다.</p>
+
+<p><img src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/s3-event.png" alt="Lambda 함수"></p>
+
+<p>이 작업에서는 Amazon S3 버킷을 만들고 Lambda 함수를 트리거하도록 구성합니다.</p>
+<ol start="12">
+<li><p><span style="background-color:#232f3e;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;">Services <i class="fas fa-angle-down"></i></span> 메뉴에서 <strong>S3</strong>를 클릭합니다.</p></li>
+<li><p><span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create bucket</span>을 클릭합니다.</p></li>
+</ol>
+<p>각 버킷 이름은 고유해야 하므로 버킷 이름에 난수를 추가합니다. 예: <em>inventory-123</em></p>
+<ol start="14">
+<li><p><strong>Bucket name</strong>에 <input readonly="" class="copyable-inline-input" size="13" type="text" value="inventory-123">(<em>123</em> 을 다른 난수로 교체)을 입력합니다.</p></li>
+<li><p>맨 아래에서 <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create bucket</span> 을 클릭 합니다.</p></li>
+</ol>
+<p><i class="fas fa-comment"></i> <strong>참고</strong> 동일한 이름의 버킷이 이미 존재한다는 오류가 발생하는 경우 버킷 이름을 변경하고 수락될 때까지 다시 시도하십시오.</p>
+
+<p>이제 파일이 업로드될 때마다 자동으로 Lambda 함수를 트리거하도록 버킷을 구성합니다.</p>
+<ol start="16">
+<li><p>방금 생성한 이름이 <strong>inventory-xxxx</strong> 인 버킷을 클릭합니다.</p></li>
+<li><p><strong>Properties</strong> 탭을 클릭합니다.</p></li>
+<li><p>아래로 스크롤하여 <strong>Event notifications</strong> 세션으로 이동한 다음 <span style="background-color:#DEDEDE;font-weight:bold;font-size:90%;color:#444;border-radius:5px;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create event notification</span>버튼을 클릭합니다.</p></li>
+<li><p><strong>General configuration</strong> 항목 아래에 다음과 같이 구성합니다.<br><br>
+<strong>Event name :</strong> <input readonly="" class="copyable-inline-input" size="14" type="text" value="Load-Inventory"> </p></li>
+<li><p><strong>Event types</strong> 항목 아래에 다음을 선택합니다. <br>
+<strong>All object create events</strong> 체크박스에 체크 합니다. </p></li>
+<li><p><strong>Destination</strong> 항목 아래 <br>
+<strong>Lambda function</strong> 이 선택 되어 있는지 확인 합니다. (만일 선택이 되어 있지 않으면 선택 하십시요.)<br>
+<strong>Choose from your Lambda functions</strong> 가 선택 되어 있어야 합니다. <br>
+<strong>Lambda function 선택 상자 :</strong> <input readonly="" class="copyable-inline-input" size="14" type="text" value="Load-Inventory"> 를 선택 합니다. </p></li>
+<li><p>화면 맨 아래 <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Save Changes</span> 버튼을 클릭 합니다.  </p></li>
+</ol>
+<p>이렇게 하면 버킷에서 객체가 생성될 때마다 앞서 만든 <em>Load-Inventory</em> Lambda 함수를 트리거하라고 Amazon S3에 알립니다.</p>
+
+<p>이제 버킷이 재고 파일을 수신할 준비가 되었습니다!</p>
+
+<h2 id="step5">작업 3: 로딩 프로세스 테스트</h2>
+
+<p>이제 재고 파일 로딩 프로세스를 테스트할 준비가 되었습니다. 재고 파일을 업로드한 다음 성공적으로 로드되었는지 확인합니다. 다음 다이어그램에서는 이러한 단계를 보여줍니다. 이후 작업에서 워크플로의 알림 부분을 테스트합니다.</p>
+
+<p><img src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/load-test.png" alt="로드 테스트"></p>
+<ol start="23">
+<li><p>다음 링크를 마우스 오른쪽 버튼으로 클릭하고 <a href="https://us-east-1-tcprod.s3.amazonaws.com/courses/ILT-TF-200-ARCHIT/v6.8.12/lab-6-serverless/web/inventory-files.zip" target="_blank">inventory-files.zip</a> 파일을 다운로드합니다.</p></li>
+<li><p>파일 압축을 풉니다.</p></li>
+</ol>
+<p>이 .zip 파일에는 시스템 테스트에 사용할 수 있는 여러 재고 .csv 파일이 포함되어 있습니다. Berlin 파일에는 다음 데이터가 포함됩니다.</p>
+<pre class="highlight plaintext"><code>store,item,count
+Berlin,Echo Dot,12
+Berlin,Echo (2nd Gen),19
+Berlin,Echo Show,18
+Berlin,Echo Plus,0
+Berlin,Echo Look,10
+Berlin,Amazon Tap,15
+</code><button class="button button--text button--small copy-button js-copy-button-1"><ql-icon>content_copy</ql-icon></button></pre><ol start="25">
+<li><p>생성된 S3 버킷 화면에서 <strong>Objects</strong> 탭 아래 <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Upload</span> 버튼을 클릭 합니다.</p></li>
+<li><p><span style="background-color:#DEDEDE;font-weight:bold;font-size:90%;color:#444;border-radius:5px;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;"><strong>Add files</strong></span> 버튼을 클릭하고 CSV 파일 중 하나를 버킷에 업로드합니다. (재고 파일 중 아무 파일이나 선택할 수 있지만 단 하나만 업로드할 수 있습니다.)</p></li>
+<li><p>화면 아래 <strong>Destination</strong> 세션에서 <i class="far fa-check-square"></i> <strong>I acknowledge that ...</strong>  체크박스에 체크 합니다.</p></li>
+<li><p>화면 맨 아래로 이동하여  <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Upload</span> 버튼을 클릭 합니다.</p></li>
+<li><p>파일이 정상적으로 전송되었으면 화면위에 <span style="background-color:#DEDEDE;font-weight:bold;font-size:90%;color:#444;border-radius:5px;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;"><strong>Exit</strong></span> 버튼을 클릭 합니다.</p></li>
+</ol>
+<p>Amazon S3가 자동으로 Lambda 함수를 트리거합니다. 그러면 이 함수가 DynamoDB 테이블에 데이터를 로드합니다.</p>
+
+<p>결과를 볼 수 있도록 서버리스 대시보드 애플리케이션이 제공되어 있습니다.</p>
+<ol start="30">
+<li><p>현재 읽고 있는 문서의 왼쪽에 표시된 <strong>Dashboard</strong> URL을 복사합니다.</p></li>
+<li><p>새 웹 브라우저 탭을 열어 복사한 URL을 붙여넣고 Enter 키를 누릅니다.</p></li>
+</ol>
+<p>대시보드 애플리케이션이 표시되어 버킷에 로드된 재고 데이터를 보여줍니다. 대시보드가 다음 이미지와 같은 경우 애플리케이션이 DynamoDB에서 데이터를 검색할 수 있었으며, 이는 Lambda 함수가 성공적으로 트리거되었음을 입증합니다.</p>
+
+<p><img src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/dashboard.png" alt="대시보드"></p>
+
+<p><i class="fas fa-exclamation-triangle"></i> <strong>참고</strong> 어떤 정보도 표시되지 않는 경우 강사에게 문제 진단을 도와달라고 요청하십시오.</p>
+
+<p>이 대시보드 애플리케이션은 Amazon S3에서 정적 웹 페이지로 제공됩니다. 대시보드는 Amazon Cognito를 통해 <em>anonymous user</em> 로 인증됩니다. 이는 대시보드가 DynamoDB에서 데이터를 검색할 수 있는 충분한 권한을 제공합니다.</p>
+
+<p>DynamoDB 테이블 내에서 데이터를 볼 수도 있습니다.</p>
+<ol start="32">
+<li><p>AWS Management Console 브라우저 탭으로 돌아갑니다. <span style="background-color:#232f3e;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;">Services <i class="fas fa-angle-down"></i></span> 메뉴에서 <strong>DynamoDB</strong>를 클릭합니다.</p></li>
+<li><p>왼쪽 탐색 창에서 <strong>Table</strong>을 클릭합니다.</p></li>
+<li><p><strong>Inventory</strong> 테이블의 이름을 클릭합니다.</p></li>
+<li><p><strong>Items</strong> 탭을 클릭합니다.</p></li>
+</ol>
+<p>재고 파일의 데이터가 표시되어 매장, 항목 및 재고 수량을 보여줍니다.</p>
+
+<h2 id="step6">작업 4: 알림 구성</h2>
+
+<p>이제 웹 애플리케이션을 통해 재고 파일을 빠르게 볼 수 있으므로 매장에 품목이 부족할 때 재고 관리 담당자에게 알릴 수 있습니다. 이 서버리스 알림 기능에 대해 다음 다이어그램과 같이 Amazon Simple Notification Service(Amazon SNS)를 사용합니다.</p>
+
+<p><img src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/sns.png" alt="로드 테스트"></p>
+
+<p>Amazon SNS는 구독 엔드포인트와 및 클라이언트로 메시지를 전달하기 위한 유연한 완전 관리형 게시/구독 메시징 및 모바일 알림 서비스입니다. Amazon SNS를 사용하면 분산 시스템 및 서비스와 모바일 디바이스와 같은 많은 수의 구독자로 메시지를 팬아웃할 수 있습니다.</p>
+<ol start="36">
+<li><p><span style="background-color:#232f3e;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;">Services <i class="fas fa-angle-down"></i></span> 메뉴에서  <strong>Simple Notification Service</strong> 를 클릭합니다.</p></li>
+<li><p>왼쪽 탐색판넬에서 <strong>Topics</strong> 을 클릭 한후 <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create topic</span> 버튼을 클릭 합니다.</p></li>
+<li><p><strong>Create topic</strong> 상자에서 <strong>Standard option</strong> 을 선택 합니다.</p></li>
+<li><p><strong>name</strong> 에 <input readonly="" class="copyable-inline-input" size="7" type="text" value="NoStock">을 입력합니다.</p></li>
+<li><p><span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create topic</span>을 클릭합니다.</p></li>
+</ol>
+<p>알림을 수신하려면 주제를 <em>구독</em> 해야 합니다. SMS 및 이메일과 같이 여러 방법을 통해 알림을 수신하도록 구독할 수 있습니다.</p>
+<ol start="41">
+<li>페이지 하단에서 <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create subscription</span>을 클릭하고 다음을 구성합니다.</li>
+</ol><ul>
+<li>
+<strong>Protocol:</strong> <em>SMS</em>
+</li>
+<li>
+<strong>Endpoint:</strong> 국제 전화번호 형식으로 메세지를 수신할 휴대전화 번호를 입력합니다(예: +82107xxxxxx 또는 +917515550199).</li>
+<li>
+<span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create subscription</span>을 클릭합니다.</li>
+</ul>
+<p><i class="fas fa-comment"></i> <strong>참고</strong> SMS 수신을 원치 않을 경우, 강의실에서 액세스할 수 있는 이메일을 제공하여 이메일을 통해 구독할 수 있습니다. 이메일 구독을 생성한 후 확인 이메일을 받게 됩니다. 이메일을 열고 <strong>Confirm subscription</strong> 링크를 클릭합니다.</p>
+
+<p>이제 주제와 구독이 설정되었으므로 SNS 주제로 전송된 모든 메시지는 SMS 또는 이메일을 통해 사용자에게 전달됩니다.</p>
+
+<h2 id="step7">작업 5: 알림을 전송하는 Lambda 함수 생성</h2>
+
+<p>기존의 <em>Load-Inventory</em> Lambda 함수를 수정하여 파일이 로드되는 동안 재고 수준을 확인할 수 있지만, 이는 아키텍처 모범 사례가 아닙니다. <em>Load-Inventory</em> 함수를 비즈니스 로직으로 과부하시키는 대신, DynamoDB 테이블에 데이터가 로드될 때마다 트리거되는 다른 Lambda 함수를 생성합니다. 이 함수는 <em>DynamoDB Stream</em> 으로 트리거됩니다.</p>
+
+<p>이 아키텍처 접근 방식은 몇 가지 이점이 있습니다.</p>
+<ul>
+<li>각 Lambda 함수는 특정 기능 하나만 수행합니다. 이렇게 하면 코드가 간단해지고 관리가 더 간편해집니다.</li>
+<li>추가 Lambda 함수를 생성하여 비즈니스 로직을 추가할 수 있습니다. 각 함수는 독립적으로 작동하므로 기존 기능에 영향을 받지 않습니다.</li>
+</ul>
+<p>이 작업에서는 DynamoDB 테이블에 로드되는 재고를 모니터링하는 다른 Lambda 함수를 생성합니다. 함수가 품절을 확인하는 경우(수가 0임) 앞서 생성한 Amazon SNS 주제를 통해 함수에서 알림을 전송합니다.</p>
+
+<p>다음 다이어그램은 이 워크플로를 보여줍니다.</p>
+
+<p><img src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/lambda-2.png" alt="로드 테스트"></p>
+<ol start="42">
+<li><p><span style="background-color:#232f3e;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;">Services <i class="fas fa-angle-down"></i></span> 메뉴에서 <strong>Lambda</strong>를 클릭합니다.</p></li>
+<li><p><span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create function</span>을 클릭하고 다음을 구성합니다.</p></li>
+</ol><ul>
+<li>
+<strong>Author from scratch</strong>를 선택합니다.</li>
+<li>
+<strong>Name:</strong> <input readonly="" class="copyable-inline-input" size="11" type="text" value="Check-Stock">
+</li>
+<li>
+<strong>Runtime:</strong> <em>Python 3.8</em>
+</li>
+<li>
+<i class="fas fa-caret-right"></i> <strong>Change default execution role</strong>을 확장합니다.</li>
+<li>
+<strong>Execution Role:</strong> <em>Use an existing role</em>
+</li>
+<li>
+<strong>Existing role:</strong> <em>Lambda-Check-Stock-Role</em>
+</li>
+<li>
+<span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Create function</span>을 클릭합니다.</li>
+</ul>
+<p>이 역할은 Amazon SNS로 알림을 보낼 수 있는 권한으로 구성되었습니다.</p>
+<ol start="44">
+<li><p><strong>Function code</strong> 섹션까지 스크롤을 내린 다음, 코드 편집기에 표시되는 모든 코드를 삭제합니다.</p></li>
+<li><p>다음 코드를 복사해 <strong>Function code</strong> 편집기에 붙여넣습니다.</p></li>
+</ol><pre class="highlight python"><code><span class="c"># Stock Check Lambda function</span>
+<span class="c">#</span>
+<span class="c"># This function is triggered when values are inserted into the Inventory DynamoDB table.</span>
+<span class="c"># Inventory counts are checked, and if an item is out of stock, a notification is sent to an SNS topic.</span>
+
+<span class="kn">import</span> <span class="nn">json</span><span class="p">,</span> <span class="n">boto3</span>
+
+<span class="c"># This handler is executed every time the Lambda function is triggered</span>
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+
+  <span class="c"># Show the incoming event in the debug log</span>
+  <span class="k">print</span><span class="p">(</span><span class="s">"Event received by Lambda function: "</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+
+  <span class="c"># For each inventory item added, check if the count is zero</span>
+  <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">event</span><span class="p">[</span><span class="s">'Records'</span><span class="p">]:</span>
+    <span class="n">newImage</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="s">'dynamodb'</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'NewImage'</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">newImage</span><span class="p">:</span>
+
+      <span class="n">count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="s">'dynamodb'</span><span class="p">][</span><span class="s">'NewImage'</span><span class="p">][</span><span class="s">'Count'</span><span class="p">][</span><span class="s">'N'</span><span class="p">])</span>
+
+      <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="s">'dynamodb'</span><span class="p">][</span><span class="s">'NewImage'</span><span class="p">][</span><span class="s">'Store'</span><span class="p">][</span><span class="s">'S'</span><span class="p">]</span>
+        <span class="n">item</span>  <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="s">'dynamodb'</span><span class="p">][</span><span class="s">'NewImage'</span><span class="p">][</span><span class="s">'Item'</span><span class="p">][</span><span class="s">'S'</span><span class="p">]</span>
+
+        <span class="c"># Construct message to be sent</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">store</span> <span class="o">+</span> <span class="s">' is out of stock of '</span> <span class="o">+</span> <span class="n">item</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="c"># Connect to SNS</span>
+        <span class="n">sns</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s">'sns'</span><span class="p">)</span>
+        <span class="n">alertTopic</span> <span class="o">=</span> <span class="s">'NoStock'</span>
+        <span class="n">snsTopicArn</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s">'TopicArn'</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">sns</span><span class="o">.</span><span class="n">list_topics</span><span class="p">()[</span><span class="s">'Topics'</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="s">'TopicArn'</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">':'</span> <span class="o">+</span> <span class="n">alertTopic</span><span class="o">.</span><span class="n">lower</span><span class="p">())][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c"># Send message to SNS</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
+          <span class="n">TopicArn</span><span class="o">=</span><span class="n">snsTopicArn</span><span class="p">,</span>
+          <span class="n">Message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
+          <span class="n">Subject</span><span class="o">=</span><span class="s">'Inventory Alert!'</span><span class="p">,</span>
+          <span class="n">MessageStructure</span><span class="o">=</span><span class="s">'raw'</span>
+        <span class="p">)</span>
+
+  <span class="c"># Finished!</span>
+  <span class="k">return</span> <span class="s">'Successfully processed {} records.'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s">'Records'</span><span class="p">]))</span>
+</code><button class="button button--text button--small copy-button js-copy-button-2"><ql-icon>content_copy</ql-icon></button></pre>
+<p>코드를 검사합니다. 이 코드는 다음 단계를 수행합니다.</p>
+<ul>
+<li>수신 레코드를 루프 처리합니다.</li>
+<li>재고 수량이 0인 경우 <em>NoStock</em> SNS 주제에 메시지를 전송합니다.</li>
+</ul><ol start="46">
+<li>페이지 상단에서 <span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Deploy</span>를 클릭합니다.</li>
+</ol>
+<p>이제 DynamoDB 테이블의 <em>Inventory</em> 테이블에 데이터가 추가될 때마다 함수가 트리거되도록 함수를 구성합니다.</p>
+<ol start="47">
+<li><p>페이지 상단의 <strong>Designer</strong> 섹션으로 스크롤을 이동합니다.</p></li>
+<li><p><span style="background-color:white;font-weight:bold;font-size:90%;color:#545b64;border-color:#545b64;border-radius:2px;border-width:1px;border-style:solid;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;"><i class="fas fa-plus"></i> Add trigger</span>를 클릭하고 다음을 구성합니다.</p></li>
+</ol><ul>
+<li>
+<strong>Select a trigger:</strong> <em>DynamoDB</em>
+</li>
+<li>
+<strong>DynamoDB Table:</strong> <em>Inventory</em>
+</li>
+<li>
+<span style="background-color:#ec7211;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;white-space: nowrap;">Add</span>를 클릭합니다.</li>
+</ul>
+<p>이제 시스템을 테스트할 준비가 되었습니다.</p>
+
+<h2 id="step8">작업 6: 시스템 테스트</h2>
+
+<p>이제 Amazon S3에 재고를 업로드합니다. 그러면 원래의 <em>Load-Inventory</em> 함수가 트리거됩니다. 이 함수는 DynamoDB에 데이터를 로드하고, 그러면 새 <em>Check-Stock</em> Lambda 함수가 트리거됩니다. 이 Lambda 함수는 재고가 0인 품목을 감지하면 SMS 또는 이메일을 통해 Amazon SNS에 메시지를 전송합니다.</p>
+<ol start="49">
+<li><p><span style="background-color:#232f3e;font-weight:bold;font-size:90%;color:white;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;">Services <i class="fas fa-angle-down"></i></span> 메뉴에서 <strong>S3</strong>를 클릭합니다..</p></li>
+<li><p>이름이 <em>inventory-xxxx</em>인 버킷을 클릭합니다.</p></li>
+<li><p>다른 재고 파일을 업로드합니다.</p></li>
+<li><p>Inventory Dashboard 웹 브라우저 탭으로 돌아가서 페이지를 새로 고칩니다.</p></li>
+</ol>
+<p>이제 <strong>Store</strong> 드롭다운 메뉴를 사용해 양쪽 매장의 재고를 볼 수 있습니다.</p>
+
+<p>매장에서 한 품목이 품절임을 나타내는 알림을 SMS 또는 이메일을 통해 수신합니다(모든 재고 파일에는 품절 품목이 하나씩 포함되어 있음).</p>
+
+<p><i class="fas fa-comment"></i> <strong>참고</strong> 알림을 받지 못한 경우 잠시 기다렸다가 다른 재고 파일을 업로드해 보십시오. DynamoDB 트리거를 활성화하려면 몇 분 정도 걸릴 수 있습니다. 스팸 방지 설정으로 인해 일부 휴대전화에서 메시지를 수신하지 못할 수 있습니다. 이런 경우 Amazon SNS 주제에 대한 이메일 구독을 추가하십시오. 그러면 확인 이메일이 전송됩니다. 그런 다음 이메일을 열고 <strong>Confirm subscription</strong> 링크를 클릭합니다. 이제 다른 파일을 업로드하여 시스템을 테스트할 수 있습니다.</p>
+<ol start="53">
+<li>여러 재고 파일을 동시에 업로드해 보십시오. 어떻게 될 것 같습니까?</li>
+</ol>
+
+
+<h2 id="step9">결론</h2>
+
+<p>축하합니다! 다음 작업이 성공적으로 완료되었습니다.</p>
+<ul>
+<li>Lambda 함수 생성</li>
+<li>Amazon S3 및 DynamoDB에서 Lambda 함수 트리거</li>
+<li>알림을 전송하도록 Amazon SNS를 구성</li>
+</ul>
+<h2 id="step10">실습 종료</h2>
+
+<p>다음 단계를 따라 콘솔을 닫고, 실습을 종료하고, 경험을 평가하십시오.</p>
+<ol start="54">
+<li><p>AWS Management Console로 돌아갑니다.</p></li>
+<li><p>탐색 바에서 <strong>&lt;yourusername&gt;@&lt;AccountNumber&gt;</strong> 를 클릭하고 <strong>Sign Out</strong> 을 클릭합니다.</p></li>
+<li><p><span style="background-color:#D93025;font-family:Google Sans;font-weight:bold;font-size:90%;color:white;border-color:#D93025;border-radius:4px;border-width:2px;border-style:solid;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">End Lab</span>을 클릭합니다.</p></li>
+<li><p><span style="background-color:#DEDEDE;font-family:Google Sans;font-weight:bold;font-size:90%;color:#444;border-width:1px;border-style:solid;border-color:#444;padding-top:3px;padding-bottom:3px;padding-left:10px;padding-right:10px;">OK</span>를 클릭합니다.</p></li>
+<li><p>(선택사항):</p></li>
+</ol><ul>
+<li>해당하는 별 개수를 선택합니다.<i class="far fa-star"></i>
+</li>
+<li>의견 입력</li>
+<li>
+<p><strong>Submit</strong> 을 클릭합니다.</p>
+<ul>
+<li>별 1개 = 매우 불만족</li>
+<li>별 2개 = 불만족</li>
+<li>별 3개 = 보통</li>
+<li>별 4개 = 만족</li>
+<li>별 5개 = 매우 만족</li>
+</ul>
+</li>
+</ul>
+<p>피드백을 제공하지 않으려면 대화 상자를 닫으면 됩니다.</p>
+
+<h2 id="step11">추가 리소스</h2>
+
+<p>AWS Training and Certification에 대한 자세한 내용은 <a href="http://aws.amazon.com/training/" target="_blank">http://aws.amazon.com/training/</a>을 참조하십시오.</p>
+
+<p>피드백이나 제안 사항, 또는 수정이 필요한 내용이 있다면 <a href="https://support.aws.amazon.com/#/contacts/aws-training" target="_blank">AWS Training and Certification 고객 문의 양식</a>을 이용해 주시기 바랍니다.</p>
+
+</div>
+</div>
+
+
+<div class="hidden js-end-lab-button-container lab-content__end-lab-button">
+<ql-lab-control-button class="js-end-lab-button" running=""></ql-lab-control-button>
+</div>
+<!-- / TODO: Move recommendations into the end lab modal -->
+</ql-drawer-content>
+<ql-drawer end="" id="outline-drawer" open="" slot="drawer" width="320" style="width: 320px;">
+<div class="js-lab-content-outline lab-content__outline">
+<a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step1">실습 개요</a><a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step2">실습 시작</a><a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step3">작업 1: Lambda 함수를 생성하여 데이터 로드</a><a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step4">작업 2: Amazon S3 이벤트 구성</a><a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step5">작업 3: 로딩 프로세스 테스트</a><a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step6">작업 4: 알림 구성</a><a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step7">작업 5: 알림을 전송하는 Lambda 함수 생성</a><a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step8">작업 6: 시스템 테스트</a><a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step9">결론</a><a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step10">실습 종료</a><a href="https://kgit.qwiklabs.com/classrooms/154/labs/1161#step11">추가 리소스</a>
+</div>
+</ql-drawer>
+</ql-drawer-container>
+</ql-drawer-content>
+</ql-drawer-container>
+<div class="lab-introduction js-lab-introduction is-hidden">
+<div class="lab-introduction__inner">
+<h1 class="headline-1">첫 번째 실습에 오신 것을 환영합니다.</h1>
+<ql-icon-button class="js-skip-button">close</ql-icon-button>
+<div class="lab-introduction__video">
+<iframe allow="autoplay; encrypted-media" allowfullscreen="" frameborder="0" id="lab-introduction" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/yF7EDXKTmoQ.html"></iframe>
+</div>
+<a class="js-skip-button button button--outline">이 동영상 건너뛰기</a>
+</div>
+</div>
+
+
+
+</div>
+</main>
+<div class="modal fade" id="lab-details-modal">
+<div class="modal-container">
+<div class="mdl-shadow--24dp modal-content">
+<div class="modal-body">
+<p class="l-mbm">
+이 실습에서는 AWS 관리형 서비스를 사용하여 서버리스 아키텍처를 구현합니다.
+</p>
+<p class="small-label l-mbs">
+<strong>
+소요 시간:
+</strong>
+9분 설정
+·
+180분 액세스
+·
+180분 완료
+</p>
+<p class="small-label l-mbs">
+<strong>AWS 리전:</strong>
+[us-west-2] <strong>US West (Oregon)</strong>
+</p>
+<p class="small-label l-mbs">
+
+</p>
+<p class="small-label">
+<strong>
+퍼머링크:
+</strong>
+<a href="https://kgit.qwiklabs.com/catalog_lab/4520">https://kgit.qwiklabs.com/catalog_lab/4520</a>
+</p>
+</div>
+<div class="modal-actions">
+<a class="button button--text" data-dismiss="modal">
+Got It
+</a>
+</div>
+
+
+</div>
+</div>
+<iframe class="l-ie-iframe-fix" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/saved_resource(1).html"></iframe>
+</div>
+<div class="modal fade" id="lab-review-modal">
+<div class="modal-container">
+<div class="mdl-shadow--24dp modal-content">
+<form class="simple_form js-lab-review-form" id="new_lab_review" action="https://kgit.qwiklabs.com/lab_reviews" accept-charset="UTF-8" data-remote="true" method="post"><input name="utf8" type="hidden" value="✓"><div class="modal-body">
+<p class="label">
+이 실습에 얼마나 만족하십니까?*
+</p>
+<div class="rateit js-rateit" data-rateit-max="5" data-rateit-min="0" data-rateit-resetable="false" data-rateit-step="1" data-rateit-value="0"><div class="rateit-reset" style="display: none;"></div><div class="rateit-range" style="width: 80px; height: 16px;"><div class="rateit-selected" style="height: 16px; width: 0px;"></div><div class="rateit-hover" style="height:16px"></div></div></div>
+<div class="l-mtm">
+
+<div class="control-group hidden lab_review_user_id"><div class="controls"><input class="hidden" type="hidden" value="968" name="lab_review[user_id]" id="lab_review_user_id"></div></div>
+<div class="control-group hidden lab_review_classroom_id"><div class="controls"><input class="hidden" type="hidden" value="154" name="lab_review[classroom_id]" id="lab_review_classroom_id"></div></div>
+<div class="control-group hidden lab_review_lab_id"><div class="controls"><input class="hidden" type="hidden" value="4520" name="lab_review[lab_id]" id="lab_review_lab_id"></div></div>
+<div class="control-group hidden lab_review_focus_id"><div class="controls"><input class="hidden" type="hidden" value="1161" name="lab_review[focus_id]" id="lab_review_focus_id"></div></div>
+<div class="control-group hidden lab_review_rating"><div class="controls"><input class="hidden js-rating-input" type="hidden" name="lab_review[rating]" id="lab_review_rating"></div></div>
+<div class="control-group text optional lab_review_comment"><label class="text optional control-label" for="lab_review_comment">의견</label><div class="controls"><textarea class="text optional" name="lab_review[comment]" id="lab_review_comment"></textarea></div></div>
+</div>
+</div>
+<div class="modal-actions">
+<a class="button button--text" data-dismiss="modal">
+Cancel
+</a>
+<input type="submit" name="commit" value="제출" disabled="disabled" id="submit" data-disabled="false" class="button" data-disable-with="제출">
+</div>
+</form>
+
+</div>
+</div>
+<iframe class="l-ie-iframe-fix" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/saved_resource(2).html"></iframe>
+</div>
+
+<script>
+  $( function() {
+    ql.initMaterialInputs();
+    initChosen();
+    initSearch();
+    initTabs();
+    ql.list.init();
+    ql.favoriting.init();
+    ql.header.myAccount.init();
+    initTooltips();
+    ql.autocomplete.init();
+    ql.modals.init();
+    ql.toggleButtons.init();
+    ql.analytics.init();
+    initLabContent();
+  ql.labOutline.links.init();
+  initLabReviewModal();
+  ql.labAssessment.init();
+  ql.labData.init();
+  initLabTranslations( {"are_you_sure":"모두 완료하셨습니까? 이 실습을 종료하면 작업 내용을 모두 잃게 됩니다. 할당량 제한이 있는 경우 실습을 다시 시작하지 못할 수 있습니다. 이 실습을 종료하시겠습니까?","in_progress":"*진행 중*","ending":"*종료 중*","starting":"*시작 중입니다. 기다려 주세요.*","end_concurrent_labs":"죄송합니다. 실습은 한 번에 하나씩만 진행할 수 있습니다. 이 실습을 시작하기 위해 기존의 모든 실습을 종료해도 되는지 확인해 주세요.","copied":"복사됨","no_resource":"리소스를 가져오는 중에 오류가 발생했습니다.","no_support":"지원되지 않음","mac_press":"복사하려면 ⌘+C 키를 누르세요.","thanks_review":"이 실습을 검토해 주셔서 감사합니다.","windows_press":"복사하려면 Ctrl+C 키를 누르세요.","days":"일"} );
+  ql.labRun.init();
+  ql.initHeader();
+  ql.navigation.init();
+  ql.navPanel.init();
+  ql.navigation.init();
+  
+  });
+</script>
+<style>
+  .mdl-layout__container {
+    position: static
+  }
+</style>
+
+
+<iframe data-product="web_widget" title="No content" tabindex="-1" aria-hidden="true" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/saved_resource(3).html" style="width: 0px; height: 0px; border: 0px; position: absolute; top: -9999px;"></iframe><div><iframe title="상담원 중 한 명과 채팅할 수 있는 위젯을 엽니다." id="launcher" tabindex="0" style="width: 103px; height: 50px; padding: 0px; margin: 10px 20px; position: fixed; bottom: 0px; overflow: visible; opacity: 1; border: 0px; z-index: 999998; transition-duration: 250ms; transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1); transition-property: opacity, top, bottom; right: 0px;" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/saved_resource(4).html"></iframe><iframe title="여기에서 자세한 정보를 찾으세요." id="webWidget" tabindex="-1" style="width: 374px; max-height: calc(100vh - 32px); height: 572px; position: fixed; opacity: 0; border: 0px; transition-duration: 250ms; transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1); transition-property: opacity, top, bottom; top: -9999px; visibility: hidden; z-index: 999999;" src="Architecting%20on%20AWS%20-%20실습%206%20–%20AWS%20관리형%20서비스로%20서버리스%20아키텍처%20구현%20_%20Qwiklabs_files/saved_resource(5).html"></iframe></div></body></html>
