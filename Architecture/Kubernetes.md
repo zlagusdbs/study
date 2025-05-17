@@ -6,10 +6,11 @@
 - Kebernetes는 모든 Resource를 Object로 관리
 
 ## Installer
-- minikube
+- kubeadm(실무 작업 시, 권장)
+- minikube(학습 시, 권장)
+  - 로컬에서 쿠버네티스를 테스트하고 애플리케이션을 개발하는 목적으로 단일 노드 클러스터를 설치하는 도구
 - K8S in Docker for MAC/Windows
 - kubespray
-- kubeadm(권장)
 - kops
 - EKS, GKE 등의 Managed Service
   
