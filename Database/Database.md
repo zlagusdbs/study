@@ -11,7 +11,49 @@
 ---
 
 # MySQL
+## 파티셔닝과 샤딩
+### 파티셔닝
+수평분할(스키마가 같은 데이터를 물리적으로 여러 테이블로 분산하여 저장하는 방식)방식이다.
 
+- List Partitioning
+  - 데이터 값이 특정 목록에 포함된 경우 데이터를 분리
+  - ex> 1..9 데이터가 있을 때, 짝수 또는 홀수로 분리
+
+- Range Partitioning
+  - 데이터를 특정 범위 기준으로 분할할 때 사용한다.
+  - ex> 1..9 데이터가 있을 때, 중간값 미만 또는 중간값 이상으로 분리
+
+- Hash Partitioning
+  - 해시 함수를 사용해서 데이터를 분할한다.
+  - 특정 컬럼의 값을 해싱하여 저장할 파티션을 선택한다
+  - 단, 여러 컬럼으로 해싱하는 것은 권장하지 않는다.
+    - ref. https://dev.mysql.com/doc/mysql-partitioning-excerpt/8.0/en/partitioning-hash.html
+
+### 샤딩
+동일한 스키마를 가지고 있는 **여러대의 데이터베이스 서버들**에 데이터를 작은 단위로 나누어 분산 저장하는 방식이다.
+이때 작은 단위를 샤드(shard)라고 부른다.
+
+ref. https://d2.naver.com/helloworld/14822
+
+- 애플리케이션 서버
+  - Proxysql(in spring boot)
+    - JpaTransactionManager와의 호환 불량
+
+- 미들티어(샤딩 플랫폼)
+  - Spck Proxy(in MySQL Proxy)
+  - CUBRID Shard(in NHN Platform)
+  - Gizzard(in Twitter)
+
+- 데이터베이스 자체
+  - Range Sharding
+    - PK 값을 범위로 지정하여 샤드를 결정하는 방식
+    - 데이터베이스 증설 작업에 큰 리소스가 소요되지 않기 때문에 급격히 증가할 수 있는 성격의 데이터에 알맞은 방식이다.
+
+  - Hash Sharding
+    - Modular Sharding
+      - PK 값의 모듈러 연산 결과를 통해 샤드를 결정하는 방식이다.
+      - 총 데이터베이스 수가 정해져있을 때 유용하다.
+      - 단, 데이터베이스 개수가 줄어들거나 늘어나면 해시 함수도 변경해야 하고, 이에 따른 데이터의 재정렬도 필요하다.
 
 ---
 
