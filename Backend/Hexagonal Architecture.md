@@ -1,6 +1,6 @@
 # Hexagonal Architecture
 - Hexagonal Architecture  
-  ![Hexagonal Architecture](../Resource/Prog,%20Software%20Architecture,%20Hexagonal%20Architecture.PNG)
+  ![Architecture, Hexagonal Architecture](../Resource/Architecture%2C%20Hexagonal%20Architecture.png)
 
 - 내가 정의한 Pacakge
 ```
