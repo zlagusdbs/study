@@ -1,15 +1,16 @@
 # Spring Boot
-  - Spring Project creating
-  - Spring Boot Config
-    - profiles with maven3
-  - Annotation
-    - Request Mapping
-      - @RequestParam, @ModelAttribute, @RequestBody, @RequestPart
-    - Bean Dependency Injection
-      - @Autowired/@Inject, @Qualifier/@Resource
+- Spring Project creating
+- Spring Boot Config
+  - profiles with maven3
+- Annotation
+  - Request Mapping
+    - @RequestParam, @ModelAttribute, @RequestBody, @RequestPart
+  - Bean Dependency Injection
+    - @Autowired/@Inject, @Qualifier/@Resource
 - ApplicationContext
 - Spring Bean
     - Bean life-cycle, Conditional Bean Registration, Bean Hooker(동적바인딩)
+- Spring Boot 
 - Resolver
 - Spring AOP
     - @Service, @Async
