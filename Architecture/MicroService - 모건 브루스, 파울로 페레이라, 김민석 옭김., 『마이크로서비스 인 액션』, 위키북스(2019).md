@@ -98,9 +98,8 @@
 
 ## 3.2. 마이크로서비스 플랫폼
 ### 3.2.1. 운영 플랫폼 매핑
-Micro Service Architecture  
-![MicroService Architecture](../Resource/Infra%2C%20Micro%20Service%2C%20MicroService%20Architecture/%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C1.PNG)
-
+MicroService Architecture  
+![MicroService Architecture](../Resource/Architecture%2C%20MicroService/%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C1.PNG)
 
 ## 3.3. 서비스
 ### 3.3.1. 역량
@@ -231,7 +230,7 @@ Micro Service Architecture
 
 ### 5.4.2. 질의와 명령 분리하기
 - CQRS 아키텍처
-![CQRS 아키텍처](../Resource/Infra%2C%20Micro%20Service%2C%20MicroService%20Architecture/%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C2.PNG)
+![CQRS 아키텍처](../Resource/Architecture%2C%20MicroService/%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C2.PNG)
 
 ### 5.4.3. CQRS의 어려운 점
 - 이벤트가 질의 모델을 갱신하기 때문에 누군가 그 데이터를 조회하면 만료된 뷰를 보게 된다.
