@@ -2,6 +2,7 @@
 - Spring Project creating
 - Spring Boot Config
   - profiles with maven3
+  - Value, ConfigurationProperties
 - Annotation
   - Request Mapping
     - @RequestParam, @ModelAttribute, @RequestBody, @RequestPart
@@ -10,7 +11,7 @@
 - ApplicationContext
 - Spring Bean
     - Bean life-cycle, Conditional Bean Registration, Bean Hooker(동적바인딩)
-- Spring Boot 
+- Application Listener 
 - Resolver
 - Spring AOP
     - @Service, @Async
@@ -133,6 +134,58 @@
   
   java -jar app.jar --spring.profiles.active=dev (Note order)
   ```
+  
+## Value, ConfigurationProperties
+Value
+  - 간단한 속성을 주입할 때 편리하다.
+```java
+/**
+ * application.yml
+ */
+// application:
+//   sample:
+//     name: sample-config
+
+public class SimpleConfig {
+  @Value("\\${application.sample.name}")
+  private String name;
+}
+```
+
+ConfigurationProperties
+  - 속성을 조금 더 객체지향적으로 표기할 수 있다.
+  - 단, EnableConfigurationProperties 또는 ConfigurationPropertiesScan과 같이 사용해야 한다.
+    - EnableConfigurationProperties: 클래스를 하나씩 지정
+    - ConfigurationPropertiesScan: package를 지정
+```java
+/**
+ * application.yml
+ */
+// application:
+//   sample:
+//     name: sample-config
+
+@ConfiguartionProperties(value = "application.sample")
+public class SimpleConfig {
+  private String name;
+}
+
+@SpringBootApplication
+@EnableConfigurationProperties(value = {SimpleConfig.class})
+public class Application {
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
+}
+
+@SpringBootApplication
+@ConfiguartionPropertiesScan(value = {"com.example.common.config"})
+public class Application {
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
+}
+```
   
 # Annotation
 ## Request Mapping
@@ -384,6 +437,66 @@ public class ApplicationListenerBeanDefinitionRegistrar implements ImportBeanDef
 
 - 참고사이트: [https://thecodinglog.github.io/spring/2019/01/29/dynamic-spring-bean-registration.html](https://thecodinglog.github.io/spring/2019/01/29/dynamic-spring-bean-registration.html)
 
+# Application Listener
+## CommandLineRunner / ApplicationRunner
+- CommandLineRunner: Application 시작 후 가장 먼저 실행되게 하는 인터페이스
+- ApplicationRunner: CommandLineRunner와 동일하지만 ApplicationArguments를 더 쉽게 받을 수 있게 한 인터페이스
+
+## ApplicationListener
+ApplicationListener
+- ApplicationStartedEvent: Application 시작되기 시작 시
+- ApplicationReadyEvent: Application 부팅 성공 시
+- ContextRefreshedEvent: ApplicationContext가 초기화되거나 새로 고침되었을 시
+- ContextStartedEvent: ApplicationContext가 시작되었을 시
+- ContextStoppedEvent: ApplicationContet가 정지되었을 시
+- ContextClosedEvent: ApplicationContext가 종료되었을 시
+- ApplicationFailedEvent: Application 부팅 실패 시
+
+> 모두 ApplicationEvent를 상속하는 클래스
+> 
+> 직접 ApplicationEvent를 상속해 이벤트를 만들고, ApplicationListener<CustomApplicationEvent>로 실행할 수 있다.
+
+```java
+/**
+ * ApplicationListener 구현
+ */
+@Component
+public class ApplicationReadyListener implements ApplicationListener<ApplicationReadyEvent> {
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        // TODO
+    }
+}
+
+/**
+ * EventListener Annotation 사용
+ */
+@Component
+public class ApplicationReadyListener {
+  @EventListener
+  public void onApplicationEvent(ApplicationReadyEvent event) {
+    // TODO
+  }
+}
+
+/**
+ * Custom ApplicationEvent 사용
+ */
+public class CustomApplicationEvent extends ApplicationEvent {
+  public CustomApplicationEvent(Object source) {
+    super(source);
+  }
+}
+
+@Component
+public class CustomApplicationListener implements ApplicationListener<CustomApplicationEvent> {
+  @Override
+  public void onCustomApplicationEvent(CustomApplicationEvent event) {
+    // TODO
+  }
+}
+```
+
 # Resolver
 어떤 "요청"이나 "정보"를 해석해서 적절한 형태로 변환하거나 결정해주는 컴포넌트  
 
@@ -494,6 +607,39 @@ public static void executor() {
 - JUnit Platform: Test를 실행해주는 런처, TestEngine API를 제공한다.
 - Jupiter: JUnit 5를 지원하는 TestEngine API의 구현체
 - Vintage: JUnit 4, 3을 지원하는 TestEngine API의 구현체
+
+## 용어설명
+- Stub: 테스트 대상의 기존 객체가 특정 동작을 하도록 미리 정해주는 코드
+  - lenient: Mockito에서 사용하는 메서드로 JUnit5는 아니다.  
+             정의는 해놨지만 호출은 안 될 수도 있는 stub으로, 엄격한 스텁(strict stubbing)을 완화 하기 위해 사용하는 설정
+  ```java
+  // 엄격하게 설정 (기본 동작)
+  when(mock.getValue()).thenReturn("A"); // 호출 안 하면 경고 or 예외
+  
+  // 완화 설정
+  lenient().when(mock.getValue()).thenReturn("A"); // 호출 안 돼도 통과
+  ```
+- Mock: 기본은 아무 동작을 하지 않는 가짜 객체  
+        객체 전체를 가짜로 만들고, 그 안의 동작을 정의한다(stub 설정을 포함한다.)
+- Spy: 실제 객체를 감싸 일부만 Mocking하는 객체
+
+```java
+public class Test {
+  @InjectMock
+  ParentService parentService;  // Mock 객체
+  
+  @Mock
+  ChildService childService;  // Mock 객체
+
+  @Test
+  void test() {
+    when(childService.process(any())).thenReturn(true); // Stub Code
+
+    boolean result = parentService.process(childService);
+    assertTrue(result);
+  }
+}
+```
 
 ## Test 방법
 ### SpringBoot
