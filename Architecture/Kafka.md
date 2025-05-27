@@ -15,6 +15,9 @@
 - Zookeeper
 - Trouble Shooting
 - Logging
+- Kafka Design
+  - Enterprise Integration Patterns
+    - Request-Reply Pattern
 - Reference
 
 ---
@@ -513,6 +516,62 @@ Kafka의 Log Message는 실제로는 segment에 저장이 된다.
 - Command
   - Config 값 설정
 ```
+# Kafka Design
+## Enterprise Integration Patterns
+'기업 통합 패턴'이라는 번역서도 존재한다고 한다.
+
+- Request-Reply Pattern
+Kafka 기반의 비동기 메시징 환경에서 일종의 동기식 통신 흐름을 구현하려는 방식
+```text
+Producer -> Topic ┐
+                  └-> Consumer
+                    ┌
+Consumer <- Topic <-┘
+```
+
+  - Kafka는 본래 양방향 통신을 지원하지 않기 때문에, Reply Topic을 별도로 구성해야 한다. 
+  - Consumer는 KafkaTemplate.sendAndReceive()를 사용하여 구현할 수 있다.
+  ```java
+  public class KafkaConfigurer {
+    @Bean
+    public ReplyingKafkaTemplate<String, Request, Response> replyingKafkaTemplate(
+            ProducerFactory<String, Request> pf,
+            ConcurrentMessageListenerContainer<String, Response> repliesContainer) {
+        return new ReplyingKafkaTemplate<>(pf, repliesContainer);
+    }
+    
+    @Bean
+    public ConcurrentMessageListenerContainer<String, Response> repliesContainer(
+            ConsumerFactory<String, Response> cf) {
+        ContainerProperties containerProperties = new ContainerProperties("reply-topic");
+        return new ConcurrentMessageListenerContainer<>(cf, containerProperties);
+    }
+  }
+
+  public class SimpleService {
+    @Autowired
+    private ReplyingKafkaTemplate<String, Request, Response> replyingKafkaTemplate;
+
+    public Response sendRequest(Request request) throws Exception {
+      ProducerRecord<String, Request> record = new ProducerRecord<>("request-topic", request);
+      record.headers().add(KafkaHeaders.REPLY_TOPIC, "reply-topic".getBytes());
+
+      RequestReplyFuture<String, Request, Response> future = replyingKafkaTemplate.sendAndReceive(record);
+      ConsumerRecord<String, Response> response = future.get(10, TimeUnit.SECONDS); // timeout 설정 가능
+
+      return response.value();
+    }
+  }
+  
+  public class SimpleConsumer {
+    @KafkaListener(topics = "request-topic")
+    @SendTo("reply-topic") // 자동으로 응답을 해당 토픽으로 전송
+    public Response handleRequest(Request request) {
+      // 요청 처리 로직
+      return new Response("processed: " + request.getData());
+    }
+  }
+  ```
 
 # Reference
 - https://zbvs.tistory.com/35
