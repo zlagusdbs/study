@@ -513,11 +513,32 @@ public class CustomApplicationListener implements ApplicationListener<CustomAppl
 ## AOP의 개본개념
 - 요소
   - Aspect: 횡단 관심사를 모듈환 한 것(보통 설정클래스가 된다. ex> XXXAspect)
-  - Adivce: 언제/어떤 코드를 실행할지 정의(Annotation으로 정의한다. ex> Before, After, Around 등)
-  - Join Point: Adivce가 적용될 수 있는 지점(ex. 메소드 실행)
   - Pointcut: Advice가 적용될 Join Point를 선정하는 표현식(Advice Annotation의 exeution() 메소드 안에 기재한다.)
+  - Join Point: Adivce가 적용될 수 있는 지점(ex. 메소드 실행)
+  - Adivce: 언제/어떤 코드를 실행할지 정의(Annotation으로 정의한다. ex> Before, After, Around 등)
   - Weaving: Advice를 실제 대상 객체에 적용하는 과정
   - Proxy: 대성 객체를 감싸서 AOP 기능을 부여한 객체
+  ```java
+  @Aspect
+  public class SimpleAspect {  // 클래스가 Aspect라고 할 수 있다. @Aspect는 SimpleAspect 클래스를 Aspect로 인식시키기 위한 annotation일 뿐
+  
+    @Pointcut("excution(* com.example.simple.service.*.*(..))")  // execution 속성값이 Pointcut이라고 할 수 있다. @Pointcut은 pointcut을 정의하기 위한 annotation일 뿐
+    public void process() {  // Pointcut
+      // 
+    }
+  
+    @Before  // @Before 자체가 Advice라고 할 수 있다.
+    public void before(JoinPoint joinPoint) {  // JoinPoint는 Spring이 자동으로 제공하기 때문에 알 수 없다. 다만, Advice에서 JoinPoint 정보를 파라미터로 받을 수는 있다. 
+      // begin
+    }
+  
+    @After
+    public void after(JoinPoint joinPoint) {
+      // commit
+    }
+  
+  }
+  ```
 
 - AOP 작동방식
   - JDK Dynamic Proxy **(Spring 3.2 이하버전)**
