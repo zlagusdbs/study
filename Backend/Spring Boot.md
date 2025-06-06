@@ -24,6 +24,7 @@
     - Annotation
   - Spring Boot 2.4.x ↑
   - ExceptionHandler
+- Logging
 
 ---
 
@@ -881,3 +882,36 @@ Hamcrest 보다 더 유연한 문법을 제공하며, Fluent API 스타일로 �
       activate:
         on-profile: example
   ```
+
+# Logger
+Spring은 기본적으로 SLF4J(Simple Logging Facade For Java)라는 추상화 라이브러리를 사용한다.
+추상화 라이브러리 위에 LogBack, Log4j2등 Logging Framework을 구현체로 사용한다.
+
+## MDC
+각 쓰레드에 키-값 쌍으로 데이터를 저장하는 컨텍스트
+Log Message에 추가적인 정보를 삽입하기 위해 MDC를 사용하며, 쓰레드 로컬 저장소를 사용하여 각 쓰레드에 해당하는 로그 정보를 저장한다.
+
+```java
+/**
+ * 본 SimpleMDC는 간단한 예제일 뿐이다
+ * 보통 MDC는 Filter 또는 AOP Layer에서 설정하는게 좋타.
+ */
+public class SimpleMDC {
+  private static final Logger logger = LoggerFactory.getLogger(SimpleMDC.class);
+
+  public void process(String userId, String requestId) {
+    // MDC에 사용자 ID와 요청 ID를 추가
+    MDC.put("userId", userId);
+    MDC.put("requestId", requestId);
+
+    try {
+      // 로깅을 수행: 로그를 출력할 때, MDC에 저장된 값들이 자동으로 로그 메시지에 포함된다. 
+      logger.info("Processing request");
+    } finally {
+        // MDC에서 데이터 제거 (메모리 누수 방지)
+        MDC.clear();
+    }
+  }
+}
+
+```
