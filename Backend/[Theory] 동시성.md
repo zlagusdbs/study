@@ -23,6 +23,38 @@
     - synchronized(Java: 자동 lock/unlock)
     - ReentrantLock(Java: 수동 lock/unlock): synchronized의 문제점을 보완한 형태
         - timeout 등
+    - ReentrantReadWriteLock
+      읽기작업과 쓰기작업에 대해 다른 종류의 Lock을 제공.
+      읽기작업은 여러 쓰레드가 동시에 실행할 수 있도록 하며, 쓰기작업은 한 번에 하나의 쓰레드만 접근하도록 제한.
+    
+      Write 작업이 적고, Read 작업이 많은 경우에 유리하다.
+      ```java
+      public class SimpleReentrantReadWriteLock {
+        private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        private final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
+        private final ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
+      
+        public void save(...) {
+          writeLock.lock();
+          try {
+            // TODO
+          } finally {
+            writeLock.unlock();
+          }
+        }
+      
+        // 모든 Request(여러 쓰레드)에 대해 동시에 읽을 수 있다.
+        // 단, write lock이 걸려있을 때, wait 상태로 동작한다.(즉, write lock에 종속적)
+        public Object find(...) {
+          readLock.lock();
+          try {
+            // TODO: return
+          } finally{
+            readLock.unlock();
+          }
+        }
+      }
+      ```
   - Semaphore: 복수 Thread로 접근을 허용할 수 있게 한다.(단, 제한된 개수만큼만 접근 가능)
     - Semaphore(Java: 수동 lock/unlock)
   - SpinLock
@@ -49,7 +81,7 @@
   - 단, 일부는 무한 루프를 돌 수도 있음으로 모든 쓰레드가 항상 전진한다는 보장은 없다. 
 - wait-free
   - 모든 쓰레드는 유한한 시간에 반드시 작업을 종료한다.
-- fine-grained locking
+- fine-grained locking(finer-grained locking)
   - Fine-Grained Locking은 경합을 줄이고 병렬성을 높이기 위해 전체 자원 대신 부분 자원마다 락을 건다.
     - Ex. 연결 리스트에서 각 노드마다 락을 건다.
 - Striped Locking
