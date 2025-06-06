@@ -24,7 +24,7 @@
     - ReentrantLock(Java: 수동 lock/unlock): synchronized의 문제점을 보완한 형태
         - timeout 등
     - ReentrantReadWriteLock
-      읽기작업과 쓰기작업에 대해 다른 종류의 Lock을 제공.
+      읽기작업과 쓰기작업에 대해 다른 종류의 Lock을 제공.(2PL은 쓰기 내에 순차적 접근에 대한 논의)
       읽기작업은 여러 쓰레드가 동시에 실행할 수 있도록 하며, 쓰기작업은 한 번에 하나의 쓰레드만 접근하도록 제한.
     
       Write 작업이 적고, Read 작업이 많은 경우에 유리하다.
@@ -60,6 +60,19 @@
   - SpinLock
     - loop를 시도하여 lock을 취득
     - CPU의 비용을 많이 사용하기 때문에, 짧은 임계구간에만 사용.
+  - 2PL(Two-Phase Locking)
+    - 트랜잭션이 데이터베이스에서 동시 실행될 때 데이터의 일관성과 **순차적 일관성(ReentrantReadWriteLock은 읽기와 쓰기에 대한 접근을 논의)**을 보장하기 위해 사용된다.
+      주로 [Database](../Database/Database.md)의 동시성을 제어하는데 사용한다.
+    - 동작방식
+      - 확장단계(Growing Phase): 트랜잭션이 필요한 자원에 Lock을 요청/획득 할 수 있다.
+        - S-Lock(Shared Lock 또는 Read Lock)
+        - X-Lock(eXclusive Lock 또는 Write Lock)
+      - 수축단계(Shrinking Phase): 트랜잭션이 커밋되거나 롤백되면, 자원에 대한 Lock을 해제한다. 단, 한번 해제하면 그 후로 더이상 자원에 Lock을 요청/획들 할 수 없다.
+      ```text
+      
+      ```
+    
+    cf> [2PC](%5BTheory%5D%20Transaction.md#2pctwp-phase-commit)와는 사뭇 다른 개념이다.
 - 낙관적 Lock(Optimistic Lock)
   - CAS(Compared-And-Swap)
     - Lock-Free Algorithm을 구현한 기술로 '값 비교 후 원자적 갱신'을 실현한다.

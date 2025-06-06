@@ -1,7 +1,7 @@
 # Theory
 - Transaction
 - 분산 Transaction
-  - SAGA, 2PC
+  - 2PC, SAGA
 
 ---
 
@@ -52,13 +52,12 @@
   트랜잭션은 로그에 모든 것이 저장된 후에만 commit 상태로 간주될 수 있다.
 
 # 분산 Transaction
-## 2PC(Tow-Phase Commit)
-분산된 시스템 또는 데이터베이스 간에 트랜잭션의 원자성을 보장하기 위해 사용
-크게 2 단계로 나눠지기 때문에 Two-Phase Commit 이라고 한다.
+## 2PC(Twp-Phase Commit)
+중앙 처리 시스템 구조(Coordinator/Participants)이다.
+분산된 시스템 또는 데이터베이스 간에 트랜잭션의 원자성을 보장하기 위해 사용하며, 크게 2 단계로 나눠지기 때문에 Two-Phase Commit 이라고 한다.
 
-- 주요용어
-  - Coordinator: 트랜잭션을 관리하는 역활. 일반적으로 중앙 시스템이 된다.
-  - Participants: 트랜잭션에 참여하는 각 시스템.
+- Coordinator: 트랜잭션을 관리하는 역활. 일반적으로 중앙 시스템이 된다.
+- Participants: 트랜잭션에 참여하는 각 시스템.
 
 - Phase
   - Prepare Phase(준비단계)
@@ -73,7 +72,9 @@
 - 단점
   - 성능문제: 동기식 처리로 성능에 저하가 있을 수 있다.
   - Single Point of Failure: Coordinator가 실패하면, 트랜잭션이 중단되거나 복구할 수 없는 상태가 된다.
-  - Blocking: Client가 Prepare Phase에서 문제가 생겨 응답을 받지 못할 경우, Blocing에 빠질 수 있다.  
+  - Blocking: Client가 Prepare Phase에서 문제가 생겨 응답을 받지 못할 경우, Blocing에 빠질 수 있다.
+
+cf> [2PL(Two-Phase Locking)](%5BTheory%5D%20%EB%8F%99%EC%8B%9C%EC%84%B1.md#동기화동시성-제어-기법)과는 사뭇 다른 개념이다.
 
 ## SAGA Pattern
 - 각각의 서비스는 Tx를 처리할 때, 보상 트랙잭션의 정보도 알고 있어야 한다.
