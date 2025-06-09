@@ -255,7 +255,33 @@ GC는 Young Generation에서 Old Generation으로 승격시키고, Old Generatio
   ```
 
 # Stream
-- 데이터 처리 연산을 지원하도록 소스에서 추출된 연속된 요소
-- 데이터 처리 연산 : 컬렉션의 주제는 데이터이지만 스트림의 주제는 계산이다.(즉, 컬렉션은 시간과 공간의 복잡성과 관련된 요소의 접근 및 저장을 다루는데 용이하며, 스트림은 filter, sorted, map 처럼 표현 계산식에 주를 이루며 이를 일컬음)
-- 소스 : 컬렉션, 배열, I/O자원 등을 제공하는 주체를 소스라 일컬음
-- 연속된 요소: 컬렉션과 마찬가지로 스트림은 특정 요소 형식으로 이루어진 연속된 값 집합의 인터페이스를 제공.
+명령적 스타일에서 선억적 스타일로 변경된 형태로, 선억적으로 컬렉션 데이터를 처리할 수 있는 데이터 처리 API이다.
+
+> 선언적: 무엇을 할지(즉, 루프와 if 조건문 등 제어 블록을 사용해서 어떻게 동작을 구현할지 지정할 필요 없다.)
+> 명령적: 어떻게 할지
+
+## Stream의 연산
+- 생성
+- 중간연산(Lazy 연산: 단말 연산(=최종연산)을 스트림 파이프라인에 실행하기 전까지는 아무 연산도 수행하지 않으며, 오직 chaining만!)
+  - filter
+  - distinct
+  - skip
+  - limit
+  - map
+  - flatMap
+  - sorted
+- 최종연산
+  - anyMatch
+  - noneMatch
+  - allMatch
+  - findAny
+  - findFirst
+  - forEach
+  - collect
+  - reduce
+  - count
+
+## Stream Class diagram
+![Stream class diagram](../Resource/Backend%2C%20Java%2C%20Stream/%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C1.PNG)
+
+![Stream class diagram 부연설명](../Resource/Backend%2C%20Java%2C%20Stream/%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C2.PNG)
