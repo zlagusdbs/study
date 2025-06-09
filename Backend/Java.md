@@ -1,29 +1,29 @@
 # Java
   - JVM
-    - Compile+Interpreter
+    - Compile+Interpreter 란?
+  - Profiler
+    - Sample Profiler, Instrumented Profiler, Native Profiler
   - bin
-    - jinfo, jstat, jstack, jmap
+    - jconsole, jmap, jhat, jstat, jstack, jinfo
+  - Profilers
   - GC(Garbage Collection)
   - 정규표현식(Regex: Regular Expression)
   - Stream
 
-  - Scott Oaks., 『자바 성능 튜닝』, 최가인 옮김, O'REILLY(2014)
-  - 라울-게이브리얼 우르마, 마리오 푸스코, 앨런 마이크로프트., 『JAVA 8 인 액션』, 우정은 옮김, 한빛미디어(2017)
-
 ---
 
 # JVM
-## Compile+Interpreter
+## Compile+Interpreter 란?
 Java는 Compile+Interpreter의 하이브리드 방식
 
 ```text
-Source Code(xxx.java)  -Compiler->  Byte Code(xxx.class)  -interpreter------------------> 실행
-                                                          └JIT Compile->  Native Code  ┘
+Source Code(xxx.java)  -Compiler->  Byte Code(xxx.class)  -interpreter------------------------> 실행
+                                                          └JIT Compile(c1+c2)->  Native Code  ┘
 ```
 - Compile
 Java의 Compile은 정적 컴파일(Compiler)과 동적 컴파일(JIT(Just-In-Time) Compiler)로 나눌 수 있다.
 
-  - 정적 컴파일(ex> Compiler)
+  - 정적 컴파일(ex> javac)
     고급언어를 저수준언어(기계어 또는 중간언어)로 변환하는 프로그램.
     **단, Java의 Byte Code는 JVM에서 실행 가능한 기계어일 뿐, 흔히 말하는 기계어는 아니다.**
     확장자 .java(고급언어)를 확장자 .class(기계어)로 변환한다.
@@ -35,31 +35,63 @@ Java의 Compile은 정적 컴파일(Compiler)과 동적 컴파일(JIT(Just-In-Ti
       즉, 코드가 처음 실행될 때 JIT Compiler는 개입하지 않는다.
       개입이 시작되면, '메서드 인라인화', '루프 최적화', '죽은코드제거', 'JVM영역에 Caching' 등의 작업을 진행한다.
   
-      - C1 Compiler(Client Compiler): 빠른 시작과 짧은 실행 시간을 목표로 최적화가 이루어진다. 초기 실행 성능을 중요시한다.
-      - C2 Compiler(Server Compiler): 고성능 목표로 최적화가 이루어진다. 서버나 대규모 어플리케이션에 적합하다.
+      - JIT Compiler는 두개의 Compiler로 다시 나뉘며, Tiered Compilation(티어드 컴파일) 방식을 사용한다.
+        - C1 Compiler(Client Compiler): 빠른 시작과 짧은 실행 시간을 목표로 최적화가 이루어진다. 초기 실행 성능을 중요시한다.
+        - C2 Compiler(Server Compiler): 고성능 목표로 최적화가 이루어진다.
+      - 즉, 처음에는 C1 Compiler로 진행하다, 10만번 정도의 많은양의 호출이 이루어지면 C2 Compiler로 진행.
 
     - 정규표현식 엔진
       - 정규표현식은 [동적 컴파일](Java.md#정규표현식-엔진)에 포함
 
 - Interpreter
-  코드를 한 줄씩 읽고 실행하는 방법
+  코드를 한 줄씩 읽고 실행하는 방법. Native Code로 변환하지는 않고 JVM 내부 로직에 의해 바로 처리된다.
+
+# Profilers
+## Sampling Profiler
+
+## Instrumented Profiler(장착형 프로파일러)
+- Profiling 도구인 NetBeans Profiler를 이용할 수 있다. 이는 blocking method와 thread timeline 을 분석할 수 있다.
+
+## Native Profiler
+JVM 자체를 Profiling한다.
+
+> Profiler라는게 있다.. 정도만 알아도 될 뜻하다.
 
 # bin
-## jinfo
-- JVM option(java command option)을 확인
-- java command option
-    - -X는 표준이 아닌 설정으로 Macro한 측면에서 JVM제어 기능을 제공 (모든 JVM에서 지원한다는 보장이 없음)
-    - -XX는 표준이 아닌 설정으로 안정적이지 않은 옵션. (-X Option보다 세밀한 제어 기능을 제공하며, 성능 튜닝/버그 Workaround를 위해서 주로 사용됨)
-    - -XX:+<옵션>은 해당 옵션을 활성화 -XX:-<옵션>은 해당 옵션을 비활성화
-    - -XX:<옵션>=<숫자> 시 'm','M'은 메가바이트 'k','K'는 킬로바이트 'g','G'는 기가바이트를 표현
+## jconsole
+- 스레드 사용률 및 클래스 사용률과 GC 활동 내역을 포함해서 JVM 활동 내역을 그래픽 형태로 노출
 
-    - UNIX/Linux/Windows JAVA 5 이상 제공.
-    - Heap, PermSize 등 옵션지정 없는 프로세스에 대해 default값 확인 가능.
-    - HP-UX에서는 -flag 필수, Linux에서는 -flag없이 pid만 포함하면 해당 프로세스 JVM 전체 정보 출력.
+## jmap
+- java Heap dump 생성해주는 명령어로 java Heap을 확인할 때 사용.
+- Options
+  -histo : 클래스별 객체 수와 메모리 사용량 확인
+  -dump : heap dump 생성
+
   ~~~
-  jinfo -flag [JVMflag] [pid]    // 5555라는 pid의 PermSize를 출력하라 > $JAVA_HOME/bin/jinfo -flag PermSize 5555
-  // jinfo -flag PermSize{또는-XX:PermSize=134217728} 5555
+  // Format: jmap [-Options] [JVM pid]
+  
+  jmap -dump:format=b,file=hd_4740.bin 4740    //4740이라는 pid에 대한 Heap dump를 hd_4740.bin 라는 파일로 생성
+
+  jmap -histo:live 24760    //24760이라는 pid에 대한 클래스별 객체 수와 메모리 사용량을 확인
+
+  jmap -histo:live 24760 | more
+  num     #instances         #bytes  class name
+  ----------------------------------------------
+   1:        327969       19974168  [C
+   2:        112277       15139136  <constMethodKlass>
+   3:        112277        9886040  <methodKlass>
+   4:        330181        7924344  java.lang.String
+   5:        176627        7783016  <symbolKlass>
+   6:         10189        6167032  <constantPoolKlass>
+   7:         97618        4685664  com.sun.tools.javac.zip.ZipFileIndexEntry
+   8:         10189        4531304  <instanceKlassKlass>
+   9:         46349        3980768  [Ljava.util.HashMap$Entry;
+  10:          8970        3606368  <constantPoolCacheKlass>
   ~~~
+
+## jhat
+- 메모리 힙 덤프를 읽고 분석하는데 도움을 준다. 이건 후처리(PostProcessing) 유틸리티다.
+  - 보통 저자는 Eclipse의 mat 도구를 이용하여 분석한다.
 
 ## jstat
 - JVM 측정을 위한 성능 통계를 표시한다.
@@ -114,32 +146,20 @@ Java의 Compile은 정적 컴파일(Compiler)과 동적 컴파일(JIT(Just-In-Ti
     jstack -l 4740 > td_4740.txt    // 4740이라는 pid에 대한 Thread dump를 td_4740.txt 라는 파일로 생성하라
   ~~~
 
-## jmap
-- java Heap dump 생성해주는 명령어로 java Heap을 확인할 때 사용.
-- Options
-  -histo : 클래스별 객체 수와 메모리 사용량 확인
-  -dump : heap dump 생성
+## jinfo
+- JVM option(java command option)을 확인
+- java command option
+  - -X는 표준이 아닌 설정으로 Macro한 측면에서 JVM제어 기능을 제공 (모든 JVM에서 지원한다는 보장이 없음)
+  - -XX는 표준이 아닌 설정으로 안정적이지 않은 옵션. (-X Option보다 세밀한 제어 기능을 제공하며, 성능 튜닝/버그 Workaround를 위해서 주로 사용됨)
+  - -XX:+<옵션>은 해당 옵션을 활성화 -XX:-<옵션>은 해당 옵션을 비활성화
+  - -XX:<옵션>=<숫자> 시 'm','M'은 메가바이트 'k','K'는 킬로바이트 'g','G'는 기가바이트를 표현
 
+  - UNIX/Linux/Windows JAVA 5 이상 제공.
+  - Heap, PermSize 등 옵션지정 없는 프로세스에 대해 default값 확인 가능.
+  - HP-UX에서는 -flag 필수, Linux에서는 -flag없이 pid만 포함하면 해당 프로세스 JVM 전체 정보 출력.
   ~~~
-  // Format: jmap [-Options] [JVM pid]
-  
-  jmap -dump:format=b,file=hd_4740.bin 4740    //4740이라는 pid에 대한 Heap dump를 hd_4740.bin 라는 파일로 생성
-
-  jmap -histo:live 24760    //24760이라는 pid에 대한 클래스별 객체 수와 메모리 사용량을 확인
-
-  jmap -histo:live 24760 | more
-  num     #instances         #bytes  class name
-  ----------------------------------------------
-   1:        327969       19974168  [C
-   2:        112277       15139136  <constMethodKlass>
-   3:        112277        9886040  <methodKlass>
-   4:        330181        7924344  java.lang.String
-   5:        176627        7783016  <symbolKlass>
-   6:         10189        6167032  <constantPoolKlass>
-   7:         97618        4685664  com.sun.tools.javac.zip.ZipFileIndexEntry
-   8:         10189        4531304  <instanceKlassKlass>
-   9:         46349        3980768  [Ljava.util.HashMap$Entry;
-  10:          8970        3606368  <constantPoolCacheKlass>
+  jinfo -flag [JVMflag] [pid]    // 5555라는 pid의 PermSize를 출력하라 > $JAVA_HOME/bin/jinfo -flag PermSize 5555
+  // jinfo -flag PermSize{또는-XX:PermSize=134217728} 5555
   ~~~
 
 # GC(Garbage Collection)
@@ -188,6 +208,8 @@ GC는 Young Generation에서 Old Generation으로 승격시키고, Old Generatio
 - -XX:+UseG1GC: G1 GC를 활성화한다(Java 8 이상버전은 G1 GC가 Default)
 - -Xmx: JVM Heap의 최대 크기를 설정
 - -Xms: JVM Heap의 최소 크기를 설정
+- -XX:+PrintGCDateStamps: 많은 정보를 포함하는 GC 로그를 만드는 것이며, 권장사항이다.
+- -Xloggc:filename: 플래그로 위치를 변경할 수 있지만, GC 로그는 표준 형식으로 출력된다..
 
 # 정규표현식(Regex: Regular Expression)
 문자열의 특정한 패턴을 찾고, 매칭하거나 조작하는 표현식
