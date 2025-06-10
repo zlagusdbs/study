@@ -1,14 +1,15 @@
 # Java
-  - JVM
-    - Compile+Interpreter 란?
-  - Profiler
-    - Sample Profiler, Instrumented Profiler, Native Profiler
-  - bin
-    - jconsole, jmap, jhat, jstat, jstack, jinfo
-  - Profilers
-  - GC(Garbage Collection)
-  - 정규표현식(Regex: Regular Expression)
-  - Stream
+- JVM
+  - Compile+Interpreter 란?
+- Profiler
+  - Sample Profiler, Instrumented Profiler, Native Profiler
+- bin
+  - jconsole, jmap, jhat, jstat, jstack, jinfo, keytool
+- Profilers
+- GC(Garbage Collection)
+- 정규표현식(Regex: Regular Expression)
+- Stream
+- SSL/TLS 인증서
 
 ---
 
@@ -161,6 +162,50 @@ JVM 자체를 Profiling한다.
   jinfo -flag [JVMflag] [pid]    // 5555라는 pid의 PermSize를 출력하라 > $JAVA_HOME/bin/jinfo -flag PermSize 5555
   // jinfo -flag PermSize{또는-XX:PermSize=134217728} 5555
   ~~~
+  
+## keytool
+- Keystore: 나의 인증서/키 보관(개인키+공개인증서 보관)
+- Truststore: 내가 신뢰하는 인증서 저장(상대방 공개 인증서 검증)
+
+```text
+// KeyStore/TrustStore 확인
+keytool -list -keystore [파일명] -storepass [비밀번호]
+
+// Key 인증서 삭제
+keytool -delete -alias [이름] -keystore [파일명] -storepass [비밀번호]
+
+// KeyStore 생성
+keytool -genkeypair \
+  -alias [키이름] \
+  -keyalg [알고리즘] \
+  -keysize [키크기] \
+  -keystore [파일명] \
+  -storetype [KeyStore유형: JKS(.jks)-Java 전통포멧, PKCS12(.p12 또는 .pfx)-국제표준으로 TLS에 적합] \
+  -validity [일수] \
+  -dname [인증서 주체 정보: "CN=[...]"] \
+  -storepass [비밀번호] \
+  -keypass [(선택)개인 키의 비밀번호]
+
+
+// 인증서 추출
+keytool -exportcert \
+  -alias [키이름] \
+  -keystore [파일명] \
+  -rfc \
+  -file [저장할 인증서 파일] \
+  -storepass [비밀번호]
+
+// TrustStore에 상대 인증서 등록
+keytool -importcert \
+  -alias [키이름] \
+  -file [인증서 파일] \
+  -keystore [TrustStore 파일] \
+  -storepass [비밀번호] \
+  -noprompt
+```
+
+- [Networking.md](../NetWorking/Networking.md#mtlsmutual-tls) 에 사용예시를 참고할 것
+
 
 # GC(Garbage Collection)
 JVM(Java Virtual Machine)이 관리하는 메모리 중, Heap 영역(동적할당영역)에서 더 이상 사용되지 않는 객체를 자동으로 감지하고 메모리에서 제거하는 프로세스
@@ -285,3 +330,8 @@ GC는 Young Generation에서 Old Generation으로 승격시키고, Old Generatio
 ![Stream class diagram](../Resource/Backend%2C%20Java%2C%20Stream/%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C1.PNG)
 
 ![Stream class diagram 부연설명](../Resource/Backend%2C%20Java%2C%20Stream/%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C2.PNG)
+
+# SSL/TLS
+[TLS 1.3](../NetWorking/Networking.md#tls-13rfc-8446)은 Java 11 이상부터 공식 지원
+
+## 인증서 사용

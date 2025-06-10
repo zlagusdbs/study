@@ -1,7 +1,11 @@
 # NetWorking
 - Port Forwarding CLI
 - OSI 7 Layer, TCP/IP
-- HTTP
+- SSL(Secure Sockets Layer)/TLS(Transport Layer Security)
+  - SSL
+  - TLS
+  - mTLS
+- HTTP / HTTPS
   - Requests
   - Security
 
@@ -33,7 +37,179 @@ netsh interface portproxy delete v4tov4 listenport=8022 listenaddress=127.0.0.1
 
 ---
 
-# HTTP
+# SSL(Secure Sockets Layer)/TLS(Transport Layer Security)
+데이터를 암호화하고 안전하게 전송하기 위해 사용되는 보안 프로토콜
+
+## SSL
+- SSL 2.0
+- SSL 3.0
+
+## TLS
+- TLS 1.0(RFC 2246)
+- TLS 1.1(RFC 4346)
+- TLS 1.2(RFC 5246)
+- TLS 1.3(RFC 8446)
+
+### TLS 1.2(RFC 5246)
+```text
+Client                          Server
+--------------------------------------------------
+ClientHello        ---------->
+                                ServerHello
+                                Certificate
+                                ServerKeyExchange
+                   <----------  ServerHelloDone
+ClientKeyExchange
+ChangeCipherSpec
+Finished           ---------->
+                                ChangeCipherSpec
+                                Finished
+                   <----------  [ApplicationData]
+ApplicationData    <--------->  ApplicationData
+```
+
+### TLS 1.3(RFC 8446)
+```text
+Client                          Server
+--------------------------------------------------
+ClientHello
+{+KeyShare}        ---------->
+                                ServerHello
+                                {+KeyShare}
+                                EncryptedExtensions
+                                Certificate
+                                CertificateVerify
+                                Finished
+                   <----------  [ApplicationData]
+Finished
+[ApplicationData]  ---------->
+ApplicationData    <--------->  ApplicationData
+```
+
+- 개선사항
+  - Hand-Shark 과정에서의 간소화
+    - 1 RTT(Round Trip Time: 데이터를 상대방에게 보내고 응답받는데 걸리는 시간) 감소
+  - 암호화 강화
+  - 중개자 역할 감소
+  - 무결성 보호 강화
+  - 기타 기능 추가
+
+- 등록절차
+  - server 작업는 진행해야 한다.([Java - keytool](../Backend/Java.md#keytool) 를 참고)
+  ```shell
+  # KeyStore 생성
+  keytool -genkeypair \
+    -alias my-server \
+    -keyalg RSA \
+    -keysize 2048 \
+    -keystore myserver-keystore.p12 \
+    -storetype PKCS12 \
+    -validity 365 \
+    -dname "CN=myserver.com" \
+    -storepass password \
+    -keypass password
+
+  # 인증서 추출
+  keytool -exportcert \
+    -alias my-server \
+    -keystore myserver-keystore.p12 \
+    -rfc -file myserver-cert.pem \
+    -storepass password
+  ```
+
+  - 단, Spring Boot 등 Server를 사용할 경우 Server 내 설정도 필요하다.
+    - Server
+    ```yaml
+    # application{-xxx}.yml
+    server:
+      ssl:
+        enable: true
+        protocol: TLSv1.3
+        key-store: classpath:myserver-keystore.p12
+        key-store-password: ${KEYSTORE_PASSWORD}  # Vault 사용 권장
+        key-store-type: PKCS12
+    ```
+    - Client
+    ```java
+    SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
+    sslContext.init(null, null, null);  // 기본 TrustManager 사용
+    
+    HttpsURLConnection conn = (HttpsURLConnection) new URL("https://your-server.com/api/hello").openConnection();
+    conn.setSSLSocketFactory(sslContext.getSocketFactory());
+    conn.connect();
+    ```
+    
+## mTLS(Mutual TLS)
+Client와 Server가 서로를 인증하는 TLS 통신방식
+
+- 등록절차
+  - client/server 모두 같은 작업을 진행해야 한다.([Java - keytool](../Backend/Java.md#keytool) 를 참고)
+  ```shell
+  # KeyStore 생성
+  keytool -genkeypair \
+    -alias my-server \
+    -keyalg RSA \
+    -keysize 2048 \
+    -keystore myserver-keystore.p12 \
+    -storetype PKCS12 \
+    -validity 365 \
+    -dname "CN=myserver.com" \
+    -storepass password \
+    -keypass password
+
+  # 인증서 추출
+  keytool -exportcert \
+    -alias my-server \
+    -keystore myserver-keystore.p12 \
+    -rfc -file myserver-cert.pem \
+    -storepass password
+
+  # TrustStore에 상대 인증서 등록
+  keytool -importcert \
+    -alias peer-server \
+    -file peerserver-cert.pem \
+    -keystore truststore.jks \
+    -storepass password \
+    -noprompt
+  ```
+
+  - 단, Spring Boot 등 Server를 사용할 경우 Server 내 설정도 필요하다.
+    - Server
+    ```yaml
+    # application{-xxx}.yml
+    server:
+      port: 8443
+      ssl:
+        enabled: true
+        protocol: TLSv1.3
+        key-store: classpath:myserver-keystore.p12
+        key-store-password: password
+        key-store-type: PKCS12
+        trust-store: classpath:truststore.jks
+        trust-store-password: password
+        client-auth: need  # <-- mTLS의 핵심 설정
+    ```
+    - Client
+    ```java
+    SSLContext sslContext = SSLContextBuilder.create()
+      .loadKeyMaterial(new File("client-keystore.p12"), "password".toCharArray(), "password".toCharArray())
+      .loadTrustMaterial(new File("truststore.jks"), "password".toCharArray())
+      .build();
+
+      CloseableHttpClient client = HttpClients.custom()
+      .setSSLContext(sslContext)
+      .build();
+
+      HttpGet request = new HttpGet("https://peer-server.com/api/hello");
+    CloseableHttpResponse response = client.execute(request);
+    ```
+    
+---
+
+# HTTP/HTTPS
+- HTTP
+- HTTPS: HTTP + [TLS](Networking.md#tls)
+
 ## Requests
 - Simple Request
   - request의 'origin'과, response의 'Access-Control-Allow-Origin' 항목으로 구성
