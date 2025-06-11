@@ -17,7 +17,7 @@
 - Amazon Batch
 - Amazon CloudWatch
 - Cloud 환경에 Resource를 Monitoring, Triggering 할 수 있다.
-- ELB(Elastic Load Balancing)
+- Amazon ELB(Elastic Load Balancing)
 - Auto Scaling
   - 내결함성 향상 : (Instance에 Host가 없어지는(장애) 경우, 총 인스턴스의 갯수를 지정해 놓고 그 갯수 이하로 instance가 줄어든다면 자동으로 늘려줄 수 있다.
   - 시작구성 : Auto Scaling에서만 사용하는 탬플릿 
@@ -93,6 +93,7 @@
   - NLB : 4계층 Load Balancer
     - 내부에서 내부로 트래픽 분산을 하는 용도로 사용
   - CLB : VPC 이전에 EC2-Classic 네트워크라고 있었는데, 그 당시에 같이 사용하던 ELB
+  - GWLB: Gateway Load Balancer
 
 ## Edge Location
 - 단순하게 어플리케이션에 접근해서 컨텐츠를 받을 때는 사내망, 통신사망, 여러 인터넷(라우트, 게이트웨이)을 통해 resource에 접근한다.

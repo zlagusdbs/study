@@ -62,7 +62,7 @@
     - CPU의 비용을 많이 사용하기 때문에, 짧은 임계구간에만 사용.
   - 2PL(Two-Phase Locking)
     - 트랜잭션이 데이터베이스에서 동시 실행될 때 데이터의 일관성과 **순차적 일관성(ReentrantReadWriteLock은 읽기와 쓰기에 대한 접근을 논의)**을 보장하기 위해 사용된다.
-      주로 [Database](../Database/Database.md)의 동시성을 제어하는데 사용한다.
+      주로 [Database](../DataStore/Database.md)의 동시성을 제어하는데 사용한다.
     - 동작방식
       - 확장단계(Growing Phase): 트랜잭션이 필요한 자원에 Lock을 요청/획득 할 수 있다.
         - S-Lock(Shared Lock 또는 Read Lock)
