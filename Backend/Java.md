@@ -23,11 +23,13 @@ Source Code(xxx.java)  -Compiler->  Byte Code(xxx.class)  -interpreter----------
 ```
 - Compile
 Java의 Compile은 정적 컴파일(Compiler)과 동적 컴파일(JIT(Just-In-Time) Compiler)로 나눌 수 있다.
+각 compile은 정적 컴파일(level 0)을 시작으로 동적컴파일의 JIT(Tiered Compile, level 1 ~ level 4) 등과 함께 진행된다.
 
   - 정적 컴파일(ex> javac)
     고급언어를 저수준언어(기계어 또는 중간언어)로 변환하는 프로그램.
     **단, Java의 Byte Code는 JVM에서 실행 가능한 기계어일 뿐, 흔히 말하는 기계어는 아니다.**
     확장자 .java(고급언어)를 확장자 .class(기계어)로 변환한다.
+    - Level 0: interpreted code
   
   - 동적 컴파일(ex> JIT Compiler, 정규표현식 엔진)
     - JIT(Just-In-Time) Compiler
@@ -36,15 +38,20 @@ Java의 Compile은 정적 컴파일(Compiler)과 동적 컴파일(JIT(Just-In-Ti
       즉, 코드가 처음 실행될 때 JIT Compiler는 개입하지 않는다.
       개입이 시작되면, '메서드 인라인화', '루프 최적화', '죽은코드제거', 'JVM영역에 Caching' 등의 작업을 진행한다.
   
-      - JIT Compiler는 두개의 Compiler로 다시 나뉘며, Tiered Compilation(티어드 컴파일) 방식을 사용한다.
-        - C1 Compiler(Client Compiler): 빠른 시작과 짧은 실행 시간을 목표로 최적화가 이루어진다. 초기 실행 성능을 중요시한다.
-        - C2 Compiler(Server Compiler): 고성능 목표로 최적화가 이루어진다.
-      - 즉, 처음에는 C1 Compiler로 진행하다, 10만번 정도의 많은양의 호출이 이루어지면 C2 Compiler로 진행.
+      - JIT Compiler는 두개의 Compiler로 다시 나뉘며, Tiered Compilation방식(=단계별 compile)을 사용한다.
+        - C1 Compiler(=Client Compiler): 빠른 시작과 짧은 실행 시간을 목표로 최적화가 이루어진다. 초기 실행 성능을 중요시한다.
+          - Level 1: simple C1 compiled code: 최적화가 불필요하다고 생각되는 간략한 부분(이에 profiling 정보는 만들지 않음)
+          - Level 2: limited C1 compiled code: 제한된 최적화를 진행
+          - Level 3: full C1 compiled code: profiling mode로 정보를 수집하고 최적화를 진행
+        - C2 Compiler(=Server Compiler): 고성능 목표로 최적화가 이루어진다.
+          - Level 4: C2 compiled code: 최대 최적화를 진행
+      
+      - 즉, 예를 들어 처음에는 C1 Compiler로 진행하다, 10만번 정도의 많은양의 호출이 이루어지면 C2 Compiler로 진행.
 
     - 정규표현식 엔진
       - 정규표현식은 [동적 컴파일](Java.md#정규표현식-엔진)에 포함
 
-- Interpreter
+- Interpreter(Level 0)
   코드를 한 줄씩 읽고 실행하는 방법. Native Code로 변환하지는 않고 JVM 내부 로직에 의해 바로 처리된다.
 
 # Profilers
