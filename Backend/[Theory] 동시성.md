@@ -64,15 +64,18 @@
     - 트랜잭션이 데이터베이스에서 동시 실행될 때 데이터의 일관성과 **순차적 일관성(ReentrantReadWriteLock은 읽기와 쓰기에 대한 접근을 논의)**을 보장하기 위해 사용된다.
       주로 [Database](../DataStore/Database.md)의 동시성을 제어하는데 사용한다.
     - 동작방식
-      - 확장단계(Growing Phase): 트랜잭션이 필요한 자원에 Lock을 요청/획득 할 수 있다.
-        - S-Lock(Shared Lock 또는 Read Lock)
-        - X-Lock(eXclusive Lock 또는 Write Lock)
-      - 수축단계(Shrinking Phase): 트랜잭션이 커밋되거나 롤백되면, 자원에 대한 Lock을 해제한다. 단, 한번 해제하면 그 후로 더이상 자원에 Lock을 요청/획들 할 수 없다.
-      ```text
-      
-      ```
+      - 확장단계(Growing Phase)
+        트랜잭션이 필요한 자원에 Lock을 요청/획득 할 수 있다. (즉, 새로운 Lock은 가능하고 Unlock은 불가능하다.)
+        - S-Lock(Shared Lock 또는 Read Lock): Read Lock은 다른 트랜잭션에 Read Lock은 허용하되, Write Lock은 허용하지 않는다.
+        - X-Lock(eXclusive Lock 또는 Write Lock): Write Lock은 다른 트랜잭션에 Read/Write Lock을 허용하지 않는다.
+      - 수축단계(Shrinking Phase): 트랜잭션이 커밋되거나 롤백되면, 자원에 대한 Lock을 해제한다. 단, 한번 해제하면 그 후로 더이상 자원에 Lock을 요청/획들 할 수 없다.(즉, Unlock은 가능하고 새로운 Lock은 불가능하다.)
+    - 2PL의 종류
+      - Conservative 2PL
+      - Strict 2PL(S2PL)
+      - Strong strict 2PL(S S2PL)
     
-    cf> [2PC](%5BTheory%5D%20Transaction.md#2pctwp-phase-commit)와는 사뭇 다른 개념이다.
+    > cf> [2PC](%5BTheory%5D%20Transaction.md#2pctwp-phase-commit)와는 사뭇 다른 개념이다.
+
 - 낙관적 Lock(Optimistic Lock)
   - CAS(Compared-And-Swap)
     - Lock-Free Algorithm을 구현한 기술로 '값 비교 후 원자적 갱신'을 실현한다.

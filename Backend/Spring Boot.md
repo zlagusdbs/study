@@ -14,7 +14,8 @@
 - Application Listener 
 - Resolver
 - Spring AOP
-    - @Service, @Async
+  - Dynamic Proxy, CGLIB(Code Generate Library) Proxy
+  - @Service, @Async
 - Transactional
 - Annotation
   - Spring Security
@@ -511,6 +512,16 @@ public class CustomApplicationListener implements ApplicationListener<CustomAppl
   - 등등
 
 # Spring AOP
+Sprng에서의 AOP는 두 가지 방법이 존재하며, 이는 Interface의 유무로 작동한다.
+
+- Dynamic Proxy
+  - Interface가 있는 경우 Dynamic Proxy로 구현되며, AspectJ 등이 있다
+  - 가볍고 안정적
+
+- CGLIB(Code Generate Library) Proxy
+  - Interface가 없는 경우 CGLIB Proxy로 구현되며, interface를 정의하지 않은 Service(Transactional을 위한) Proxy가 이에 해당된다
+  - 강력하지만 외부 라이브러리에 의존하고, 런타임 제약이 있다.
+
 ## AOP의 개본개념
 - 요소
   - Aspect: 횡단 관심사를 모듈환 한 것(보통 설정클래스가 된다. ex> XXXAspect)
