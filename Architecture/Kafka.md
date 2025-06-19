@@ -130,6 +130,7 @@ Topic/Multi Partition 생성
     - Producer는 데이터를 보내기 전, Batch(=Buffer)에 데이터를 저장하는데, 데이터를 빨리 채우지 못하면 전송이 늦어지거나 배치를 다 채우지 못하고 전송 하면서 성능이 떨어질 수 있다.
   - Sticky(끈끈한)
     - Kafka 2.4 버전 이후 기본 파티션 분배 전략
+    - 같은 파티션에 메시지를 묶어서 보내는 방식을 말하며, Record Accumulator의 Batch 가 이에 해당된다.
 
 ## Send(with acks)
 Producer는 Topic의 Leader Broker에게만 메시지를 보낸다.

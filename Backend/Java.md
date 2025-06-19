@@ -37,14 +37,15 @@ Java의 Compile은 정적 컴파일(Compiler)과 동적 컴파일(JIT(Just-In-Ti
       개입이 시작되면, '메서드 인라인화', '루프 최적화', '죽은코드제거', 'JVM영역에 Caching' 등의 작업을 진행한다.
   
       - JIT Compiler는 두개의 Compiler로 다시 나뉘며, Tiered Compilation(티어드 컴파일) 방식을 사용한다.
-        - C1 Compiler(Client Compiler): 빠른 시작과 짧은 실행 시간을 목표로 최적화가 이루어진다. 초기 실행 성능을 중요시한다.
-        - C2 Compiler(Server Compiler): 고성능 목표로 최적화가 이루어진다.
+        - C1 Compiler(=Client Compiler)(Level 1~3): 빠른 시작과 짧은 실행 시간을 목표로 최적화가 이루어진다. 초기 실행 성능을 중요시한다.
+        - C2 Compiler(=Server Compiler)(Level 4): 고성능 목표로 최적화가 이루어진다.
+      
       - 즉, 처음에는 C1 Compiler로 진행하다, 10만번 정도의 많은양의 호출이 이루어지면 C2 Compiler로 진행.
 
     - 정규표현식 엔진
       - 정규표현식은 [동적 컴파일](Java.md#정규표현식-엔진)에 포함
 
-- Interpreter
+- Interpreter(Level 0)
   코드를 한 줄씩 읽고 실행하는 방법. Native Code로 변환하지는 않고 JVM 내부 로직에 의해 바로 처리된다.
 
 # Profilers
