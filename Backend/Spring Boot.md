@@ -576,6 +576,95 @@ Sprng에서의 AOP는 두 가지 방법이 존재하며, 이는 Interface의 유
   - CGLIB Proxy(Code Generator Library Proxy) **(Spring 3.2 이상버전)**
     - 인터페이스가 없거나, 클래스 기반으로 프록시를 만들고자 할 때 사용
     - 클래스의 바이트코드를 조작하여 Proxy 객체를 생성해주는 라이브러리
+   
+### Example
+```
+package com.ebaykorea.smileclubapi.common.configuration.aspect.mutex
+
+import com.ebaykorea.smileclubapi.common.configuration.aspect.mutex.exception.MutexException
+import com.ebaykorea.smileclubapi.common.configuration.aspect.mutex.service.MutexRedisService
+import org.aspectj.lang.JoinPoint
+import org.aspectj.lang.annotation.After
+import org.aspectj.lang.annotation.Aspect
+import org.aspectj.lang.annotation.Before
+import org.springframework.stereotype.Component
+import kotlin.reflect.KVisibility
+
+@Aspect
+@Component
+class MutexAspect(
+    val mutexRedisService: MutexRedisService,
+) {
+    companion object {
+        const val MUTEX_PREFIX = "SMILE_CLUB:MUTEX:"
+    }
+
+    @Before(value = "@annotation(mutex)")
+    fun mutex(joinPoint: JoinPoint, mutex: Mutex) {
+        try {
+            this.mutexes(joinPoint, mutex).forEach {
+                if (mutexRedisService.opsForSetAdd(it, it) <= 0)
+                    throw MutexException(it)
+            }
+        } catch (mutexException: MutexException) {
+            throw mutexException
+        } catch (_: Exception) {
+        }
+    }
+
+    @After(value = "@annotation(mutex)")
+    fun mutexDestroy(joinPoint: JoinPoint, mutex: Mutex) {
+        try {
+            this.mutexes(joinPoint, mutex).forEach {
+                mutexRedisService.delete(it)
+            }
+        } catch (_: Exception) {
+        }
+    }
+
+    fun mutexes(joinPoint: JoinPoint, mutex: Mutex): List<String> {
+        val mutexes = mutableListOf<String>()
+        mutex.keys.forEach { mutexKey ->
+            val target = joinPoint.args.first { arg ->
+                val argName = arg.javaClass.name
+                if (argName.startsWith("java"))
+                    argName.lowercase() == "${mutexKey.type.java.packageName}.${mutexKey.type.java.name}".lowercase()
+                else
+                    arg.javaClass.name == mutexKey.type.qualifiedName
+            }
+            var temporalMutex =
+                MutexAspect.Companion.MUTEX_PREFIX + joinPoint.signature.name + ":"
+
+            if (isPrimitiveType(target)) {
+                temporalMutex += "$target:"
+            } else {
+                mutexKey.key.forEach { key ->
+                    val parameter = key.split(".")
+                    val parameterName = if (parameter.size < 2) parameter[0] else parameter[1]
+
+                    val parameterValue = target.javaClass.kotlin.members.first {
+                        it.visibility == KVisibility.PUBLIC && it.name == parameterName
+                    }.call(target)
+
+                    if (parameterValue != null)
+                        temporalMutex += "$parameterValue:"
+                }
+            }
+
+            if (MutexAspect.Companion.MUTEX_PREFIX.length < temporalMutex.length)
+                mutexes.add(temporalMutex.substring(0, temporalMutex.lastIndexOf(":")))
+        }
+        return mutexes
+    }
+
+    private fun isPrimitiveType(obj: Any): Boolean {
+        return when (obj::class) {
+            Int::class, Long::class, Double::class, Float::class, Short::class, Byte::class, Boolean::class, Char::class -> true
+            else -> false
+        }
+    }
+}
+```
 
 ## @Service
 - @Component를 내부적으로 포함한다. 즉, 컴포넌트 스캔의 대상이다.
