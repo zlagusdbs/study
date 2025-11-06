@@ -835,6 +835,23 @@ Controller만 스캔해서 빈으로 등록하고, 다른 빈은 자동 등록�
 
 ### Repository
 - 조금 귀찮타.. DatabaseTestConfigurer도 설정해야 되고.. 이것은 나중에 기재하자..
+```
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@MyProjectDatasourceConfig
+public class MyProjectTest {
+    ...
+}
+
+@Import(
+    value = [
+        DatabaseInformationVendor::class,
+        DatasourceJpaConfigurator::class,
+        QuerydslConfigurator::class
+    ]
+)
+annotation class SmileClubDatabaseConfigureTest
+```
 
 ## 단언 라이브러리: Assertion Library(=테스트 보조 라이브러리: Testing Utility Library)
 단독 테스트 프레임워크는 아니지만, JUnit과 같은 테스트 프레임워크과 함께 사용하여 테스트를 더 풍부하게 만들어주는 도구
