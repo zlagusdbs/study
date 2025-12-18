@@ -456,3 +456,4 @@ http:
 - Elasticsearch: [Elasticsearch 공식 홈페이지](https://www.elastic.co/guide/en/elasticsearch/reference/8.17/release-highlights.html)
 - Elasticsearch Version Check: [Version Check](https://www.elastic.co/support/matrix#matrix_jvm)
 - Elasticsearch Cluster: [Elasticsearch Cluster Blog](https://esbook.kimjmin.net/)
+- Elasticsearch Cluster: [Elasticsearch Cluster Blog](https://dol9.tistory.com/294)
