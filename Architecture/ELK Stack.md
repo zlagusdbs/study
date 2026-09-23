@@ -463,6 +463,11 @@ DELETE _scripts/<script-id>
 DELETE _scripts/my-sotred-script
 ```
 
+# Tip
+## Type Mapping
+Elasticsearch는 String Type에 2가지 용도가 있다.
+기본 text와 색인용 keyword이 있고, 기본은 text를 잡고 하위로 keyword를 둔다.
+
 # Reference
 - Elasticsearch: [Elasticsearch 공식 홈페이지](https://www.elastic.co/guide/en/elasticsearch/reference/8.17/release-highlights.html)
 - Elasticsearch Version Check: [Version Check](https://www.elastic.co/support/matrix#matrix_jvm)
