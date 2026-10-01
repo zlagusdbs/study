@@ -1,6 +1,8 @@
 # NetWorking
 - Port Forwarding CLI
 - OSI 7 Layer, TCP/IP
+  - 3-Way Handshake
+  - keepalive
 - SSL(Secure Sockets Layer)/TLS(Transport Layer Security)
   - SSL
   - TLS
@@ -33,6 +35,29 @@ netsh interface portproxy delete v4tov4 listenport=8022 listenaddress=127.0.0.1
 
 - [산업표준] TCP/IP
   - OSI 7 Layer의 4Layer(전송계층)를 TCP로 사용하고, 3Layer(네트워크계층)를 IP로 고정시킨 뒤, 복잡한 7계층을 4계층으로 함축시켜 놓은 모델
+
+## 3-Way Handshake
+### config
+```
+클라이언트 ─────SYN─────▶  [① SYN 큐]  ─────SYN-ACK/ACK─────▶  [② Accept 큐]  ─────accept()─────▶ 애플리케이션
+                      (반쯤 열린 연결)                     (연결 완료, 앱이 가져가길 대기)
+                   tcp_max_syn_backlog                        somaxconn
+```
+
+- ListenOverflows: Accept 큐에서 accept()을 호출하지 못하여, 7-Layer로 들어가지 못하고 버려진 횟수  
+- ListenDrops: Listen Socket에서 버려진 연결의 전체 횟수.(ListenOverflows를 포함하며, 메모리 부족 등의 이슈로 버려진 것들도 함께 센다)  
+- tcp_max_syn_backlog: Sync 큐 크기의 상한
+- somaxconn: Accept 큐 크기의 OS 상한
+- TCP keepalive: client/server간 연결을 유지하고 있는지 packet을 보내어 연결이 끊기지 않았는지 확인하는 것
+
+- 번외> Web Server(ex> NGinX) config
+  - keepalive: 재사용하려고 보관해두는 idle 연결수
+  - keepalive_requests: NGinX설정으로 연결하나(keep-alive)로 처리할 수 있는 최대 요청 수. 
+  - keepalive_timeout: 놀고 있는 연결을 유지할 최대 시간
+    ex> keepalive*
+      keepalive 32: 차고에 대기시켜 둘 택시는 최대 32대입니다.
+      keepalive_requests 1000: 택시 한 대는 손님 1000명을 태우면 폐차합니다.
+      keepalive_timeout 60s: 60초 동안 손님이 없으면 그 택시는 돌려보냅니다.
 
 
 ---
