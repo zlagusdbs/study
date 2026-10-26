@@ -1,32 +1,61 @@
 # Datadog
-- Monitor
-  - 평가 주기와 상태
-- Detection Method
-- Define the metric
-  - Evaluation Details
-- Set alert conditions
-  - Threshold
-  - Missing Data
-  - Recovery Thresholds
-  - Evaluation options
-- Notification
-  - Template Variable
-  - Notification Options
-  - Renotification
-  - Metadata
-- Permissions and Audit
-- Option
+- Metrics
+  - Query
+  - Tag
+- Monitors
+  - Monitor
+  - Status
+  - Option
+    - Choose the detection method
+    - Define the metric
+    - Set alert conditions
+    - Configure notifications and automations
+    - Define permissions and audit notifications
+  - Example
 - Reference
 
 ---
 
-# Monitor
+# Metrics
+Datadog 전반(Monitors, Dashboards, Notebooks 등)에서 공통으로 쓰는 지표 조회 방식
+
+## Query
+```text
+p50:trace.servlet.request{env:prod,service:my-api} by {resource_name}
+```
+
+| 구성 | 의미 | 예시 |
+| --- | --- | --- |
+| 집계 방식 | 여러 값을 어떤 통계로 합칠지 (avg, sum, min, max, p50, p99 등) | `p50`: 중간값 |
+| 지표 이름 | 볼 지표 | `trace.servlet.request`: 서버가 받은 HTTP 요청의 처리 시간 |
+| `{...}` (from) | 범위를 좁히는 태그 조건 | `env:prod`, `service:my-api` |
+| `by {...}` | 무엇별로 나눌지 | `by {resource_name}`: URI 별로 따로 계산 |
+| 함수 (Modify) | 쿼리 결과에 함수 적용 | `.as_count()`, 이동평균 등 |
+| Formula | 여러 쿼리를 계산식으로 묶음 | 에러율 = `a / b` (a: 에러 수, b: 전체 요청 수) |
+
+- 화면에서는 `a` `b` `c` 로 쿼리 이름이 붙는다. `Add Query` 로 쿼리를, `Add Formula` 로 계산식을 추가한다.
+- `by` 를 쓰지 않으면 화면에 `(everything)` 으로 표시된다. 나누지 않고 전체를 하나의 값으로 본다.
+
+## Tag
+Datadog 의 모든 데이터에 붙는 `key:value` 꼬리표. 검색, 필터, 그룹 기준으로 쓴다.
+
+| 예시 | 의미 |
+| --- | --- |
+| `env:prod` | 운영 환경 |
+| `service:my-api` | 서비스 이름 |
+| `resource_name:get_/orders` | APM 에서 요청 URI |
+| `http.status_code:503` | HTTP 응답 코드 |
+
+- 태그 형식을 통일해야 필터와 알림 정책이 일관되게 동작한다.
+
+# Monitors
+## Monitor
 Metric, Trace, Log 등의 지표를 주기적으로 평가하여, 조건을 만족하면 **알림(Notification)을 보내는 기능**
 
-## 평가 주기와 상태
 - 모니터는 보통 **1분마다** 쿼리를 다시 계산해서 상태를 정한다.
-- 상태는 4가지다.
+- 알림은 **상태가 바뀔 때** 발송된다. 같은 상태가 유지되는 동안에는 다시 보내지 않는다(Renotification 제외).
 
+## Status
 | 상태 | 의미 |
 | --- | --- |
 | OK | 기준 이하 |
@@ -34,10 +63,11 @@ Metric, Trace, Log 등의 지표를 주기적으로 평가하여, 조건을 만�
 | Alert | Alert 기준 초과 |
 | No Data | 정해진 시간 동안 데이터가 들어오지 않음 |
 
-- 알림은 **상태가 바뀔 때** 발송된다. 같은 상태가 유지되는 동안에는 다시 보내지 않는다(Renotification 제외).
+## Option
+모니터 생성/수정 화면의 순서대로 정리한다.
 
-# Detection Method
-어떤 방식으로 "이상하다"고 판단할지를 정한다.
+### 1. Choose the detection method
+어떤 방식으로 "이상하다"고 판단할지 정한다.
 
 | 방식 | 의미 | 예시 (API 응답시간 p50 기준) |
 | --- | --- | --- |
@@ -48,27 +78,18 @@ Metric, Trace, Log 등의 지표를 주기적으로 평가하여, 조건을 만�
 | Forecast Alert | 추세로 보아 **곧** 기준을 넘을 것 같으면 미리 울림 | 디스크 사용률이 이 속도면 3일 뒤 100% |
 | Watchdog | 설정 없이 Datadog 이 자동으로 이상 탐지 | - |
 
-# Define the metric
-무엇을 볼지 정한다.
+### 2. Define the metric
+무엇을 볼지 정한다. 쿼리 작성법은 [Metrics - Query](#query) 와 같다.
 
 ```text
 a   trace.servlet.request   from   env:prod, service:my-api   p50 by   (everything)
 ```
 
-| 칸 | 의미 | 예시 |
-| --- | --- | --- |
-| `a` | 쿼리 이름. 여러 개면 a, b, c 로 구분 | a |
-| 지표 이름 | 볼 지표 | `trace.servlet.request`: 서버가 받은 HTTP 요청의 처리 시간 |
-| **from** | 범위를 좁히는 태그 조건 | `env:prod`, `service:my-api` |
-| **by** | 어떤 통계값으로, 무엇별로 나눌지 | `p50 by (everything)`: 나누지 않고 전체를 하나로 |
-| Modify | 쿼리 결과에 함수 적용 | `as_count()`, 이동평균 등 |
-| Add Query / Add Formula | 쿼리를 추가하거나 `a / b` 같은 계산식 작성 | 에러율 = 에러 수 / 전체 요청 수 |
-
 - `by` 에 따라 알림 단위가 달라진다.
   - `(everything)`: 모니터 1개가 전체 값 하나를 본다. 알림도 1개다. **Simple Alert**
   - `by resource_name`: URI 별로 따로 판단한다. 한 URI 만 느려도 그 URI 알림만 온다. **Multi Alert**
 
-## Evaluation Details
+#### Evaluation Details
 | 칸 | 의미 | 예시 |
 | --- | --- | --- |
 | **Evaluate the** | 기간 안의 값을 어떤 숫자 하나로 줄일지 (average, max, min, sum, percentile 등) | percentile(p50): 5분 동안 요청 100,000건을 빠른 순으로 세워 50,000번째 값 = 0.03초 |
@@ -78,17 +99,17 @@ a   trace.servlet.request   from   env:prod, service:my-api   p50 by   (everythi
 - 평가 창이 **짧으면** 빨리 울리지만 잠깐 튄 것에도 울린다.
 - 선택 가능한 기간은 드롭다운에 있는 값만 가능하다. (예: last 2 minutes 는 없음)
 
-# Set alert conditions
+### 3. Set alert conditions
 언제 울릴지 정한다.
 
-## Threshold
+#### Threshold
 | 칸 | 의미 | 예시 |
 | --- | --- | --- |
 | **Trigger when the evaluated value is** | above(클 때) / below(작을 때) 등 | above |
 | **Alert threshold** | 이 값을 넘으면 Alert | `> 0.1` (100ms) |
 | **Warning threshold** | 이 값을 넘으면 Warn (선택) | `> 0.05` (50ms) |
 
-## Missing Data
+#### If data is missing
 `If data is missing for N minutes` : N분 동안 데이터가 없을 때 할 일
 
 | 선택지 | 데이터가 끊기면 |
@@ -100,8 +121,8 @@ a   trace.servlet.request   from   env:prod, service:my-api   p50 by   (everythi
 
 - 같은 지표를 보는 모니터가 여러 개면, **한 모니터만** `and notify` 로 두면 중복 알림을 피할 수 있다.
 
-## Recovery Thresholds
-`Advanced options` 안에 있다. **얼마나 내려와야 풀리는지**를 따로 정한다.
+#### Advanced options - Recovery Thresholds
+**얼마나 내려와야 풀리는지**를 따로 정한다.
 
 | 칸 | 의미 | 예시 |
 | --- | --- | --- |
@@ -124,14 +145,14 @@ a   trace.servlet.request   from   env:prod, service:my-api   p50 by   (everythi
 | 10:05 | 0.045 | Warn 유지 | 0.05 아래지만 0.04 까지 안 내려옴 |
 | 10:06 | 0.03 | **OK** (recovery) | 0.04 이하 |
 
-## Missing data options
+#### Advanced options - Missing data options
 | 칸 | 의미 | 예시 |
 | --- | --- | --- |
 | If a group stops reporting data, resolve after N hours | Multi Alert 에서 **특정 그룹**의 데이터가 끊기면 N시간 뒤 그 그룹의 경보를 자동 정리 | `by pod` 일 때 파드가 재배포되어 사라지면 2시간 뒤 그 파드의 경보 삭제 |
 
 - Simple Alert(`(everything)`)는 그룹이 하나뿐이라 꺼 둬도 된다.
 
-## Evaluation options
+#### Advanced options - Evaluation options
 | 칸 | 의미 | 예시 |
 | --- | --- | --- |
 | Delay monitor evaluation by N seconds | 평가를 N초 늦춰, 늦게 도착하는 데이터까지 포함 | 60 이면 10:07 평가가 10:01~10:06 구간을 봄. 클라우드 지표처럼 늦게 들어오는 경우에 씀 |
@@ -139,8 +160,8 @@ a   trace.servlet.request   from   env:prod, service:my-api   p50 by   (everythi
 
 - 초당 수백 건씩 들어오는 지표라면 `0초 / Do not require` 로 둬도 된다.
 
-# Notification
-## Template Variable
+### 4. Configure notifications and automations
+#### Message (Template Variable)
 메시지 본문에서 상태별로 다른 문구를 보낼 수 있다.
 
 | 변수 | 출력 시점 |
@@ -178,33 +199,37 @@ a   trace.servlet.request   from   env:prod, service:my-api   p50 by   (everythi
 
 - 저장 전에 메시지 칸 위의 **Preview** 에서 Alert / Warn / OK 상태를 하나씩 눌러, 상태마다 해당 블록만 보이는지 확인한다.
 
-## Notification Options
+#### Automate Response / Runbook / Bits
 | 칸 | 의미 | 예시 |
 | --- | --- | --- |
 | Automate Response (Add Workflow) | 알림이 울릴 때 Datadog Workflow 자동 실행 | 스크립트 실행, 티켓 생성 |
 | Add Runbook | 대응 절차 문서를 알림에 연결 | - |
 | Investigate with Bits | Datadog AI 가 원인 조사를 제안 | - |
+
+#### Notification Options
+| 칸 | 의미 | 예시 |
+| --- | --- | --- |
 | Content displayed in notification | 알림에 쿼리·그래프 등 부가 정보를 얼마나 붙일지 | **Hide All**: 메시지 본문만 |
 
 - `Hide All` 로 두어도 `Monitor tags`, 발송 경로(webhook handle) 줄은 지울 수 없다.
 
-## Renotification
+#### Renotification
 | 칸 | 의미 | 예시 |
 | --- | --- | --- |
 | If this monitor stays in [status] renotify every [time] | 해결되지 않으면 일정 간격으로 같은 알림을 다시 보냄 | Alert 상태로 30분마다: 10:02 Alert → 10:32, 11:02 재발송 |
 
 - 꺼 두면 상태가 바뀔 때만 알림이 온다.
 
-## Metadata
+#### Metadata
 | 칸 | 의미 | 예시 |
 | --- | --- | --- |
 | Priority | 중요도 (P1 가장 높음 ~ P5) | P1 (Critical) |
-| Tags | 모니터 검색·분류용 `key:value` 꼬리표 | `env:production` |
+| Tags | 모니터 검색·분류용 태그 ([Metrics - Tag](#tag)) | `env:production` |
 | Team | 담당 팀 지정 | - |
 
 - Tags 를 비워 두면 알림에 `Monitor tags: []` 로 표시된다.
 
-# Permissions and Audit
+### 5. Define permissions and audit notifications
 | 칸 | 의미 | 예시 |
 | --- | --- | --- |
 | Unrestricted / Edit Access | 누가 모니터를 수정할 수 있는지 | Unrestricted: 조직 안 누구나 수정 가능 |
@@ -212,18 +237,18 @@ a   trace.servlet.request   from   env:prod, service:my-api   p50 by   (everythi
 
 - 중요한 기간에 기준값이 임의로 바뀌는 것을 막으려면 Edit Access 를 제한하고 Audit Notifications 를 켠다.
 
-# Option
+## Example
 API 응답시간 p50 모니터 설정 예시
 ```text
-[Detection Method]
+[1. Choose the detection method]
 Threshold Alert
 
-[Define the metric]
+[2. Define the metric]
 query                           p50:trace.servlet.request{env:prod,service:my-api}
 Evaluate the                    percentile (p50)
 Of the query over the           last 5 minutes
 
-[Set alert conditions]
+[3. Set alert conditions]
 Trigger when                    above
 Alert threshold                 0.1
 Warning threshold               0.05
@@ -234,18 +259,20 @@ resolve after N hours           미사용
 Delay evaluation                0 seconds
 Full window of data             Do not require
 
-[Notification]
+[4. Configure notifications and automations]
 Content displayed               Hide All
 Renotification                  미사용
 Priority                        P1
 Tags                            없음
 
-[Permissions]
+[5. Define permissions and audit notifications]
 Access                          Unrestricted
 Audit Notifications             Do not notify
 ```
 
 # Reference
+- Metrics Query: [https://docs.datadoghq.com/metrics/](https://docs.datadoghq.com/metrics/)  
+- Tagging: [https://docs.datadoghq.com/getting_started/tagging/](https://docs.datadoghq.com/getting_started/tagging/)  
 - Metric Monitor: [https://docs.datadoghq.com/monitors/types/metric/](https://docs.datadoghq.com/monitors/types/metric/)  
 - Monitor Configuration: [https://docs.datadoghq.com/monitors/configuration/](https://docs.datadoghq.com/monitors/configuration/)  
 - Template Variables: [https://docs.datadoghq.com/monitors/notify/variables/](https://docs.datadoghq.com/monitors/notify/variables/)  
